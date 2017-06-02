@@ -93,7 +93,7 @@ Write-Output "Deploying Cisco ASAv appliance..."
 
 $ASAResourceGroupName = $ResourceGroupName + "-ASA"
 
-Get-AzureRmResourceGroup -Name $ASAResourceGroupName -ev notPresent -ea 0
+Get-AzureRmResourceGroup -Name $ASAResourceGroupName -ev notPresent -ea 0 | Out-Null
 
 if ($notPresent) {
     Write-Output "Could not find resource group '$ASAResourceGroupName' - will create it"
