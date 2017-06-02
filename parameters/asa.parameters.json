@@ -14,9 +14,6 @@
         "vmSize": {
             "value": "Standard_D3_v2"
         },
-        "location": {
-            "value": "eastus2"
-        },
         "newStorageAccountName": {
             "value": "igloovmstorage"
         },
