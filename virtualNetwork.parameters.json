@@ -7,16 +7,8 @@
         "name": "Igloo-Vnet-POC",
         "addressPrefixes": [
           "192.168.0.0/16"
-        ],
+          ],
         "subnets": [
-          {
-            "name": "GatewaySubnet",
-            "addressPrefix": "192.168.255.0/24"
-          },
-          {
-            "name": "mgmt",
-            "addressPrefix": "192.168.100.0/24"
-          },
           {
             "name": "public-dmz-in",
             "addressPrefix": "192.168.113.0/24"
@@ -32,6 +24,14 @@
           {
             "name": "data",
             "addressPrefix": "192.168.116.0/24"
+          },
+          {
+            "name": "mgmt",
+            "addressPrefix": "192.168.100.0/24"
+          },
+          {
+            "name": "GatewaySubnet",
+            "addressPrefix": "192.168.255.0/24"
           }
         ],
         "dnsServers": []
