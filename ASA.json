@@ -283,7 +283,7 @@
             "name": "SettingUpPublicIP",
             "apiVersion": "2015-01-01",
             "properties": {
-                "mode": "Complete",
+                "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('publicIPSetupURL')]",
                     "contentVersion": "1.0.0.0"
