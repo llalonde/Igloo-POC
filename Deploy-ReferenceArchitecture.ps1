@@ -60,38 +60,29 @@ else {
     Write-Output "Using existing resource group '$ResourceGroupName'"
 }
 
-$TemplateFilePath = "C:\Users\pierrer\Documents\Github\Igloo-POC\vnet-subnet.json"
-$ParametersFilePath = "C:\Users\pierrer\Documents\Github\Igloo-POC\parameters\vnet-subnet.parameters.json"
-
 
 # Start the deployment
 Write-Output "Starting deployment"
 
-
-#if ( Test-Path $ParametersFilePath ) {
-#    Write-Host "found parameter file..."
-#    New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateFilePath -TemplateParameterFile $ParametersFilePath | Out-Null
-#}
-#else {
-#    Write-Host "Did not find parameter file..."
-#    New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateFilePath  | Out-Null
-#}
-
-Write-Host "Deploying virtual network..."
+Write-Output "Deploying virtual network..."
 
 if (Invoke-WebRequest -Uri $VnetParametersFile)
 {
-    New-AzureRmResourceGroupDeployment -Name "vnet-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName -TemplateUri $virtualNetworkTemplate -TemplateParameterFile $virtualNetworkParametersFile | Out-Null
+    write-host "The parameter file was found, we will use the following info: "
+    write-host " Template file:     '$VnetTemplate'"
+    write-host " Parameter file:    '$virtualNetworkParametersFile'"
+    write-host
+
+    New-AzureRmResourceGroupDeployment -Name "vnet-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterUri $VnetParametersFile | Out-Null
 }
 else
 {
     write-host "The parameter file was not found, you will need to enter all parameters manually...."
     write-host
-    New-AzureRmResourceGroupDeployment -Name "vnet-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName -TemplateUri $virtualNetworkTemplate | Out-Null
+    New-AzureRmResourceGroupDeployment -Name "vnet-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName -TemplateUri $VnetTemplate | Out-Null
 
 }
 
-#New-AzureRmResourceGroupDeployment -Name "vnet-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName -TemplateUri $virtualNetworkTemplate -TemplateParameterFile $virtualNetworkParametersFile | Out-Null
 
 if ($error.Count -eq 0) {
     Write-Host "Deployment of Vnet in Resource Group '$networkResourceGroupName' failed"
