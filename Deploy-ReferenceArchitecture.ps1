@@ -111,12 +111,12 @@ if (Invoke-WebRequest -Uri $ASAParametersFile) {
     write-host " Template file:     '$ASATemplate'"
     write-host " Parameter file:    '$ASAParametersFile'"
     write-host
-    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -TemplateParameterUri $ASAParametersFile -Force | Out-Null
+    New-AzureRmResourceGroupDeployment -Name "ASA-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -TemplateParameterUri $ASAParametersFile -Force | Out-Null
 }
 else {
     write-host "The parameter file was not found, you will need to enter all parameters manually...."
     write-host
-    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -Force | Out-Null
+    New-AzureRmResourceGroupDeployment -Name "ASA-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -Force | Out-Null
 
 }
 #region deployment of ASA firewall
