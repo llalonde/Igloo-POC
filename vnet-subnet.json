@@ -3,6 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "vnetName": {
+            "defaultValue": "Igloo-Vnet-POC",
             "type": "string"
         },
         "vnetAddressPrefix": {
