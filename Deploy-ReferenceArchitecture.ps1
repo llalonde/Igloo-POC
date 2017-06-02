@@ -42,8 +42,8 @@ Write-Host
 
 $templateRootUri = New-Object System.Uri -ArgumentList @($buildingBlocksRootUriString)
 
-$virtualNetworkTemplate = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/vnet-subnet.json")
-$virtualNetworkParametersFile = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/vnet-subnet.parameters.json")
+$virtualNetworkTemplate = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/azuredeploy.json")
+$virtualNetworkParametersFile = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/parameters/virtualNetwork.parameters.json")
 
 # Create the resource group
 $networkResourceGroup = New-AzureRmResourceGroup -Name $networkResourceGroupName -Location $Location
@@ -52,3 +52,6 @@ Write-Host "Deploying virtual network..."
 Write-Host
 New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName -TemplateUri $virtualNetworkTemplate.AbsoluteUri -TemplateParameterFile $virtualNetworkParametersFile.AbsoluteUri -Force | Out-Null
 
+# New-AzureRmResourceGroupDeployment -Name "vnet-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
+#    -TemplateFile C:\Users\pierrer\Documents\Github\Igloo-POC\vnet-subnet.json `
+#    -TemplateParameterFile  C:\Users\pierrer\Documents\Github\Igloo-POC\vnet-subnet.parameters.json

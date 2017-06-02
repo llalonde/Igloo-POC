@@ -1,20 +1,17 @@
-﻿{
+{
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "virtualNetworkSettings": {
       "value": {
-        "name": "Vnet-Igloo-POC",
+        "name": "igloo-vnet-poc",
         "addressPrefixes": [
-          {
-            "name": "firstPrefix",
-            "addressPrefix": "192.168.0.0/22"
-          }
+          "192.168.0.0/16"
         ],
         "subnets": [
           {
             "name": "GatewaySubnet",
-            "addressPrefix": "192.168.255.0/24"
+            "addressPrefix": "192.168.255.224/27"
           },
           {
             "name": "mgmt",
@@ -22,7 +19,7 @@
           },
           {
             "name": "public-dmz-in",
-            "addressPrefix": "192.168.114.0/24"
+            "addressPrefix": "192.168.114.64/27"
           },
           {
             "name": "public-dmz-out",
@@ -30,7 +27,7 @@
           },
           {
             "name": "web",
-            "addressPrefix": "192.168.115/24"
+            "addressPrefix": "192.168.115.0/24"
           },
           {
             "name": "biz",
@@ -41,7 +38,7 @@
             "addressPrefix": "192.168.116.0/24"
           }
         ],
-        "dnsServers": []
+        "dnsServers": [ ]
       }
     }
   }

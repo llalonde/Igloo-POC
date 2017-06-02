@@ -5,7 +5,7 @@
     "deploymentContext": {
       "type": "object",
       "defaultValue": {
-        "parentTemplateUniqueString": "bbVnet"
+        "parentTemplateUniqueString": "IglooVnet"
       }
     },
     "virtualNetworkSettings": {
