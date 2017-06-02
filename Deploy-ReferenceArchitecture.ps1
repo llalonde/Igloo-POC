@@ -41,10 +41,12 @@ $TemplateURI=New-Object System.Uri -ArgumentList @($TemplateRootUriString)
 # Templates for the deploment (include filename)
 
 $VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
+$ASATemplate = $TemplateURI.AbsoluteUri + "ASA.json"
 
 #Parameter files for the deployment (include relative path to repo + filename)
 
 $VnetParametersFile = $TemplateURI.AbsoluteUri + "parameters/vnet-subnet.parameters.json"
+$ASAParametersFile = $TemplateURI.AbsoluteUri + "parameters/asa.parameters.json"
 
 #endregion
 
@@ -64,6 +66,7 @@ else {
 # Start the deployment
 Write-Output "Starting deployment"
 
+#region Deployment of virtual network
 Write-Output "Deploying virtual network..."
 
 if (Invoke-WebRequest -Uri $VnetParametersFile)
@@ -83,10 +86,32 @@ else
 
 }
 
+#endregion
+Write-Output "Deploying Cisco ASAv appliance..."
+
+if (Invoke-WebRequest -Uri $ASAParametersFile)
+{
+    write-host "The parameter file was found, we will use the following info: "
+    write-host " Template file:     '$ASATemplate'"
+    write-host " Parameter file:    '$ASAParametersFile'"
+    write-host
+
+    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName ($ResourceGroupName + "-ASA") -TemplateUri $ASATemplate -TemplateParameterUri $ASAParametersFile -Force | Out-Null
+}
+else
+{
+    write-host "The parameter file was not found, you will need to enter all parameters manually...."
+    write-host
+    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName ($ResourceGroupName + "-ASA") -TemplateUri $ASATemplate -Force | Out-Null
+
+}
+#region deployment of ASA firewall
+
+#endregion
 
 if ($error.Count -eq 0) {
-    Write-Host "Deployment of Vnet in Resource Group '$ResourceGroupName' failed"
+    Write-Host "Deployment of Architecture failed"
 }
 else {
-    Write-Host "Deployment of Vnet in Resource Group '$ResourceGroupName' succeeded"
+    Write-Host "Deployment of Architecture succeeded"
 }

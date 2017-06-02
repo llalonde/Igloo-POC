@@ -15,13 +15,13 @@
       "value": "192.168.100.0/24"
     },
     "public-dmz-insubnetsname": {
-      "value": "public-dmz-in"
+      "value": "Inside"
     },
     "public-dmz-insubnetaddressPrefix": {
       "value": "192.168.114.0/24"
     },
     "public-dmz-outsubnetsname": {
-      "value": "public-dmz-out"
+      "value": "Outside"
     },
     "public-dmz-outsubnetaddressPrefix": {
       "value": "192.168.113.0/24"
