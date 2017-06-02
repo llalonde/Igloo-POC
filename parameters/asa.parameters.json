@@ -9,7 +9,7 @@
             "value": "sysadmin"
         },
         "adminPassword": {
-            "value": null
+            "value": "P@ssw0rd!234"
         },
         "authenticationType": {
             "value": "password"
