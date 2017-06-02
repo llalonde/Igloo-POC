@@ -16,50 +16,41 @@ Select-AzureRmSubscription -SubscriptionID $subscriptionId | Out-Null
 Write-Host 
 
 # select Resource Group
-$networkResourceGroupName = Read-Host -Prompt 'Input the resource group for your network'
+$ResourceGroupName = Read-Host -Prompt 'Input the resource group for your network'
 Write-Host 
-Write-Host "Selecting Resource Group '$networkResourceGroupName'";
+Write-Host "Selecting Resource Group '$ResourceGroupName'";
 Write-Host 
 
 # select Location
 $Location = Read-Host -Prompt 'Input the Location for your network'
 Write-Host 
-Write-Host "Selecting subscription '$Location'";
+Write-Host "setting location as '$Location'";
 Write-Host 
-
-$buildingBlocksRootUriString = $env:TEMPLATE_ROOT_URI
-if ($buildingBlocksRootUriString -eq $null) {
-  $buildingBlocksRootUriString = "https://raw.githubusercontent.com/pierreroman/Igloo-POC/master/"
-}
-
-if (![System.Uri]::IsWellFormedUriString($buildingBlocksRootUriString, [System.UriKind]::Absolute)) {
-  throw "Invalid value for TEMPLATE_ROOT_URI: $env:TEMPLATE_ROOT_URI"
-}
-
-Write-Host
-Write-Host "Using $buildingBlocksRootUriString to locate templates"
-Write-Host
-
-$templateRootUri = New-Object System.Uri -ArgumentList @($buildingBlocksRootUriString)
-
-$virtualNetworkTemplate = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/vnet-subnet.json")
-$virtualNetworkParametersFile = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/parameters/vnet-subnet.parameters.json")
-Write-Host
-Write-Host "Template = '$virtualNetworkTemplate'"
-Write-Host
-Write-Host
-Write-Host "Parameter file = '$virtualNetworkParametersFile'"
-Write-Host
-
 
 
 # Create the resource group
-$networkResourceGroup = New-AzureRmResourceGroup -Name $networkResourceGroupName -Location $Location
-Write-Host
-Write-Host "Deploying virtual network..."
-Write-Host
-New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName -TemplateUri $virtualNetworkTemplate.AbsoluteUri -TemplateParameterFile $virtualNetworkParametersFile.AbsoluteUri -Force | Out-Null
 
-# New-AzureRmResourceGroupDeployment -Name "vnet-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName `
-#    -TemplateFile C:\Users\pierrer\Documents\Github\Igloo-POC\vnet-subnet.json `
-#    -TemplateParameterFile  C:\Users\pierrer\Documents\Github\Igloo-POC\vnet-subnet.parameters.json
+if ( -not $ResourceGroup ) {
+    Write-Output "Could not find resource group '$ResourceGroupName' - will create it"
+    Write-Output "Creating resource group '$ResourceGroupName' in location '$Location'"
+    New-AzureRmResourceGroup -Name $resourceGroupName -Location $Location
+}
+else {
+    Write-Output "Using existing resource group '$ResourceGroupName'"
+}
+
+$TemplateFilePath = "C:\Users\pierrer\Documents\Github\Igloo-POC\vnet-subnet.json"
+$ParametersFilePath = "C:\Users\pierrer\Documents\Github\Igloo-POC\parameters\vnet-subnet.parameters.json"
+
+
+# Start the deployment
+Write-Output "Starting deployment"
+if ( Test-Path $ParametersFilePath ) {
+    Write-Host "found parameter file..."
+    New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateFilePath -TemplateParameterFile $ParametersFilePath | Out-Null
+}
+else {
+    Write-Host "Did not find parameter file..."
+    New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateFilePath  | Out-Null
+}
+
