@@ -1,53 +1,104 @@
 {
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "deploymentContext": {
-      "type": "object",
-      "defaultValue": {
-        "parentTemplateUniqueString": "bbVnet"
-      }
-    },
-    "virtualNetworkSettings": {
-      "type": "object",
-      "metadata": {
-        "description": "Settings for virtual network"
-      }
-    }
-  },
-  "variables": {
-    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('virtualNetworkSettings'))))]",
-    "virtualNetworkTemplate": "[uri(deployment().properties.templateLink.uri, '../../resources/Microsoft.Network/virtualNetworks/virtualNetwork.json')]",
-    "vnetName": "[parameters('virtualNetworkSettings').name]",
-    "deploymentTemplateName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-deployVNet-', variables('templateUniqueString'))]"
-  },
-  "resources": [
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "name": "[variables('deploymentTemplateName')]",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('virtualNetworkTemplate')]"
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vnetName": {
+            "type": "string"
         },
-        "parameters": {
-          "deploymentContext": {
-            "value": {
-              "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-deployVNet')]"
-            }
-          },
-          "virtualNetworkSettings": {
-            "value": "[parameters('virtualNetworkSettings')]"
-          }
+        "vnetAddressPrefix": {
+            "type": "string"
+        },
+        "subnet1Prefix": {
+            "type": "string"
+        },
+        "subnet1Name": {
+            "type": "string"
+        },
+        "subnet2Prefix": {
+            "type": "string"
+        },
+        "subnet2Name": {
+            "type": "string"
+        },
+        "subnet3Name": {
+            "type": "string"
+        },
+        "subnet3Prefix": {
+            "type": "string"
+        },
+        "subnet4Name": {
+            "type": "string"
+        },
+        "subnet4Prefix": {
+            "type": "string"
+        },
+        "subnet5Name": {
+            "type": "string"
+        },
+        "subnet5Prefix": {
+            "type": "string"
+        },
+        "GatewaySubnetName": {
+            "type": "string"
+        },
+        "GatewaySubnetPrefix": {
+            "type": "string"
         }
-      }
-    }
-  ],
-  "outputs": {
-    "resources": {
-      "type": "array",
-      "value": "[reference(variables('deploymentTemplateName')).outputResources]"
-    }
-  }
+    },
+    "variables": {
+        "apiVersion": "2015-06-15"
+    },
+    "resources": [
+        {
+            "apiVersion": "[variables('apiVersion')]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('vnetName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('vnetAddressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('subnet1Name')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnet1Prefix')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('subnet2Name')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnet2Prefix')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('subnet3Name')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnet3Prefix')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('subnet4Name')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnet4Prefix')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('subnet5Name')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnet5Prefix')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('GatewaySubnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('GatewaySubnetPrefix')]"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
 }
