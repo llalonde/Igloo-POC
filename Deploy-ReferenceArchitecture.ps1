@@ -43,7 +43,7 @@ Write-Host
 $templateRootUri = New-Object System.Uri -ArgumentList @($buildingBlocksRootUriString)
 
 $virtualNetworkTemplate = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/vnet-subnet.json")
-$virtualNetworkParametersFile = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/parameters/vnet-subnet.parameters.json")
+$virtualNetworkParametersFile = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/vnet-subnet.parameters.json")
 
 # Create the resource group
 $networkResourceGroup = New-AzureRmResourceGroup -Name $networkResourceGroupName -Location $Location
