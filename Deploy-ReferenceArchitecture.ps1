@@ -6,7 +6,7 @@ $ErrorActionPreference = "Stop"
 
 # sign in
 Write-Host "Logging in...";
-Login-AzureRmAccount | Out-Null
+# Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
@@ -44,6 +44,14 @@ $templateRootUri = New-Object System.Uri -ArgumentList @($buildingBlocksRootUriS
 
 $virtualNetworkTemplate = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/azuredeploy.json")
 $virtualNetworkParametersFile = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/parameters/virtualNetwork.parameters.json")
+Write-Host
+Write-Host "Template = '$virtualNetworkTemplate'"
+Write-Host
+Write-Host
+Write-Host "Parameter file = '$virtualNetworkParametersFile'"
+Write-Host
+
+
 
 # Create the resource group
 $networkResourceGroup = New-AzureRmResourceGroup -Name $networkResourceGroupName -Location $Location
