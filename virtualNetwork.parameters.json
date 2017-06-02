@@ -5,7 +5,6 @@
     "virtualNetworkSettings": {
       "value": {
         "name": "Igloo-Vnet-POC",
-        "resourceGroup": "POC-Igloo",
         "addressPrefixes": [
           "192.168.0.0/16"
         ],

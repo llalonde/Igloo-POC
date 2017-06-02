@@ -54,7 +54,7 @@ Write-Host
 $templateRootUri = New-Object System.Uri -ArgumentList @($buildingBlocksRootUriString)
 
 $virtualNetworkTemplate = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/azuredeploy.json")
-$virtualNetworkParametersFile = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/parameters/virtualNetwork.parameters.json")
+$virtualNetworkParametersFile = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/virtualNetwork.parameters.json")
 Write-Host "virtualNetworkParametersFile '$virtualNetworkParametersFile'"
 
 # Create the resource group
