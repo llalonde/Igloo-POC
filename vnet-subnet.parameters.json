@@ -2,47 +2,47 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "vnetName": {
-      "value": "Igloo-Vnet-POC"
-    },
-    "vnetAddressPrefix": {
-      "value": "192.168.0.0/16"
-    },
-    "subnet1Name": {
-      "value": "public-dmz-in"
-    },
-    "subnet1Prefix": {
-      "value": "192.168.113.0/24"
-    },
-    "subnet2Name": {
-      "value": "public-dmz-out"
-    },
-    "subnet2Prefix": {
-      "value": "192.168.114.0/24"
-    },
-    "subnet3Name": {
-      "value": "web"
-    },
-    "subnet3Prefix": {
-      "value": "192.168.115.0/24"
-    },
-    "subnet4Name": {
-      "value": "data"
-    },
-    "subnet4Prefix": {
-      "value": "192.168.116.0/24"
-    },
-    "subnet5Name": {
-      "value": "mgmt"
-    },
-    "subnet5Prefix": {
-      "value": "192.168.100.0/24"
-    },
-    "GatewaySubnetName": {
-      "value": "GatewaySubnet"
-    },
-    "GatewaySubnetPrefix": {
-      "value": "192.168.255.0/24"
+    "virtualNetworkSettings": {
+      "value": {
+        "name": "Vnet-Igloo-POC",
+        "addressPrefixes": [
+          {
+            "name": "firstPrefix",
+            "addressPrefix": "192.168.0.0/22"
+          }
+        ],
+        "subnets": [
+          {
+            "name": "GatewaySubnet",
+            "addressPrefix": "192.168.255.0/24"
+          },
+          {
+            "name": "mgmt",
+            "addressPrefix": "192.168.100.0/24"
+          },
+          {
+            "name": "public-dmz-in",
+            "addressPrefix": "192.168.114.0/24"
+          },
+          {
+            "name": "public-dmz-out",
+            "addressPrefix": "192.168.113.0/24"
+          },
+          {
+            "name": "web",
+            "addressPrefix": "192.168.115/24"
+          },
+          {
+            "name": "biz",
+            "addressPrefix": "192.168.117.0/24"
+          },
+          {
+            "name": "data",
+            "addressPrefix": "192.168.116.0/24"
+          }
+        ],
+        "dnsServers": []
+      }
     }
   }
 }

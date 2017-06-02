@@ -2,113 +2,64 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "vnetName": {
-            "defaultValue": "Igloo-Vnet-POC",
-            "type": "string"
-        },
-        "vnetAddressPrefix": {
-            "defaultValue": "",
-            "type": "string"
-        },
-        "subnet1Prefix": {
-            "defaultValue": "",
-            "type": "string"
-        },
-        "subnet1Name": {
-            "defaultValue": "",
-            "type": "string"
-        },
-        "subnet2Prefix": {
-            "defaultValue": "",
-            "type": "string"
-        },
-        "subnet2Name": {
-            "defaultValue": "",
-            "type": "string"
-        },
-        "subnet3Name": {
-            "defaultValue": "",
-            "type": "string"
-        },
-        "subnet3Prefix": {
-            "defaultValue": "",
-            "type": "string"
-        },
-        "subnet4Name": {
-            "defaultValue": "",
-            "type": "string"
-        },
-        "subnet4Prefix": {
-            "defaultValue": "",
-            "type": "string"
-        },
-        "subnet5Name": {
-            "defaultValue": "",
-            "type": "string"
-        },
-        "subnet5Prefix": {
-            "defaultValue": "",
-            "type": "string"
-        },
-        "GatewaySubnetName": {
-            "defaultValue": "",
-            "type": "string"
-        },
-        "GatewaySubnetPrefix": {
-            "defaultValue": "",
-            "type": "string"
+        "virtualNetworkSettings": {
+            "type": "object"
         }
     },
-    "variables": {
-        "apiVersion": "2015-06-15"
-    },
+    "variables": {},
     "resources": [
         {
-            "apiVersion": "[variables('apiVersion')]",
+            "apiVersion": "2015-06-15",
             "type": "Microsoft.Network/virtualNetworks",
-            "name": "[parameters('vnetName')]",
+            "name": "[parameters('virtualNetworkSettings')]",
             "location": "[resourceGroup().location]",
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
-                        "[parameters('vnetAddressPrefix')]"
+                        "[parameters('virtualNetworkSettings').addressPrefixes[0].addressPrefix]"
                     ]
                 },
                 "subnets": [
                     {
-                        "name": "[parameters('subnet1Name')]",
+                        "name": "[parameters('virtualNetworkSettings').subnets[0].name]",
                         "properties": {
-                            "addressPrefix": "[parameters('subnet1Prefix')]"
+                            "addressPrefix": "[parameters('virtualNetworkSettings').subnets[0].addressPrefix]"
                         }
                     },
                     {
-                        "name": "[parameters('subnet2Name')]",
+                        "name": "[parameters('virtualNetworkSettings').subnets[1].name]",
                         "properties": {
-                            "addressPrefix": "[parameters('subnet2Prefix')]"
+                            "addressPrefix": "[parameters('virtualNetworkSettings').subnets[1].addressPrefix]"
                         }
                     },
                     {
-                        "name": "[parameters('subnet3Name')]",
+                        "name": "[parameters('virtualNetworkSettings').subnets[2].name]",
                         "properties": {
-                            "addressPrefix": "[parameters('subnet3Prefix')]"
+                            "addressPrefix": "[parameters('virtualNetworkSettings').subnets[2].addressPrefix]"
                         }
                     },
                     {
-                        "name": "[parameters('subnet4Name')]",
+                        "name": "[parameters('virtualNetworkSettings').subnets[3].name]",
                         "properties": {
-                            "addressPrefix": "[parameters('subnet4Prefix')]"
+                            "addressPrefix": "[parameters('virtualNetworkSettings').subnets[3].addressPrefix]"
                         }
                     },
                     {
-                        "name": "[parameters('subnet5Name')]",
+                        "name": "[parameters('virtualNetworkSettings').subnets[4].name]",
                         "properties": {
-                            "addressPrefix": "[parameters('subnet5Prefix')]"
+                            "addressPrefix": "[parameters('virtualNetworkSettings').subnets[4].addressPrefix]"
                         }
                     },
                     {
-                        "name": "[parameters('GatewaySubnetName')]",
+                        "name": "[parameters('virtualNetworkSettings').subnets[05].name]",
                         "properties": {
-                            "addressPrefix": "[parameters('GatewaySubnetPrefix')]"
+                            "addressPrefix": "[parameters('virtualNetworkSettings').subnets[5].addressPrefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('virtualNetworkSettings').subnets[6].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('virtualNetworkSettings').subnets[6].addressPrefix]"
                         }
                     }
                 ]
