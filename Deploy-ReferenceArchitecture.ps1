@@ -47,7 +47,8 @@ $virtualNetworkParametersFile = New-Object System.Uri -ArgumentList @($templateR
 
 # Create the resource group
 $networkResourceGroup = New-AzureRmResourceGroup -Name $networkResourceGroupName -Location $Location
-
+Write-Host
 Write-Host "Deploying virtual network..."
+Write-Host
 New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName -TemplateUri $virtualNetworkTemplate.AbsoluteUri -TemplateParameterFile $virtualNetworkParametersFile.AbsoluteUri -Force | Out-Null
 
