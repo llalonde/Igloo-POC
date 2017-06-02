@@ -51,10 +51,10 @@ $VnetParametersFile = $TemplateURI.AbsoluteUri + "parameters/vnet-subnet.paramet
 
 # Create the resource group
 
-if ( -not $ResourceGroup ) {
+if ( -not $ResourceGroupName ) {
     Write-Output "Could not find resource group '$ResourceGroupName' - will create it"
     Write-Output "Creating resource group '$ResourceGroupName' in location '$Location'"
-    New-AzureRmResourceGroup -Name $resourceGroupName -Location $Location
+    New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location -Forcey
 }
 else {
     Write-Output "Using existing resource group '$ResourceGroupName'"
@@ -70,24 +70,23 @@ if (Invoke-WebRequest -Uri $VnetParametersFile)
 {
     write-host "The parameter file was found, we will use the following info: "
     write-host " Template file:     '$VnetTemplate'"
-    write-host " Parameter file:    '$virtualNetworkParametersFile'"
+    write-host " Parameter file:    '$VnetParametersFile'"
     write-host
 
-    New-AzureRmResourceGroupDeployment -Name "vnet-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterUri $VnetParametersFile | Out-Null
+    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterUri $VnetParametersFile | Out-Null
 }
 else
 {
     write-host "The parameter file was not found, you will need to enter all parameters manually...."
     write-host
-    New-AzureRmResourceGroupDeployment -Name "vnet-deployment" -ResourceGroupName $networkResourceGroup.ResourceGroupName -TemplateUri $VnetTemplate | Out-Null
+    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate | Out-Null
 
 }
 
 
 if ($error.Count -eq 0) {
-    Write-Host "Deployment of Vnet in Resource Group '$networkResourceGroupName' failed"
+    Write-Host "Deployment of Vnet in Resource Group '$ResourceGroupName' failed"
 }
 else {
-    Write-Host "Deployment of Vnet in Resource Group '$networkResourceGroupName' succeeded"
+    Write-Host "Deployment of Vnet in Resource Group '$ResourceGroupName' succeeded"
 }
-End region
