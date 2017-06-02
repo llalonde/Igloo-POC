@@ -7,42 +7,55 @@
             "type": "string"
         },
         "vnetAddressPrefix": {
+            "defaultValue": "",
             "type": "string"
         },
         "subnet1Prefix": {
+            "defaultValue": "",
             "type": "string"
         },
         "subnet1Name": {
+            "defaultValue": "",
             "type": "string"
         },
         "subnet2Prefix": {
+            "defaultValue": "",
             "type": "string"
         },
         "subnet2Name": {
+            "defaultValue": "",
             "type": "string"
         },
         "subnet3Name": {
+            "defaultValue": "",
             "type": "string"
         },
         "subnet3Prefix": {
+            "defaultValue": "",
             "type": "string"
         },
         "subnet4Name": {
+            "defaultValue": "",
             "type": "string"
         },
         "subnet4Prefix": {
+            "defaultValue": "",
             "type": "string"
         },
         "subnet5Name": {
+            "defaultValue": "",
             "type": "string"
         },
         "subnet5Prefix": {
+            "defaultValue": "",
             "type": "string"
         },
         "GatewaySubnetName": {
+            "defaultValue": "",
             "type": "string"
         },
         "GatewaySubnetPrefix": {
+            "defaultValue": "",
             "type": "string"
         }
     },
