@@ -73,13 +73,13 @@ if (Invoke-WebRequest -Uri $VnetParametersFile)
     write-host " Parameter file:    '$VnetParametersFile'"
     write-host
 
-    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterUri $VnetParametersFile | Out-Null
+    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterUri $VnetParametersFile -Force | Out-Null
 }
 else
 {
     write-host "The parameter file was not found, you will need to enter all parameters manually...."
     write-host
-    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate | Out-Null
+    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -Force | Out-Null
 
 }
 
