@@ -42,8 +42,8 @@ Write-Host
 
 $templateRootUri = New-Object System.Uri -ArgumentList @($buildingBlocksRootUriString)
 
-$virtualNetworkTemplate = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/azuredeploy.json")
-$virtualNetworkParametersFile = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/parameters/virtualNetwork.parameters.json")
+$virtualNetworkTemplate = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/vnet-subnet.json")
+$virtualNetworkParametersFile = New-Object System.Uri -ArgumentList @($templateRootUri, "/pierreroman/Igloo-POC/master/parameters/vnet-subnet.parameters.json")
 Write-Host
 Write-Host "Template = '$virtualNetworkTemplate'"
 Write-Host
