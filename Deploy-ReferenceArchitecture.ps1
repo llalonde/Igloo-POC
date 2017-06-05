@@ -56,23 +56,35 @@ $ASAParametersFile = $TemplateURI.AbsoluteUri + "parameters/asa.parameters.json"
 Get-AzureRmResourceGroup -Name $ResourceGroupName -ev notPresent -ea 0  | Out-Null
 
 if ($notPresent) {
-    Write-Output "Could not find resource group '$ResourceGroupName' - will create it"
-    Write-Output "Creating resource group '$ResourceGroupName' in location '$Location'"
+    Write-Host
+    Write-Host 
+    Write-Output "Could not find resource group '$ResourceGroupName' - will create it."
+    Write-Host 
+    Write-Host
+    Write-Output "Creating resource group '$ResourceGroupName' in location '$Location'...."
     New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location -Force | Out-Null
 
 }
 else {
+    Write-Host
+    Write-Host 
     Write-Output "Using existing resource group '$ResourceGroupName'"
 }
 
 
 # Start the deployment
+Write-Host 
+Write-Host 
 Write-Output "Starting deployment"
 
 #region Deployment of virtual network
+Write-Host 
+Write-Host 
 Write-Output "Deploying virtual network..."
 
 if (Invoke-WebRequest -Uri $VnetParametersFile) {
+    Write-Host 
+    Write-Host 
     write-host "The parameter file was found, we will use the following info: "
     write-host " Template file:     '$VnetTemplate'"
     write-host " Parameter file:    '$VnetParametersFile'"
@@ -81,6 +93,8 @@ if (Invoke-WebRequest -Uri $VnetParametersFile) {
     New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterUri $VnetParametersFile -Force | Out-Null
 }
 else {
+    Write-Host 
+    Write-Host 
     write-host "The parameter file was not found, you will need to enter all parameters manually...."
     write-host
     New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -Force | Out-Null
@@ -89,6 +103,7 @@ else {
 
 #endregion
 
+Write-Host 
 Write-Output "Deploying Cisco ASAv appliance..."
 
 $ASAResourceGroupName = $ResourceGroupName + "-ASA"
@@ -96,17 +111,24 @@ $ASAResourceGroupName = $ResourceGroupName + "-ASA"
 Get-AzureRmResourceGroup -Name $ASAResourceGroupName -ev notPresent -ea 0 | Out-Null
 
 if ($notPresent) {
+    Write-Host 
+    Write-Host 
     Write-Output "Could not find resource group '$ASAResourceGroupName' - will create it"
-    Write-Output "Creating resource group '$ASAResourceGroupName' in location '$Location'"
+    Write-Host 
+    Write-Host 
+    Write-Output "Creating resource group '$ASAResourceGroupName' in location '$Location'...."
     New-AzureRmResourceGroup -Name $ASAResourceGroupName -Location $Location -Force | Out-Null
 
 }
 else {
+    Write-Host 
+    Write-Host 
     Write-Output "Using existing resource group '$ASAResourceGroupName'"
 }
 
 if (Invoke-WebRequest -Uri $ASAParametersFile) {
-    
+    Write-Host 
+    Write-Host 
     write-host "The parameter file was found, we will use the following info: "
     write-host " Template file:     '$ASATemplate'"
     write-host " Parameter file:    '$ASAParametersFile'"
@@ -114,6 +136,8 @@ if (Invoke-WebRequest -Uri $ASAParametersFile) {
     New-AzureRmResourceGroupDeployment -Name "ASA-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -TemplateParameterUri $ASAParametersFile -Force | Out-Null
 }
 else {
+    Write-Host 
+    Write-Host 
     write-host "The parameter file was not found, you will need to enter all parameters manually...."
     write-host
     New-AzureRmResourceGroupDeployment -Name "ASA-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -Force | Out-Null
@@ -124,8 +148,12 @@ else {
 #endregion
 
 if ($error.Count -eq 0) {
+    Write-Host 
+    Write-Host 
     Write-Host "Deployment of Architecture failed"
 }
 else {
+    Write-Host 
+    Write-Host 
     Write-Host "Deployment of Architecture succeeded"
 }
