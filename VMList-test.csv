@@ -1,0 +1,4 @@
+Server,ServerName,NameLength,OS,ImageName,StorageAccount,subnet,AvailabilitySet,OSDiskSize,DataDiskSize,Azure Instance Type,VMSize
+Monitoring Server 03 (New Relic),POC-EUS-Monitor03,17,Linux,CentOS73,igloovmstoragestd,biz,None,20,None,A1v2,Standard_A1_v2
+Kafka Node 01,POC-EUS-Kafka01,15,Linux,CentOS74,igloovmstoragestd,biz,None,20,80,A2mv2,Standard_A2m_v2
+Kafka Node 02,POC-EUS-Kafka02,15,Linux,CentOS75,igloovmstoragestd,biz,None,20,80,A2mv2,Standard_A2m_v2
