@@ -36,7 +36,7 @@ Write-Host
 
 # Define a credential object
 Write-Host "You Will now be asked for a UserName and Password that will be applied to all the Virtual Machine that will be created";
-$cred = Get-Credential
+$cred = Get-Credential 
 
 #endregion
 
