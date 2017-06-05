@@ -13,7 +13,7 @@ Write-Host "Logging in...";
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
 Write-Host 
-Write-Host "Selecting subscription '$subscriptionId'";
+Write-Host "Connecting to subscription '$subscriptionId'";
 Select-AzureRmSubscription -SubscriptionID $subscriptionId | Out-Null
 Write-Host 
 
@@ -26,7 +26,7 @@ Write-Host
 # select Location
 $Location = Read-Host -Prompt 'Input the Location for your network'
 Write-Host 
-Write-Host "setting location as '$Location'";
+Write-Host "Setting location as '$Location'";
 Write-Host 
 
 #endregion
@@ -42,11 +42,19 @@ $TemplateURI = New-Object System.Uri -ArgumentList @($TemplateRootUriString)
 
 $VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
 $ASATemplate = $TemplateURI.AbsoluteUri + "ASA.json"
+$StorageTemplate = $TemplateURI.AbsoluteUri + "VMStorageAccount.json"
+$VMListfile=$StorageTemplate = $TemplateURI.AbsoluteUri + "VMList.csv"
+
+
 
 #Parameter files for the deployment (include relative path to repo + filename)
 
 $VnetParametersFile = $TemplateURI.AbsoluteUri + "parameters/vnet-subnet.parameters.json"
 $ASAParametersFile = $TemplateURI.AbsoluteUri + "parameters/asa.parameters.json"
+$StorageParametersFile = $TemplateURI.AbsoluteUri + "parameters/VMStorageAccount.parameters.json"
+
+
+
 
 #endregion
 
@@ -103,6 +111,8 @@ else {
 
 #endregion
 
+
+#region Deploy Cisco ASA appliance 
 Write-Host 
 Write-Output "Deploying Cisco ASAv appliance..."
 
@@ -143,9 +153,36 @@ else {
     New-AzureRmResourceGroupDeployment -Name "ASA-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -Force | Out-Null
 
 }
-#region deployment of ASA firewall
 
 #endregion
+
+#region Deployment of Storage Account
+Write-Host 
+Write-Host 
+Write-Output "Deploying Storage Accounts..."
+
+if (Invoke-WebRequest -Uri $StorageParametersFile) {
+    Write-Host 
+    Write-Host 
+    write-host "The parameter file was found, we will use the following info: "
+    write-host " Template file:     '$StorageTemplate'"
+    write-host " Parameter file:    '$StorageParametersFile'"
+    write-host
+
+    New-AzureRmResourceGroupDeployment -Mode Complete -Name "Storage-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $StorageTemplate -TemplateParameterUri $StorageParametersFile -Force | Out-Null
+}
+else {
+    Write-Host 
+    Write-Host 
+    write-host "The parameter file was not found, you will need to enter all parameters manually...."
+    write-host
+    New-AzureRmResourceGroupDeployment -Mode Complete -Name "Storage-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $StorageTemplate -Force | Out-Null
+
+}
+
+#endregion
+
+
 
 if ($error.Count -eq 0) {
     Write-Host 
@@ -157,3 +194,18 @@ else {
     Write-Host 
     Write-Host "Deployment of Architecture succeeded"
 }
+
+#region Read in List of VM to create
+
+Write-Host 
+Write-Host 
+Write-Host "Read in list of VM to Create...."
+ 
+$VMList = Import-CSV $VMListfile 
+ 
+$Counter = 1
+ 
+foreach ($VM in $VMList) {
+    $Counter++
+}
+Write-Host " '$counter' VM in the list"

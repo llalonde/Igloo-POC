@@ -1,0 +1,41 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "0.0.1.0",
+    "parameters": {
+        "apiVersion": {
+            "type": "String"
+        },
+        "name": {
+            "type": "String"
+        },
+        "faultDomains": {
+            "type": "Int"
+        },
+        "updateDomains": {
+            "type": "Int"
+        },
+        "location": {
+            "type": "String"
+        },
+        "sku": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/availabilitySets",
+            "sku": {
+                "name": "[parameters('sku')]"
+            },
+            "name": "[parameters('name')]",
+            "apiVersion": "[parameters('apiVersion')]",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "properties": {
+                "platformUpdateDomainCount": "[parameters('updateDomains')]",
+                "platformFaultDomainCount": "[parameters('faultDomains')]",
+                "virtualMachines": []
+            }
+        }
+    ]
+}
