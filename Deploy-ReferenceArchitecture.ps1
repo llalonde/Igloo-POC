@@ -3,18 +3,21 @@
 # Execution begins here
 #******************************************************************************
 $ErrorActionPreference = "Stop"
+$WarningPreference = "SilentlyContinue"
+$starttime = get-date
+
 
 #region Prep & signin
 
 # sign in
 Write-Host "Logging in ...";
-#Login-AzureRmAccount | Out-Null
+Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
 Write-Host 
 Write-Host "Connecting to subscription '$subscriptionId'";
-Select-AzureRmSubscription -SubscriptionID $subscriptionId | Out-Null
+Select-AzureRmSubscription -SubscriptionID $subscriptionId | out-null
 Write-Host 
 
 # select Resource Group
@@ -39,7 +42,6 @@ Write-Host "You Will now be asked for a UserName and Password that will be appli
 $cred = Get-Credential 
 
 #endregion
-
 #region Set Template and Parameter location
 
 # set  Root Uri of GitHub Repo (select AbsoluteUri)
@@ -47,14 +49,9 @@ $cred = Get-Credential
 $TemplateRootUriString = "https://raw.githubusercontent.com/pierreroman/Igloo-POC/master/"
 $TemplateURI = New-Object System.Uri -ArgumentList @($TemplateRootUriString)
 
-# Templates for the deploment (include filename)
-# $VMListfile= $TemplateURI.AbsoluteUri + "VMList.csv"
-
-
 $VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
 $ASATemplate = $TemplateURI.AbsoluteUri + "ASA.json"
 $StorageTemplate = $TemplateURI.AbsoluteUri + "VMStorageAccount.json"
-
 
 #Parameter files for the deployment (include relative path to repo + filename)
 
@@ -62,40 +59,27 @@ $VnetParametersFile = $TemplateURI.AbsoluteUri + "parameters/vnet-subnet.paramet
 $ASAParametersFile = $TemplateURI.AbsoluteUri + "parameters/asa.parameters.json"
 $StorageParametersFile = $TemplateURI.AbsoluteUri + "parameters/VMStorageAccount.parameters.json"
 
-
-
-
 #endregion
-
-
 #region Create the resource group
-
-Get-AzureRmResourceGroup -Name $ResourceGroupName -ev notPresent -ea 0  | Out-Null
-
-if ($notPresent) {
-    Write-Host
-    Write-Host 
-    Write-Output "Could not find resource group '$ResourceGroupName' - will create it."
-    Write-Host 
-    Write-Host
-    Write-Output "Creating resource group '$ResourceGroupName' in location '$Location'...."
-    New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location -Force | Out-Null
-
-}
-else {
-    Write-Host
-    Write-Host 
-    Write-Output "Using existing resource group '$ResourceGroupName'"
-}
-
-#endregion
-
 
 # Start the deployment
 Write-Host 
 Write-Host 
 Write-Output "Starting deployment"
 
+Get-AzureRmResourceGroup -Name $ResourceGroupName -ev notPresent -ea 0  | Out-Null
+
+if ($notPresent) {
+    Write-Output "Could not find resource group '$ResourceGroupName' - will create it."
+    Write-Output "Creating resource group '$ResourceGroupName' in location '$Location'...."
+    New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location -Force | out-null
+
+}
+else {
+    Write-Output "Using existing resource group '$ResourceGroupName'"
+}
+
+#endregion
 #region Deployment of virtual network
 Write-Host 
 Write-Host 
@@ -109,27 +93,25 @@ if (Invoke-WebRequest -Uri $VnetParametersFile) {
     write-host " Parameter file:    '$VnetParametersFile'"
     write-host
 
-    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterUri $VnetParametersFile -Force | Out-Null
+    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterUri $VnetParametersFile -Force | out-null
 }
 else {
     Write-Host 
     Write-Host 
     write-host "The parameter file was not found, you will need to enter all parameters manually...."
     write-host
-    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -Force | Out-Null
+    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -Force | out-null
 
 }
 
 #endregion
-
-
 #region Deploy Cisco ASA appliance 
 Write-Host 
 Write-Output "Deploying Cisco ASAv appliance..."
 
 $ASAResourceGroupName = $ResourceGroupName + "-ASA"
 
-Get-AzureRmResourceGroup -Name $ASAResourceGroupName -ev notPresent -ea 0 | Out-Null
+Get-AzureRmResourceGroup -Name $ASAResourceGroupName -ev notPresent -ea 0 | out-null
 
 if ($notPresent) {
     Write-Host 
@@ -138,7 +120,7 @@ if ($notPresent) {
     Write-Host 
     Write-Host 
     Write-Output "Creating resource group '$ASAResourceGroupName' in location '$Location'...."
-    New-AzureRmResourceGroup -Name $ASAResourceGroupName -Location $Location -Force | Out-Null
+    New-AzureRmResourceGroup -Name $ASAResourceGroupName -Location $Location -Force | out-null
 
 }
 else {
@@ -154,19 +136,18 @@ if (Invoke-WebRequest -Uri $ASAParametersFile) {
     write-host " Template file:     '$ASATemplate'"
     write-host " Parameter file:    '$ASAParametersFile'"
     write-host
-    New-AzureRmResourceGroupDeployment -Name "ASA-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -TemplateParameterUri $ASAParametersFile -Force | Out-Null
+    New-AzureRmResourceGroupDeployment -Name "ASA-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -TemplateParameterUri $ASAParametersFile -Force | out-null
 }
 else {
     Write-Host 
     Write-Host 
     write-host "The parameter file was not found, you will need to enter all parameters manually...."
     write-host
-    New-AzureRmResourceGroupDeployment -Name "ASA-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -Force | Out-Null
+    New-AzureRmResourceGroupDeployment -Name "ASA-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -Force | out-null
 
 }
 
 #endregion
-
 #region Deployment of Storage Account
 Write-Host 
 Write-Host 
@@ -180,98 +161,107 @@ if (Invoke-WebRequest -Uri $StorageParametersFile) {
     write-host " Parameter file:    '$StorageParametersFile'"
     write-host
 
-    New-AzureRmResourceGroupDeployment -Name "Storage-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $StorageTemplate -TemplateParameterUri $StorageParametersFile -Force | Out-Null
+    New-AzureRmResourceGroupDeployment -Name "Storage-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $StorageTemplate -TemplateParameterUri $StorageParametersFile -Force | out-null
 }
 else {
     Write-Host 
     Write-Host 
     write-host "The parameter file was not found, you will need to enter all parameters manually...."
     write-host
-    New-AzureRmResourceGroupDeployment -Name "Storage-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $StorageTemplate -Force | Out-Null
+    New-AzureRmResourceGroupDeployment -Name "Storage-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $StorageTemplate -Force | out-null
 
 }
 
 #endregion
-
-
-#region Read in List of VM to create
-
-Write-Host 
-Write-Host 
-Write-Host "Read in list of VM to Create...."
- 
-$VMList = Import-CSV $VMListfile 
- 
-$Counter = 1
- 
-foreach ($VM in $VMList) {
-    $Counter++
-
+#region Deployment of VM from VMlist.CSV
+$VMList = Import-CSV $VMListfile
+ForEach ( $VM in $VMList) {
     $VMName = $VM.ServerName
+    $ASname = $VM.AvailabilitySet
+    $VMsubnet = $VM.subnet
+    $VMOS = $VM.OS
+    $VMStorage = $vm.StorageAccount
+    $VMSize = $vm.VMSize
+    $VMDataDiskSize = $vm.DataDiskSize
+    
+    Write-Host "Processing '$VMName'...."
 
-    Write-Host "Processing '$VMName'"
-    Write-Host
-
-    # Create a public IP address and specify a DNS name
-    Write-Host
-    Write-Host "Create a public IP address and a DNS name"
-    $pip = New-AzureRmPublicIpAddress -ResourceGroupName $ResourceGroupName -Location $location -AllocationMethod Static -IdleTimeoutInMinutes 4 -Name $VMName -Force | Out-Null
+      
+    if ($ASname -ne "None") {
+        Get-AzureRmAvailabilitySet -ResourceGroupName $ResourceGroupName -name $ASname -ev notPresent -ea 0  | Out-Null
+        if ($notPresent) {
+            Write-Output "Could not find Availability Set '$ASname'in '$ResourceGroupName' - It will be created."
+            Write-Output "Creating Availability Set '$ASname'...."
+            Write-host 
+            New-AzureRmAvailabilitySet -Location $Location -Name $ASname -ResourceGroupName $ResourceGroupName | out-null
+            $AS=Get-AzureRmAvailabilitySet -ResourceGroupName $ResourceGroupName -name $ASname
+            $ASID=$as.Id
+        }
+        else {
+            Write-Output "Using existing Availability Set '$ASname'...."
+            Write-host 
+            $AS=Get-AzureRmAvailabilitySet -ResourceGroupName $ResourceGroupName -name $ASname
+            $ASID=$as.Id
+        }
+    }
+    else{
+        write-host "Vistual Machine not part of an availability set"
+    }
+            
+    
     $vnet = Get-AzureRMVirtualNetwork
     $Subnets = $vnet.Subnets
     
-    Write-Host "Create a Network Interface Card for the VM"
-    Write-Host 
-
-    foreach ($Items in $Subnets)
-        {
-            $subnetname = $Items.Name
-            if ($subnetname -eq $vm.subnet)
-            {
-                $subnetID = $Items.Id
-                $PipID = $pip.Id
-                $nic = New-AzureRmNetworkInterface -Name $VMName -ResourceGroupName $ResourceGroupName -Location $location -SubnetId $subnetID -PublicIpAddressId $PipID
-                $nicID = $nic.Id
-            }
+    foreach ($Items in $Subnets) {
+        $subnetname = $Items.Name
+        if ($subnetname -eq $VMsubnet) {
+            $subnetID = $Items.Id
+            $nic = New-AzureRmNetworkInterface -Name $VMName -ResourceGroupName $ResourceGroupName -Location $location -SubnetId $subnetID -Force
+            $nicID = $nic.Id
         }
-    # Create a virtual machine configuration
+    }
 
-
-    if ($vm.OS -eq "Windows")
-    {
-        Write-Host "Creating Windows Virtual Machine '$VMName' ...."
-        Write-Host 
-        Write-Host 
-
-        $StorageAccount = Get-AzureRmStorageAccount -Name $vm.StorageAccount -ResourceGroupName $ResourceGroupName
+    if ($VMOS -eq "Windows") {
+        $StorageAccount = Get-AzureRmStorageAccount -Name $VMStorage -ResourceGroupName $ResourceGroupName
         $OSDiskName = $VMName + "OSDisk"
 
-        $VirtualMachine = New-AzureRmVMConfig -VMName $VMName -VMSize $vm.VMSize
+        if ($ASname -eq "None") {
+            $VirtualMachine = New-AzureRmVMConfig -VMName $VMName -VMSize $VMSize
+        }
+        else {
+            Write-Host "Adding '$VMName' to '$ASname'...."
+            $VirtualMachine = New-AzureRmVMConfig -VMName $VMName -VMSize $VMSize -AvailabilitySetID $ASID
+        }
         $VirtualMachine = Set-AzureRmVMOperatingSystem -VM $VirtualMachine -Windows -ComputerName $VMName -Credential $Cred -ProvisionVMAgent -EnableAutoUpdate
         $VirtualMachine = Set-AzureRmVMSourceImage -VM $VirtualMachine -PublisherName MicrosoftWindowsServer -Offer WindowsServer -Skus 2012-R2-Datacenter -Version "latest"
         $VirtualMachine = Add-AzureRmVMNetworkInterface -VM $VirtualMachine -Id $nicID
         $OSDiskUri = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $OSDiskName + ".vhd"
         $VirtualMachine = Set-AzureRmVMOSDisk -VM $VirtualMachine -Name $OSDiskName -VhdUri $OSDiskUri -CreateOption FromImage
 
-        New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $Location -VM $VirtualMachine
- 
+        New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $Location -VM $VirtualMachine | out-null
 
-        #$vmConfig = New-AzureRmVMConfig -VMName $VMName -VMSize $vm.VMSize | `
-        #            Set-AzureRmVMOperatingSystem -Windows -ComputerName $vm.ServerName -Credential $cred | `
-        #            Set-AzureRmVMSourceImage -PublisherName MicrosoftWindowsServer -Offer WindowsServer -Skus 2012-R2-Datacenter -Version latest | Add-AzureRmVMNetworkInterface -Id $nic.Id
-
-        #New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $location -VM $VirtualMachine
-    }
-    else
-    {
-        Write-Host "Creating Linux Virtual Machine '$VMName' ...."
-        Write-Host 
-        Write-Host 
-
-        $StorageAccount = Get-AzureRmStorageAccount -Name $vm.StorageAccount -ResourceGroupName $ResourceGroupName
+        if ($VMDataDiskSize -ne "none") {
+            $DATADiskUri = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $DataDiskName + ".vhd"
+            $Myvm = Get-AzureRmVM -Name $VMName -ResourceGroupName $ResourceGroupName
+            Add-AzureRmVMDataDisk -VM $VirtualMachine -Name $Myvm -VhdUri $DATADiskUri -LUN 0 -Caching ReadOnly -DiskSizeinGB $VMDataDiskSize -CreateOption Empty | out-null
+            Update-AzureRmVM -ResourceGroupName $ResourceGroupName -VM $Myvm
+            }
+      }
+    else {
+        $StorageAccount = Get-AzureRmStorageAccount -Name $VMStorage -ResourceGroupName $ResourceGroupName
         $OSDiskName = $VMName + "OSDisk"
 
-        $VirtualMachine = New-AzureRmVMConfig -VMName $VMName -VMSize $vm.VMSize
-        $VirtualMachine = Set-AzureRmVMOperatingSystem -VM $VirtualMachine -Linux -ComputerName $VM.ServerName -Credential $cred
+
+        if ($ASname -eq "None") {
+            $VirtualMachine = New-AzureRmVMConfig -VMName $VMName -VMSize $VMSize
+        }
+        else {
+            Write-Host "Adding Virtual Machine '$VMName' to Availability Set '$ASname'...."
+            Write-host 
+            $VirtualMachine = New-AzureRmVMConfig -VMName $VMName -VMSize $VMSize -AvailabilitySetID $ASId
+        }
+
+        $VirtualMachine = Set-AzureRmVMOperatingSystem -VM $VirtualMachine -Linux -ComputerName $VMName -Credential $cred
         $VirtualMachine = Set-AzureRmVMSourceImage -VM $VirtualMachine -PublisherName Canonical -Offer UbuntuServer -Skus 14.04.2-LTS -Version latest
         $VirtualMachine = Add-AzureRmVMNetworkInterface -VM $VirtualMachine -Id $nicID
         $OSDiskUri = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $OSDiskName + ".vhd"
@@ -279,30 +269,18 @@ foreach ($VM in $VMList) {
 
         New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $Location -VM $VirtualMachine
 
-        
-        #$vmConfig = New-AzureRmVMConfig -VMName $VMName -VMSize $vm.VMSize | `
-        #    Set-AzureRmVMOperatingSystem -Linux -ComputerName $VM.ServerName -Credential $cred | `
-        #     Set-AzureRmVMSourceImage -PublisherName Canonical -Offer UbuntuServer -Skus 14.04.2-LTS -Version latest | `
-        #    Add-AzureRmVMNetworkInterface -Id $nic.Id
-
-        #New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $location -VM $vmConfig
+        if ($VMDataDiskSize -ne "none") {
+            $DataDiskName = $VMName + "DataDisk"
+            $DATADiskUri = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $DataDiskName + ".vhd"
+            $Myvm = Get-AzureRmVM -Name $VMName -ResourceGroupName $ResourceGroupName
+            Add-AzureRmVMDataDisk -VM $Myvm -Name $DataDiskName -VhdUri $DATADiskUri -LUN 0 -Caching ReadOnly -DiskSizeinGB $VMDataDiskSize -CreateOption Empty | out-null
+            Update-AzureRmVM -ResourceGroupName $ResourceGroupName -VM $Myvm
+        }
     }
-
-    
 }
-Write-Host " '$counter' VM in the list"
-
 #endregion
 
+$endtime = get-date
+$procestime = $endtime - $starttime
 
-
-if ($error.Count -eq 0) {
-    Write-Host 
-    Write-Host 
-    Write-Host "Deployment of Architecture failed"
-}
-else {
-    Write-Host 
-    Write-Host 
-    Write-Host "Deployment of Architecture succeeded"
-}
+write-host " Deployment completed in '$procestime'"
