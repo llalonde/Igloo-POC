@@ -1,4 +1,4 @@
-workflow CreateVMFromList
+workflow VMCreationEngine
 {
     $servicePrincipalConnection = Get-AutomationConnection -Name AzureRunAsConnection         
 		

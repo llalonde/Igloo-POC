@@ -134,7 +134,7 @@ ForEach ( $AS in $ASListUnique){
 
 #region Deployment of Automation Account and RunBook
 
-New-AzureRmResourceGroupDeployment -Name "Automation" -ResourceGroupName $ResourceGroupName -TemplateUri $AATemplate -TemplateParameterObject @{accountName=AzrAutoAccount} | out-null
+New-AzureRmResourceGroupDeployment -Name "Automation" -ResourceGroupName $ResourceGroupName -TemplateUri $AATemplate | out-null
 $scriptpath = $MyInvocation.MyCommand.Path
 $dir = Split-Path $scriptpath
 $RunAsScript = $dir+"\New-RunAsAccount.ps1"
