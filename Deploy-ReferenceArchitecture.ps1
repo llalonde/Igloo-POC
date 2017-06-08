@@ -119,4 +119,5 @@ else {
 
 $endtime = get-date
 $procestime = $endtime - $starttime
-write-host " Deployment completed in '$procestime'"
+$time = "{00:00:00}" -f $procestime.Minutes
+write-host " Deployment completed in '$time' "

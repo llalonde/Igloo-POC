@@ -11,7 +11,7 @@ $starttime = get-date
 
 # sign in
 Write-Host "Logging in ...";
-Login-AzureRmAccount | Out-Null
+#Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
@@ -104,7 +104,9 @@ ForEach ( $VM in $VMList) {
         $VirtualMachine = Add-AzureRmVMNetworkInterface -VM $VirtualMachine -Id $nicID
         $OSDiskUri = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $OSDiskName + ".vhd"
         $VirtualMachine = Set-AzureRmVMOSDisk -VM $VirtualMachine -Name $OSDiskName -VhdUri $OSDiskUri -CreateOption FromImage
-        New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $Location -VM $VirtualMachine | out-null
+        
+        New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $Location -VM $VirtualMachine
+               
         if ($VMDataDiskSize -ne "none") {
             $DATADiskUri = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $DataDiskName + ".vhd"
             $Myvm = Get-AzureRmVM -Name $VMName -ResourceGroupName $ResourceGroupName
