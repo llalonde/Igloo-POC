@@ -3,6 +3,7 @@
     "contentVersion": "2.0.0.0",
     "parameters": {
         "accountName": {
+            "defaultValue": "AzrAutoAccount",
             "type": "String"
         },
         "RunbookName": {
