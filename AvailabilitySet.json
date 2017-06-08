@@ -3,21 +3,22 @@
     "contentVersion": "0.0.1.0",
     "parameters": {
         "apiVersion": {
+            "defaultValue": "2016-04-30-preview",
             "type": "String"
         },
         "name": {
             "type": "String"
         },
         "faultDomains": {
+            "defaultValue": "2",
             "type": "Int"
         },
         "updateDomains": {
+            "defaultValue": "5",
             "type": "Int"
         },
-        "location": {
-            "type": "String"
-        },
         "sku": {
+            "DefaultValue": "Classic",
             "type": "String"
         }
     },
@@ -29,7 +30,7 @@
             },
             "name": "[parameters('name')]",
             "apiVersion": "[parameters('apiVersion')]",
-            "location": "[parameters('location')]",
+            "location": "[resourceGroup().location]",
             "tags": {},
             "properties": {
                 "platformUpdateDomainCount": "[parameters('updateDomains')]",

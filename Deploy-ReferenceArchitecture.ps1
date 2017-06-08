@@ -24,9 +24,13 @@ Write-Host "Selecting Resource Group '$ResourceGroupName'";
 # select Location
 $Location = Read-Host -Prompt 'Input the Location for your network'
 Write-Host "Setting location as '$Location'";
-#endregion
-#region Set Template and Parameter location
 
+# select Location
+$VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
+
+#endregion
+
+#region Set Template and Parameter location
 # set  Root Uri of GitHub Repo (select AbsoluteUri)
 
 $TemplateRootUriString = "https://raw.githubusercontent.com/pierreroman/Igloo-POC/master/"
@@ -35,6 +39,7 @@ $TemplateURI = New-Object System.Uri -ArgumentList @($TemplateRootUriString)
 $VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
 $ASATemplate = $TemplateURI.AbsoluteUri + "ASA.json"
 $StorageTemplate = $TemplateURI.AbsoluteUri + "VMStorageAccount.json"
+$ASTemplate = $TemplateURI.AbsoluteUri + "AvailabilitySet.json"
 
 #Parameter files for the deployment (include relative path to repo + filename)
 
@@ -116,6 +121,17 @@ else {
 }
 
 #endregion
+
+#region Deployment of Availability Sets
+$VMList = Import-CSV $VMListfile | Where-Object {$_.AvailabilitySet -ne "None"}
+$ASList = $VMList.AvailabilitySet | select-object -unique
+
+ForEach ( $AS in $ASList){
+    New-AzureRmResourceGroupDeployment -Name $AS -ResourceGroupName $ResourceGroupName -TemplateUri $ASTemplate -TemplateParameterObject @{name=$AS} -Force | out-null
+}
+
+
+
 
 $endtime = get-date
 $procestime = $endtime - $starttime
