@@ -2,9 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "location": {
-            "value": "eastus2"
-        },
         "virtualMachineName": {
             "value": "ServerName"
         },
@@ -37,9 +34,6 @@
         },
         "diagnosticsStorageAccountName": {
             "value": "igloovmstoragestd"
-        },
-        "diagnosticsStorageAccountId": {
-            "value": "/subscriptions/54a522b6-6cd7-4325-b4e6-566f9d921835/resourceGroups/igloo-poc/providers/Microsoft.Storage/storageAccounts/igloovmstoragestd"
         },
         "subnetName": {
             "value": "mgmt"
