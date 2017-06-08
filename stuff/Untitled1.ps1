@@ -8,7 +8,7 @@ $starttime = get-date
 
 # sign in
 Write-Host "Logging in ...";
-#Login-AzureRmAccount | Out-Null
+Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
@@ -51,16 +51,21 @@ ForEach ( $VM in $VMList)
     $VMSize = $vm.VMSize
     $VMDataDiskSize = $vm.DataDiskSize
 
-    New-AzureRmResourceGroupDeployment -Name test1 -ResourceGroupName Igloo-POC -VMName POC-EUS-DC01 -TemplateURI $VMTemplate -TemplateParameterObject @{`
-        virtualMachineName=$VMName;`
-        virtualMachineSize=$VMSize;`
-        adminUsername="sysadmin";`
-        adminPassword="P@ssw0rd!234";`
-        virtualNetworkName="Vnet-Igloo-POC";`
-        networkInterfaceName=$VMName+"-nic";`
-        availabilitySetName=$ASname;`
-        storageAccountName=$VMStorage;`
-        subnetName=$VMsubnet;`
-      }
+    New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateURI $VMTemplate -TemplateParameterObject @{ `
+    virtualMachineName=$VMName; `
+    virtualMachineSize=$VMSize; `
+    adminUsername="sysadmin"; `
+    adminPassword="P@ssw0rd!234"; `
+    virtualNetworkName="Vnet-Igloo-POC"; `
+    networkInterfaceName=$VMName+"-nic"; `
+    availabilitySetName=$ASname; `
+    storageAccountName=$VMStorage; `
+    subnetName=$VMsubnet; `
+    availabilitySetPlatformFaultDomainCount='2'; `
+    availabilitySetPlatformUpdateDomainCount='5'; `
+    diagnosticsStorageAccountName=$VMStorage `
+    } `
+    -DeploymentDebugLogLevel All -Name $ASname
+
 
 }

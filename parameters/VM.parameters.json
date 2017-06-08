@@ -37,6 +37,9 @@
         },
         "subnetName": {
             "value": "mgmt"
+        },
+        "ResourceGroupName": {
+            "value": "Igloo-POC"
         }
     }
 }
