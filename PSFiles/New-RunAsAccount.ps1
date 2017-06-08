@@ -25,12 +25,6 @@
  [String] $EnterpriseCertPlainPasswordForRunAsAccount,
 
  [Parameter(Mandatory=$false)]
- [String] $EnterpriseCertPathForClassicRunAsAccount,
-
- [Parameter(Mandatory=$false)]
- [String] $EnterpriseCertPlainPasswordForClassicRunAsAccount,
-
- [Parameter(Mandatory=$false)]
  [ValidateSet("AzureCloud","AzureUSGovernment")]
  [string]$EnvironmentName="AzureCloud",
 
@@ -67,7 +61,7 @@
  $GetServicePrincipal = Get-AzureRmADServicePrincipal -ObjectId $ServicePrincipal.Id
 
  # Sleep here for a few seconds to allow the service principal application to become active (ordinarily takes a few seconds)
- Sleep -s 15
+ Sleep -s 20
  $NewRole = New-AzureRMRoleAssignment -RoleDefinitionName Contributor -ServicePrincipalName $Application.ApplicationId -ErrorAction SilentlyContinue
  $Retries = 0;
  While ($NewRole -eq $null -and $Retries -le 6)
@@ -136,28 +130,6 @@
  # Create an Automation connection asset named AzureRunAsConnection in the Automation account. This connection uses the service principal.
  CreateAutomationConnectionAsset $ResourceGroup $AutomationAccountName $ConnectionAssetName $ConnectionTypeName $ConnectionFieldValues
 
- if ($CreateClassicRunAsAccount) {
-      # Create a Run As account by using a service principal
-      $ClassicRunAsAccountCertifcateAssetName = "AzureClassicRunAsCertificate"
-      $ClassicRunAsAccountConnectionAssetName = "AzureClassicRunAsConnection"
-      $ClassicRunAsAccountConnectionTypeName = "AzureClassicCertificate "
-      $UploadMessage = "Please upload the .cer format of #CERT# to the Management store by following the steps below." + [Environment]::NewLine +
-              "Log in to the Microsoft Azure Management portal (https://manage.windowsazure.com) and select Settings -> Management Certificates." + [Environment]::NewLine +
-              "Then click Upload and upload the .cer format of #CERT#"
-
-       if ($EnterpriseCertPathForClassicRunAsAccount -and $EnterpriseCertPlainPasswordForClassicRunAsAccount ) {
-       $PfxCertPathForClassicRunAsAccount = $EnterpriseCertPathForClassicRunAsAccount
-       $PfxCertPlainPasswordForClassicRunAsAccount = $EnterpriseCertPlainPasswordForClassicRunAsAccount
-       $UploadMessage = $UploadMessage.Replace("#CERT#", $PfxCertPathForClassicRunAsAccount)
- } else {
-       $ClassicRunAsAccountCertificateName = $AutomationAccountName+$ClassicRunAsAccountCertifcateAssetName
-       $PfxCertPathForClassicRunAsAccount = Join-Path $env:TEMP ($ClassicRunAsAccountCertificateName + ".pfx")
-       $PfxCertPlainPasswordForClassicRunAsAccount = $SelfSignedCertPlainPassword
-       $CerCertPathForClassicRunAsAccount = Join-Path $env:TEMP ($ClassicRunAsAccountCertificateName + ".cer")
-       $UploadMessage = $UploadMessage.Replace("#CERT#", $CerCertPathForClassicRunAsAccount)
-       CreateSelfSignedCertificate $KeyVaultName $ClassicRunAsAccountCertificateName $PfxCertPlainPasswordForClassicRunAsAccount $PfxCertPathForClassicRunAsAccount $CerCertPathForClassicRunAsAccount $SelfSignedCertNoOfMonthsUntilExpired
- }
-
  # Create the Automation certificate asset
  CreateAutomationCertificateAsset $ResourceGroup $AutomationAccountName $ClassicRunAsAccountCertifcateAssetName $PfxCertPathForClassicRunAsAccount $PfxCertPlainPasswordForClassicRunAsAccount $false
 
@@ -169,4 +141,3 @@
  CreateAutomationConnectionAsset $ResourceGroup $AutomationAccountName $ClassicRunAsAccountConnectionAssetName $ClassicRunAsAccountConnectionTypeName $ClassicRunAsAccountConnectionFieldValues
 
  Write-Host -ForegroundColor red $UploadMessage
- }

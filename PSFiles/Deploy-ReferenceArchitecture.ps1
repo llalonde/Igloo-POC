@@ -6,7 +6,6 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
-
 #region Prep & signin
 # sign in
 Write-Host "Logging in ...";
@@ -14,16 +13,13 @@ Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
-Write-Host "Connecting to subscription '$subscriptionId'";
 Select-AzureRmSubscription -SubscriptionID $subscriptionId | out-null
 
 # select Resource Group
 $ResourceGroupName = Read-Host -Prompt 'Input the resource group for your network'
-Write-Host "Selecting Resource Group '$ResourceGroupName'";
 
 # select Location
 $Location = Read-Host -Prompt 'Input the Location for your network'
-Write-Host "Setting location as '$Location'";
 
 # select Location
 $VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
@@ -138,7 +134,7 @@ New-AzureRmResourceGroupDeployment -Name "Automation" -ResourceGroupName $Resour
 $scriptpath = $MyInvocation.MyCommand.Path
 $dir = Split-Path $scriptpath
 $RunAsScript = $dir+"\New-RunAsAccount.ps1"
-$ArgumentList = "-ResourceGroup $ResourceGroupName -AutomationAccountName AzrAutoAccount -SubscriptionId $subscriptionId -ApplicationDisplayName AzrAutomationAccount -SelfSignedCertPlainPassword P@ssw0rd!234 -CreateClassicRunAsAccount $false"
+$ArgumentList = '-ResourceGroup $ResourceGroupName -AutomationAccountName AzrAutoAccount -SubscriptionId $subscriptionId -ApplicationDisplayName AzrAutomationAccount -SelfSignedCertPlainPassword P@ssw0rd!234 -CreateClassicRunAsAccount $false'
 Invoke-Expression "$RunAsScript $argumentList"
 #endregion
 
