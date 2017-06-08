@@ -31,6 +31,7 @@ $TemplateRootUriString = "https://raw.githubusercontent.com/pierreroman/Igloo-PO
 $TemplateURI = New-Object System.Uri -ArgumentList @($TemplateRootUriString)
 
 $VMTemplate = $TemplateURI.AbsoluteUri + "VM.json"
+$ASTemplate = $TemplateURI.AbsoluteUri + "AvailabilitySet.json"
 
 #Parameter files for the deployment (include relative path to repo + filename)
 
@@ -39,6 +40,14 @@ $VMParametersFile = $TemplateURI.AbsoluteUri + "parameters/VM.parameters.json"
 #region Deployment of VM from VMlist.CSV
 
 $VMList = Import-CSV $VMListfile
+
+#region Deployment of Availability Sets
+$ASList = Import-CSV $VMListfile | Where-Object {$_.AvailabilitySet -ne "None"}
+$ASListUnique = $VMList.AvailabilitySet | select-object -unique
+
+ForEach ( $AS in $ASListUnique){
+    New-AzureRmResourceGroupDeployment -Name $AS -ResourceGroupName $ResourceGroupName -TemplateUri $ASTemplate -TemplateParameterObject @{ASname=$AS} -Force | out-null
+}
 
 ForEach ( $VM in $VMList)
 {
@@ -51,7 +60,8 @@ ForEach ( $VM in $VMList)
     $VMSize = $vm.VMSize
     $VMDataDiskSize = $vm.DataDiskSize
 
-    New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateURI $VMTemplate -TemplateParameterObject @{ `
+    New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -Templatefile C:\Users\pierrer\Documents\Github\Igloo-POC\VM.json -TemplateParameterObject @{ `
+    ResourceGroupName=$ResourceGroupName; `
     virtualMachineName=$VMName; `
     virtualMachineSize=$VMSize; `
     adminUsername="sysadmin"; `

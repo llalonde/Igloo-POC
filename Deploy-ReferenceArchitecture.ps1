@@ -123,12 +123,13 @@ else {
 #endregion
 
 #region Deployment of Availability Sets
-$VMList = Import-CSV $VMListfile | Where-Object {$_.AvailabilitySet -ne "None"}
-$ASList = $VMList.AvailabilitySet | select-object -unique
+$ASList = Import-CSV $VMListfile | Where-Object {$_.AvailabilitySet -ne "None"}
+$ASListUnique = $VMList.AvailabilitySet | select-object -unique
 
-ForEach ( $AS in $ASList){
-    New-AzureRmResourceGroupDeployment -Name $AS -ResourceGroupName $ResourceGroupName -TemplateUri $ASTemplate -TemplateParameterObject @{name=$AS} -Force | out-null
+ForEach ( $AS in $ASListUnique){
+    New-AzureRmResourceGroupDeployment -Name $AS -ResourceGroupName $ResourceGroupName -TemplateUri $ASTemplate -TemplateParameterObject @{ASname=$AS} -Force | out-null
 }
+#endregion
 
 
 
