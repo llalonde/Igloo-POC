@@ -5,43 +5,12 @@
         "accountName": {
             "type": "String"
         },
-        "location": {
+        "RunbookName": {
+            "DefaultValue": "VMCreationEngine",
             "type": "String"
         },
-        "sampleGraphicalRunbookName": {
-            "type": "String"
-        },
-        "sampleGraphicalRunbookDescription": {
-            "type": "String"
-        },
-        "sampleGraphicalRunbookContentUri": {
-            "type": "String"
-        },
-        "samplePowerShellRunbookName": {
-            "type": "String"
-        },
-        "samplePowerShellRunbookDescription": {
-            "type": "String"
-        },
-        "samplePowerShellRunbookContentUri": {
-            "type": "String"
-        },
-        "classicSampleGraphicalRunbookName": {
-            "type": "String"
-        },
-        "classicSampleGraphicalRunbookDescription": {
-            "type": "String"
-        },
-        "classicSampleGraphicalRunbookContentUri": {
-            "type": "String"
-        },
-        "classicSamplePowerShellRunbookName": {
-            "type": "String"
-        },
-        "classicSamplePowerShellRunbookDescription": {
-            "type": "String"
-        },
-        "classicSamplePowerShellRunbookContentUri": {
+        "RunbookContentUri": {
+            "DefaultValue": "https://raw.githubusercontent.com/pierreroman/Igloo-POC/master/PSFiles/CreateVMAzrAutoScript.ps1",
             "type": "String"
         }
     },
@@ -50,7 +19,7 @@
             "type": "Microsoft.Automation/automationAccounts",
             "name": "[parameters('accountName')]",
             "apiVersion": "2015-01-01-preview",
-            "location": "[parameters('location')]",
+            "location": "[resourceGroup().location]",
             "tags": {},
             "properties": {
                 "sku": {
@@ -60,17 +29,16 @@
             "resources": [
                 {
                     "type": "runbooks",
-                    "name": "[parameters('sampleGraphicalRunbookName')]",
+                    "name": "[parameters('RunbookName')]",
                     "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('location')]",
+                    "location": "[resourceGroup().location]",
                     "tags": {},
                     "properties": {
-                        "runbookType": "GraphPowerShell",
+                        "runbookType": "Script",
                         "logProgress": "false",
                         "logVerbose": "false",
-                        "description": "[parameters('sampleGraphicalRunbookDescription')]",
                         "publishContentLink": {
-                            "uri": "[parameters('sampleGraphicalRunbookContentUri')]",
+                            "uri": "[parameters('RunbookContentUri')]",
                             "version": "1.0.0.0"
                         }
                     },
@@ -78,66 +46,6 @@
                         "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
                     ]
                 },
-                {
-                    "type": "runbooks",
-                    "name": "[parameters('samplePowerShellRunbookName')]",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('location')]",
-                    "tags": {},
-                    "properties": {
-                        "runbookType": "PowerShell",
-                        "logProgress": "false",
-                        "logVerbose": "false",
-                        "description": "[parameters('samplePowerShellRunbookDescription')]",
-                        "publishContentLink": {
-                            "uri": "[parameters('samplePowerShellRunbookContentUri')]",
-                            "version": "1.0.0.0"
-                        }
-                    },
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ]
-                },
-                {
-                    "type": "runbooks",
-                    "name": "[parameters('classicSampleGraphicalRunbookName')]",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('location')]",
-                    "tags": {},
-                    "properties": {
-                        "runbookType": "GraphPowerShell",
-                        "logProgress": "false",
-                        "logVerbose": "false",
-                        "description": "[parameters('classicSampleGraphicalRunbookDescription')]",
-                        "publishContentLink": {
-                            "uri": "[parameters('classicSampleGraphicalRunbookContentUri')]",
-                            "version": "1.0.0.0"
-                        }
-                    },
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ]
-                },
-                {
-                    "type": "runbooks",
-                    "name": "[parameters('classicSamplePowerShellRunbookName')]",
-                    "apiVersion": "2015-01-01-preview",
-                    "location": "[parameters('location')]",
-                    "tags": {},
-                    "properties": {
-                        "runbookType": "PowerShell",
-                        "logProgress": "false",
-                        "logVerbose": "false",
-                        "description": "[parameters('classicSamplePowerShellRunbookDescription')]",
-                        "publishContentLink": {
-                            "uri": "[parameters('classicSamplePowerShellRunbookContentUri')]",
-                            "version": "1.0.0.0"
-                        }
-                    },
-                    "dependsOn": [
-                        "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
-                    ]
-                }
             ],
             "dependsOn": []
         }

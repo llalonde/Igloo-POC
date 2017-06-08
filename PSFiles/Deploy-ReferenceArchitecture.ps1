@@ -40,6 +40,7 @@ $VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
 $ASATemplate = $TemplateURI.AbsoluteUri + "ASA.json"
 $StorageTemplate = $TemplateURI.AbsoluteUri + "VMStorageAccount.json"
 $ASTemplate = $TemplateURI.AbsoluteUri + "AvailabilitySet.json"
+$AATemplate = $TemplateURI.AbsoluteUri + "AzrAutoAccount.json"
 
 #Parameter files for the deployment (include relative path to repo + filename)
 
@@ -131,7 +132,15 @@ ForEach ( $AS in $ASListUnique){
 }
 #endregion
 
+#region Deployment of Automation Account and RunBook
 
+New-AzureRmResourceGroupDeployment -Name "Automation" -ResourceGroupName $ResourceGroupName -TemplateUri $AATemplate -TemplateParameterObject @{accountName=AzrAutoAccount} | out-null
+$scriptpath = $MyInvocation.MyCommand.Path
+$dir = Split-Path $scriptpath
+$RunAsScript = $dir+"\New-RunAsAccount.ps1"
+$ArgumentList = "-ResourceGroup $ResourceGroupName -AutomationAccountName AzrAutoAccount -SubscriptionId $subscriptionId -ApplicationDisplayName AzrAutomationAccount -SelfSignedCertPlainPassword P@ssw0rd!234 -CreateClassicRunAsAccount $false"
+Invoke-Expression "$RunAsScript $argumentList"
+#endregion
 
 
 $endtime = get-date
