@@ -2,6 +2,7 @@
 # Script body
 # Execution begins here
 #******************************************************************************
+
 $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
@@ -13,7 +14,7 @@ Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
-Select-AzureRmSubscription -SubscriptionID $subscriptionId | out-null
+$Subscription = Select-AzureRmSubscription -SubscriptionId $SubscriptionId | out-null
 
 # select Resource Group
 $ResourceGroupName = Read-Host -Prompt 'Input the resource group for your network'
@@ -37,6 +38,7 @@ $ASATemplate = $TemplateURI.AbsoluteUri + "ASA.json"
 $StorageTemplate = $TemplateURI.AbsoluteUri + "VMStorageAccount.json"
 $ASTemplate = $TemplateURI.AbsoluteUri + "AvailabilitySet.json"
 $AATemplate = $TemplateURI.AbsoluteUri + "AzrAutoAccount.json"
+$NSGTemplate = $TemplateURI.AbsoluteUri + "nsg.azuredeploy.json"
 
 #Parameter files for the deployment (include relative path to repo + filename)
 
@@ -128,18 +130,34 @@ ForEach ( $AS in $ASListUnique){
 }
 #endregion
 
+#region Deployment of Availability Sets
+
+$NSGList = Import-CSV $VMListfile | Where-Object {$_.subnet -ne "None"}
+$NSGListUnique = $NSGList.subnet | select-object -unique
+
+ForEach ( $NSG in $NSGListUnique){
+    $NSGName=$NSG+"-nsg"
+    New-AzureRmResourceGroupDeployment -Name $NSG -ResourceGroupName $ResourceGroupName -TemplateUri $NSGTemplate -TemplateParameterObject @{networkSecurityGroupName=$NSGName} -Force | out-null
+}
+#endregion
 #region Deployment of Automation Account and RunBook
 
-New-AzureRmResourceGroupDeployment -Name "Automation" -ResourceGroupName $ResourceGroupName -TemplateUri $AATemplate | out-null
-$scriptpath = $MyInvocation.MyCommand.Path
-$dir = Split-Path $scriptpath
-$RunAsScript = $dir+"\New-RunAsAccount.ps1"
-$ArgumentList = '-ResourceGroup $ResourceGroupName -AutomationAccountName AzrAutoAccount -SubscriptionId $subscriptionId -ApplicationDisplayName AzrAutomationAccount -SelfSignedCertPlainPassword P@ssw0rd!234 -CreateClassicRunAsAccount $false'
-Invoke-Expression "$RunAsScript $argumentList"
-#endregion
+#New-AzureRmResourceGroupDeployment -Name "Automation" -ResourceGroupName $ResourceGroupName -TemplateUri $AATemplate | out-null
 
+# Create a Run As account by using a service principal
+
+# end of script
 
 $endtime = get-date
 $procestime = $endtime - $starttime
 $time = "{00:00:00}" -f $procestime.Minutes
 write-host " Deployment completed in '$time' "
+
+
+
+
+
+
+
+
+
