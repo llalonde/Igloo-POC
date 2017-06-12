@@ -3,10 +3,10 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "stdname": {
-            "value": "igloovmstoragestd"
+            "value": "igloostoragestdpoc"
         },
         "premname": {
-            "value": "igloovmstorageprem"
+            "value": "igloostorageprempoc"
         }
     }
 }
