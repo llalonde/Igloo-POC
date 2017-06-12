@@ -127,7 +127,9 @@ $ASListUnique = $ASList.AvailabilitySet | select-object -unique
 
 ForEach ( $AS in $ASListUnique)
 {
-    New-AzureRmResourceGroupDeployment -Name $AS -ResourceGroupName $ResourceGroupName -TemplateUri $ASTemplate -TemplateParameterObject @{ASname=$AS}
+    $ASname=$AS
+    Write-Host $ASname
+    New-AzureRmResourceGroupDeployment -Name $ASname -ResourceGroupName $ResourceGroupName -TemplateUri $ASTemplate -TemplateParameterObject @{AvailabilitySetName=$ASname}
 }
 #endregion
 

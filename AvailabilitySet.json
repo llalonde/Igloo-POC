@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "0.0.1.0",
     "parameters": {
-        "asname": {
+        "AvailabilitySetName": {
             "type": "String"
         },
         "faultDomains": {
@@ -24,7 +24,7 @@
             "sku": {
                 "name": "[parameters('sku')]"
             },
-            "name": "[parameters('asname')]",
+            "name": "[parameters('AvailabilitySetName')]",
             "apiVersion": "2016-04-30-preview",
             "location": "[resourceGroup().location]",
             "tags": {},
