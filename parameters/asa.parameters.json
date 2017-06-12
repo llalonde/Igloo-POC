@@ -54,10 +54,10 @@
             "value": "192.168.100.0/24"
         },
         "Subnet4Name": {
-            "value": "web"
+            "value": "asa-heartbeat"
         },
         "Subnet4Prefix": {
-            "value": "192.168.115.0/24"
+            "value": "192.168.254.0/29"
         },
         "vnetNewOrExisting": {
             "value": "existing"
@@ -75,7 +75,7 @@
             "value": "192.168.100.4"
         },
         "subnet4StartAddress": {
-            "value": "192.168.115.4"
+            "value": "192.168.254.4"
         }
     }
 }
