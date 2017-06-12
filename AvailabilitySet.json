@@ -6,11 +6,11 @@
             "type": "String"
         },
         "faultDomains": {
-            "defaultValue": "2",
+            "defaultValue": 2,
             "type": "Int"
         },
         "updateDomains": {
-            "defaultValue": "5",
+            "defaultValue": 5,
             "type": "Int"
         },
         "sku": {
