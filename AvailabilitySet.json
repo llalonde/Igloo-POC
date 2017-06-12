@@ -28,7 +28,7 @@
             "sku": {
                 "name": "[parameters('sku')]"
             },
-            "name": "[parameters('name')]",
+            "name": "[parameters('asname')]",
             "apiVersion": "[parameters('apiVersion')]",
             "location": "[resourceGroup().location]",
             "tags": {},
