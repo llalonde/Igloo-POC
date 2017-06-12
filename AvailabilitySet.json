@@ -6,7 +6,7 @@
             "defaultValue": "2016-04-30-preview",
             "type": "String"
         },
-        "ASname": {
+        "name": {
             "type": "String"
         },
         "faultDomains": {
@@ -18,7 +18,7 @@
             "type": "Int"
         },
         "sku": {
-            "DefaultValue": "Classic",
+            "defaultValue": "Classic",
             "type": "String"
         }
     },
@@ -28,7 +28,7 @@
             "sku": {
                 "name": "[parameters('sku')]"
             },
-            "name": "[parameters('ASname')]",
+            "name": "[parameters('name')]",
             "apiVersion": "[parameters('apiVersion')]",
             "location": "[resourceGroup().location]",
             "tags": {},
