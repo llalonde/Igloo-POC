@@ -12,7 +12,7 @@
       "value": "mgmt"
     },
     "mgmtsubnetaddressPrefix": {
-      "value": "192.168.100.0/24"
+      "value": "192.168.105.0/24"
     },
     "public-dmz-insubnetsname": {
       "value": "Inside"
@@ -36,13 +36,13 @@
       "value": "biz"
     },
     "bizsubnetaddressPrefix": {
-      "value": "192.168.117.0/24"
+      "value": "192.168.116.0/24"
     },
     "datasubnetsname": {
       "value": "data"
     },
     "datasubnetaddressPrefix": {
-      "value": "192.168.116.0/24"
+      "value": "192.168.102.0/24"
     },
     "Gatewaysubnetsname": {
       "value": "GatewaySubnet"
