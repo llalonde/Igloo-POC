@@ -131,7 +131,7 @@ ForEach ( $AS in $ASListUnique)
 }
 #endregion
 
-#region Deployment of Availability Sets
+#region Deployment of NSG
 
 $NSGList = Import-CSV $VMListfile | Where-Object {$_.subnet -ne "None"}
 $NSGListUnique = $NSGList.subnet | select-object -unique

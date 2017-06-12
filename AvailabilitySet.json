@@ -2,10 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "0.0.1.0",
     "parameters": {
-        "apiVersion": {
-            "defaultValue": "2016-04-30-preview",
-            "type": "String"
-        },
         "asname": {
             "type": "String"
         },
@@ -29,7 +25,7 @@
                 "name": "[parameters('sku')]"
             },
             "name": "[parameters('asname')]",
-            "apiVersion": "[parameters('apiVersion')]",
+            "apiVersion": "2016-04-30-preview",
             "location": "[resourceGroup().location]",
             "tags": {},
             "properties": {
