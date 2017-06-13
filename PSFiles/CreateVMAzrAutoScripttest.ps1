@@ -11,8 +11,11 @@
 		
         $ErrorActionPreference = "Stop"
         $WarningPreference = "SilentlyContinue"
+
+        "set Resource Group..."
+        $ResourceGroupName= "Igloo-POC-rg"
 		
-        # set  Root Uri of GitHub Repo (select AbsoluteUri)
+        "set  Root Uri of GitHub Repo..."
 
         $VMListRootUriString = "https://raw.githubusercontent.com/pierreroman/Igloo-POC/master/"
         $VMListRootURI = New-Object System.Uri -ArgumentList @($VMListRootUriString)
@@ -20,7 +23,10 @@
         $VMListURI = $VMListRootURI.AbsoluteUri + "csv_files/VMList.csv"
 
         $source = $VMListURI
-        $destination = "c:\csv_files\VMList.csv"
+        $destination = "$env:userprofile\downloads\VMList.csv"
+
+        "downloading from '$source' to '$destination' ..."
+
         "Dowloading CSV file to Azure Automation Instance..."
         Invoke-WebRequest $source -OutFile $destination
 
@@ -36,16 +42,16 @@
 
         #region Deployment of VMs
 
-        $VMList = Import-CSV $VMListfile | Where-Object {$_.OS -eq "Windows"}
+        $VMList = Import-CSV $destination | Where-Object {$_.OS -eq "Windows"}
 
         ForEach -parallel($VM in $VMList) {
             New-AzureRmResourceGroupDeployment -Name $vm.servername -ResourceGroupName $ResourceGroupName -TemplateUri $VMTemplate -TemplateParameterObject `
             @{
-                virtualMachineName = $vm.servername ; 
-                virtualMachineSize = $vm.VMSize ; 
-                adminUsername = $cred.GetNetworkCredential().Username ; `
+                virtualMachineName = $vm.servername ; `
+                virtualMachineSize = $vm.VMSize ; `
+                adminUsername = "iglooadmin" ; `
                 networkInterfaceName = $vm.servername + '-nic'; `
-                adminPassword = $cred.GetNetworkCredential().Password ; 
+                adminPassword = "P@ssw0rd!234" ; `
                 diagnosticsStorageAccountName = $vm.StorageAccount ; `
                 subnetName = $vm.subnet ; `
                 availabilitySetName = $vm.AvailabilitySet ; `
