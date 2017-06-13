@@ -11,31 +11,22 @@ $starttime = get-date
 
 # sign in
 Write-Host "Logging in ...";
-#Login-AzureRmAccount | Out-Null
+Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
-Write-Host 
-Write-Host "Connecting to subscription '$subscriptionId'";
 Select-AzureRmSubscription -SubscriptionID $subscriptionId | out-null
-Write-Host 
+
 
 # select Resource Group
 $ResourceGroupName = Read-Host -Prompt 'Input the resource group for your network'
-Write-Host 
-Write-Host "Selecting Resource Group '$ResourceGroupName'";
-Write-Host 
 
 # select Location
 $Location = Read-Host -Prompt 'Input the Location for your network'
-Write-Host 
-Write-Host "Setting location as '$Location'";
-Write-Host 
 
 # select Location
 $VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
-Write-Host 
-Write-Host
+
 
 # Define a credential object
 Write-Host "You Will now be asked for a UserName and Password that will be applied to the windows Virtual Machine that will be created";
@@ -44,7 +35,13 @@ $cred = Get-Credential
 # Define a credential object
 Write-Host "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created";
 $Linuxcred = Get-Credential 
-#endregion
+endregion
+
+
+$Windows2012sourceImageUri = 'https://igloostoragestdpoc.blob.core.windows.net/vhds/Windows2012R220170612221756.vhd'
+$CentOS6sourceImageUri = 'https://igloostoragestdpoc.blob.core.windows.net/vhds/centos7temp20170612170035.vhd'
+$CentOS7sourceImageUri = 'https://igloostoragestdpoc.blob.core.windows.net/vhds/centos7temp20170612170035.vhd'
+
 
 #region Deployment of VM from VMlist.CSV
 $VMList = Import-CSV $VMListfile
@@ -94,25 +91,28 @@ ForEach ( $VM in $VMList) {
     }
 
     if ($VMOS -eq "Windows") {
-        $StorageAccount = Get-AzureRmStorageAccount -Name $VMStorage -ResourceGroupName $ResourceGroupName
-        $OSDiskName = $VMName + "OSDisk"
+
         if ($ASname -eq "None") {
-            $VirtualMachine = New-AzureRmVMConfig -VMName $VMName -VMSize $VMSize
+            $vmConfig = New-AzureRmVMConfig -VMName $VMName -VMSize $VMSize
         }
         else {
             Write-Host "Adding '$VMName' to '$ASname'...."
-            $VirtualMachine = New-AzureRmVMConfig -VMName $VMName -VMSize $VMSize -AvailabilitySetID $ASID
+            $vmConfig = New-AzureRmVMConfig -VMName $VMName -VMSize $VMSize -AvailabilitySetID $ASID
         }
-        $VirtualMachine = Set-AzureRmVMOperatingSystem -VM $VirtualMachine -Windows -ComputerName $VMName -Credential $Cred -ProvisionVMAgent -EnableAutoUpdate
-        #$VirtualMachine = Set-AzureRmVMSourceImage -VM $VirtualMachine -PublisherName MicrosoftWindowsServer -Offer WindowsServer -Skus 2012-R2-Datacenter -Version "latest"
-        $VirtualMachine = Add-AzureRmVMNetworkInterface -VM $VirtualMachine -Id $nicID
-        $OSDiskUri = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $OSDiskName + ".vhd"
-        $VirtualMachine = Set-AzureRmVMOSDisk -VM $VirtualMachine -Name $OSDiskName -VhdUri $OSDiskUri -CreateOption FromImage
-        $image = Get-AzureRmImage -ImageName $VMImageNAme -ResourceGroupName $ResourceGroupName
-        $imageid= $image.Id
-        $VirtualMachine = Set-AzureRmVMSourceImage -VM $VirtualMachine -Id $imageid
+
+        # Here is where we create a variable to store information about the image 
+
+        $vmConfig = Set-AzureRmVMOperatingSystem -VM $vmConfig -Windows -ComputerName $vmName -Credential $cred
+        $vmConfig= Add-AzureRmVMNetworkInterface -VM $vmConfig -Id $nicID
+        $diskName = 'OsDisk'
+        $osDiskUri = '{0}vhds/{1}{2}.vhd' -f $storageAccount.PrimaryEndpoints.Blob.ToString(), $vmName.ToLower(), $diskName
         
-        New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $Location -VM $VirtualMachine
+        $vmConfig = Set-AzureRmVMOSDisk -VM $vmConfig -Name $diskName -VhdUri $osDiskUri -CreateOption fromImage -SourceImageUri $Windows2012sourceImageUri -Windows
+        
+        $image = Get-AzureRmImage -ImageName $VMImageNAme -ResourceGroupName $ResourceGroupName
+        $vmConfig = Set-AzureRmVMSourceImage -VM $vmConfig -Id $image.Id
+
+        New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $location -VM $vmConfig
                
         if ($VMDataDiskSize -ne "none") {
             $DATADiskUri = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $DataDiskName + ".vhd"
@@ -122,26 +122,34 @@ ForEach ( $VM in $VMList) {
             }
       }
     else {
-        $StorageAccount = Get-AzureRmStorageAccount -Name $VMStorage -ResourceGroupName $ResourceGroupName
-        $OSDiskName = $VMName + "OSDisk"
+
         if ($ASname -eq "None") {
-            $VirtualMachine = New-AzureRmVMConfig -VMName $VMName -VMSize $VMSize
+            $vmConfig = New-AzureRmVMConfig -VMName $VMName -VMSize $VMSize
         }
         else {
-            Write-Host "Adding Virtual Machine '$VMName' to Availability Set '$ASname'...."
-            Write-host 
-            $VirtualMachine = New-AzureRmVMConfig -VMName $VMName -VMSize $VMSize -AvailabilitySetID $ASId
+            Write-Host "Adding '$VMName' to '$ASname'...."
+            $vmConfig = New-AzureRmVMConfig -VMName $VMName -VMSize $VMSize -AvailabilitySetID $ASID
         }
-        $VirtualMachine = Set-AzureRmVMOperatingSystem -VM $VirtualMachine -Linux -ComputerName $VMName -Credential $Linuxcred 
-        #$VirtualMachine = Set-AzureRmVMSourceImage -VM $VirtualMachine -PublisherName OpenLogic -Offer CentOS -Skus '6.8' -Version latest
-        $VirtualMachine = Add-AzureRmVMNetworkInterface -VM $VirtualMachine -Id $nicID
-        $OSDiskUri = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $OSDiskName + ".vhd"
-        $VirtualMachine = Set-AzureRmVMOSDisk -VM $VirtualMachine -Name $OSDiskName -VhdUri $OSDiskUri -CreateOption FromImage
-        $image = Get-AzureRmImage -ImageName $VMImageNAme -ResourceGroupName $ResourceGroupName
-        $imageid= $image.Id
-        $VirtualMachine = Set-AzureRmVMSourceImage -VM $VirtualMachine -Id $imageid
 
-        New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $Location -VM $VirtualMachine
+        # Here is where we create a variable to store information about the image 
+        
+        $vmConfig = Add-AzureRmVMNetworkInterface -VM $vmConfig -Id $nicID
+        $vmConfig = Set-AzureRmVMOperatingSystem -VM $vmConfig -Linux -ComputerName $vmName -Credential $cred
+
+        $diskName = $VMName+'OsDisk'
+        $osDiskUri = '{0}vhds/{1}.vhd' -f $storageAccount.PrimaryEndpoints.Blob.ToString(), $diskName
+  
+          if ($VMImageNAme -eq "CentOS6")
+        {
+            $vmConfig = Set-AzureRmVMOSDisk -VM $vmConfig -Name $diskName -VhdUri $osDiskUri -CreateOption fromImage -SourceImageUri $CentOS6sourceImageUri -Linux
+        }
+        else
+        {
+            $vmConfig = Set-AzureRmVMOSDisk -VM $vmConfig -Name $diskName -VhdUri $osDiskUri -CreateOption fromImage -SourceImageUri $CentOS7sourceImageUri -Linux
+        }
+        Write-Host "create VM"
+
+        New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $location -VM $vmConfig
 
         if ($VMDataDiskSize -ne "none") {
             $DataDiskName = $VMName + "DataDisk"
