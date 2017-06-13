@@ -24,6 +24,7 @@
             "type": "string"
         },
         "storageAccountName": {
+            "defaultValue": "igloostoragestdpoc",
             "type": "string"
         },
         "subnetName": {
