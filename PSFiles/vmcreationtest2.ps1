@@ -33,11 +33,18 @@ $VMTemplate = $TemplateURI.AbsoluteUri + "WindowsVMfromImage.json"
 
 $VMList = Import-CSV $VMListfile | Where-Object {$_.OS -eq "Windows"}
 
-ForEach ( $VM in $VMList)
-    {
+ForEach ( $VM in $VMList) {
+    $VMName = $VM.ServerName
+    $ASname = $VM.AvailabilitySet
+    $VMsubnet = $VM.subnet
+    $VMOS = $VM.OS
+    $VMStorage = $vm.StorageAccount
+    $VMSize = $vm.VMSize
+    $VMDataDiskSize = $vm.DataDiskSize
+    
+    Write-Host "Processing '$VMName'...."
 
-        if ($VMOS -eq "Windows")
-        {
+    if ($VMOS -eq "Windows") {
         $StorageAccount = Get-AzureRmStorageAccount -Name $VMStorage -ResourceGroupName $ResourceGroupName
         $OSDiskName = $VMName + "OSDisk"
         if ($ASname -eq "None") {
@@ -60,8 +67,8 @@ ForEach ( $VM in $VMList)
             $Myvm = Get-AzureRmVM -Name $VMName -ResourceGroupName $ResourceGroupName
             Add-AzureRmVMDataDisk -VM $VirtualMachine -Name $Myvm -VhdUri $DATADiskUri -LUN 0 -Caching ReadOnly -DiskSizeinGB $VMDataDiskSize -CreateOption Empty | out-null
             Update-AzureRmVM -ResourceGroupName $ResourceGroupName -VM $Myvm
-            }
-      }
+        }
+    }
     else {
         $StorageAccount = Get-AzureRmStorageAccount -Name $VMStorage -ResourceGroupName $ResourceGroupName
         $OSDiskName = $VMName + "OSDisk"

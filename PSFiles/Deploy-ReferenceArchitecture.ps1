@@ -122,19 +122,19 @@ else {
 #endregion
 
 #region Deployment of Availability Sets
-$ASList = Import-CSV $VMListfile | Where-Object {$_.AvailabilitySet -ne "None"}
-$ASListUnique = $ASList.AvailabilitySet | select-object -unique
+#$ASList = Import-CSV $VMListfile | Where-Object {$_.AvailabilitySet -ne "None"}
+#$ASListUnique = $ASList.AvailabilitySet | select-object -unique
 
-ForEach ( $AS in $ASListUnique)
-{
-    Write-Host $AS
-    New-AzureRmResourceGroupDeployment -Name $AS -ResourceGroupName $ResourceGroupName -TemplateUri $ASTemplate -TemplateParameterObject `
-        @{ AvailabilitySetName = $AS ; `
-        faultDomains = 2 ; `
-        updateDomains =5 ;
-        sku = "Classic"; `
-        }
-}
+#ForEach ( $AS in $ASListUnique)
+#{
+#    Write-Host $AS
+#    New-AzureRmResourceGroupDeployment -Name $AS -ResourceGroupName $ResourceGroupName -TemplateUri $ASTemplate -TemplateParameterObject `
+#        @{ AvailabilitySetName = $AS ; `
+#        faultDomains = 2 ; `
+#        updateDomains =5 ;
+#        sku = "Classic"; `
+#        }
+#}
 #endregion
 
 #region Deployment of NSG

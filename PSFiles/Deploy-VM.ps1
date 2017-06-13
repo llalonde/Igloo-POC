@@ -11,7 +11,7 @@ $starttime = get-date
 
 # sign in
 Write-Host "Logging in ...";
-#Login-AzureRmAccount | Out-Null
+Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
@@ -53,6 +53,7 @@ ForEach ( $VM in $VMList) {
     $VMStorage = $vm.StorageAccount
     $VMSize = $vm.VMSize
     $VMDataDiskSize = $vm.DataDiskSize
+    $VMImageNAme = $vm.ImageName
     
     Write-Host "Processing '$VMName'...."
       
@@ -104,6 +105,10 @@ ForEach ( $VM in $VMList) {
         $VirtualMachine = Add-AzureRmVMNetworkInterface -VM $VirtualMachine -Id $nicID
         $OSDiskUri = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $OSDiskName + ".vhd"
         $VirtualMachine = Set-AzureRmVMOSDisk -VM $VirtualMachine -Name $OSDiskName -VhdUri $OSDiskUri -CreateOption FromImage
+        $image = Get-AzureRmImage -ImageName $VMImageNAme -ResourceGroupName $ResourceGroupName
+        $VirtualMachine = Set-AzureRmVMSourceImage -VM $VirtualMachine -Id $image.Id
+
+
         
         New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $Location -VM $VirtualMachine
                
@@ -126,11 +131,14 @@ ForEach ( $VM in $VMList) {
             $VirtualMachine = New-AzureRmVMConfig -VMName $VMName -VMSize $VMSize -AvailabilitySetID $ASId
         }
         $VirtualMachine = Set-AzureRmVMOperatingSystem -VM $VirtualMachine -Linux -ComputerName $VMName -Credential $cred
-        $VirtualMachine = Set-AzureRmVMSourceImage -VM $VirtualMachine -PublisherName Canonical -Offer UbuntuServer -Skus 14.04.2-LTS -Version latest
+        $VirtualMachine = Set-AzureRmVMSourceImage -VM $VirtualMachine -PublisherName OpenLogic -Offer CentOS -Skus '6.8' -Version latest
         $VirtualMachine = Add-AzureRmVMNetworkInterface -VM $VirtualMachine -Id $nicID
         $OSDiskUri = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $OSDiskName + ".vhd"
         $VirtualMachine = Set-AzureRmVMOSDisk -VM $VirtualMachine -Name $OSDiskName -VhdUri $OSDiskUri -CreateOption FromImage
+        $image = Get-AzureRmImage -ImageName $VMImageNAme -ResourceGroupName $ResourceGroupName
+        $VirtualMachine = Set-AzureRmVMSourceImage -VM $VirtualMachine -Id $image.Id
         New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $Location -VM $VirtualMachine
+
         if ($VMDataDiskSize -ne "none") {
             $DataDiskName = $VMName + "DataDisk"
             $DATADiskUri = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $DataDiskName + ".vhd"
