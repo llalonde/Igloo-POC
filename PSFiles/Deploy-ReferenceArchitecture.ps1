@@ -30,7 +30,7 @@ $VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be cre
 #region Set Template and Parameter location
 # set  Root Uri of GitHub Repo (select AbsoluteUri)
 
-$TemplateRootUriString = "https://raw.githubusercontent.com/pierreroman/Igloo-POC/master/"
+$TemplateRootUriString = "https://raw.githubusercontent.com/llalonde/Igloo-POC/master/"
 $TemplateURI = New-Object System.Uri -ArgumentList @($TemplateRootUriString)
 
 $VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
