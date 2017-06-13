@@ -16,6 +16,9 @@ $Location = Read-Host -Prompt 'Input the Location for your network'
 # select Location
 $VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
 
+# Get Credentials for the VM
+$cred = Get-Credential -Message 'Type the local administrator account username and password:'
+
 #endregion
 
 #region Set Template and Parameter location
@@ -24,4 +27,24 @@ $VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be cre
 $TemplateRootUriString = "https://raw.githubusercontent.com/pierreroman/Igloo-POC/master/"
 $TemplateURI = New-Object System.Uri -ArgumentList @($TemplateRootUriString)
 
-$VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
+$VMTemplate = $TemplateURI.AbsoluteUri + "WindowsVMfromImage.json"
+
+#region Deployment of VMs
+
+$VMList = Import-CSV $VMListfile | Where-Object {$_.OS -eq "Windows"}
+
+ForEach ( $VM in $VMList)
+{
+    Write-Host $vm.servername
+    New-AzureRmResourceGroupDeployment -Name $vm.servername -ResourceGroupName $ResourceGroupName -TemplateUri $VMTemplate -TemplateParameterObject `
+    @{
+        virtualMachineName = $vm.servername ; 
+        virtualMachineSize = $vm.VMSize ; 
+        adminUsername = $cred.GetNetworkCredential().Username ; `
+        networkInterfaceName = $vm.servername+'-nic'; `
+        adminPassword = $cred.GetNetworkCredential().Password ; 
+        diagnosticsStorageAccountName = $vm.StorageAccount ; `
+        subnetName = $vm.subnet ; `
+        availabilitySetName = $vm.AvailabilitySet ; `
+    } -Force | out-null
+}
