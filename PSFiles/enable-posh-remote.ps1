@@ -1,4 +1,4 @@
-$results = Enable-PSRemoting -Force
+$results = cmd.exe /C winrm s winrm/config/client '@{TrustedHosts="poc-eus-admin"}'
 
 $folder = "c:\temp"
 $log = "c:\temp\azurelog.txt"
