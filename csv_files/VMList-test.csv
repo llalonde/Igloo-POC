@@ -9,15 +9,15 @@ Redis Node 03,poc-eus-redis3,14,Linux,CentOS7,igloostoragestdpoc,biz,Igloo-POC-R
 Solr Node 01,poc-eus-solr1,13,Linux,CentOS6,igloostoragestdpoc,biz,Igloo-POC-SOLr-AS,16,80,A2mv2,Standard_A2m_v2
 Solr Node 02,poc-eus-solr2,13,Linux,CentOS6,igloostoragestdpoc,biz,Igloo-POC-SOLr-AS,16,80,A2mv2,Standard_A2m_v2
 Solr Node 03,poc-eus-solr3,13,Linux,CentOS6,igloostoragestdpoc,biz,Igloo-POC-SOLr-AS,16,80,A2mv2,Standard_A2m_v2
-Deploy Server - Linux,poc-eus-deploy2,15,Linux,CentOS73,igloostoragestdpoc,mgmt,None,20,50,A2v2,Standard_A2_v2
-Kafka Management Server,poc-eus-kfkmgmt,15,Linux,CentOS73,igloostoragestdpoc,mgmt,None,20,None,A2v2,Standard_A2_v2
-SMTP Server 01,poc-eus-smtp1,13,Linux,CentOS73,igloostoragestdpoc,biz,Igloo-POC-SMTP-AS,40,None,A2v2,Standard_A2_v2
-SMTP Server 02,poc-eus-smtp2,13,Linux,CentOS73,igloostoragestdpoc,biz,Igloo-POC-SMTP-AS,40,None,A2v2,Standard_A2_v2
-SPAM Server 01,poc-eus-spam1,13,Linux,CentOS73,igloostoragestdpoc,biz,Igloo-POC-SPAM-AS,40,None,A2v2,Standard_A2_v2
-SPAM Server 02,poc-eus-spam2,13,Linux,CentOS73,igloostoragestdpoc,biz,Igloo-POC-SPAM-AS,40,None,A2v2,Standard_A2_v2
-ELK Node 01,poc-eus-elk1,12,Linux,CentOS73,igloostoragestdpoc,biz,Igloo-POC-ELK-AS,20,None,A4mv2,Standard_A4m_v2
-ELK Node 02,poc-eus-elk2,12,Linux,CentOS73,igloostoragestdpoc,biz,Igloo-POC-ELK-AS,20,None,A4mv2,Standard_A4m_v2
-ELK Node 03,poc-eus-elk3,12,Linux,CentOS73,igloostoragestdpoc,biz,Igloo-POC-ELK-AS,20,None,A4mv2,Standard_A4m_v2
+Deploy Server - Linux,poc-eus-deploy2,15,Linux,CentOS7,igloostoragestdpoc,mgmt,None,20,50,A2v2,Standard_A2_v2
+Kafka Management Server,poc-eus-kfkmgmt,15,Linux,CentOS7,igloostoragestdpoc,mgmt,None,20,None,A2v2,Standard_A2_v2
+SMTP Server 01,poc-eus-smtp1,13,Linux,CentOS7,igloostoragestdpoc,biz,Igloo-POC-SMTP-AS,40,None,D2v2,Standard_D2_v2
+SMTP Server 02,poc-eus-smtp2,13,Linux,CentOS7,igloostoragestdpoc,biz,Igloo-POC-SMTP-AS,40,None,D2v2,Standard_D2_v2
+SPAM Server 01,poc-eus-spam1,13,Linux,CentOS7,igloostoragestdpoc,biz,Igloo-POC-SPAM-AS,40,None,D2v2,Standard_D2_v2
+SPAM Server 02,poc-eus-spam2,13,Linux,CentOS7,igloostoragestdpoc,biz,Igloo-POC-SPAM-AS,40,None,D2v2,Standard_D2_v2
+ELK Node 01,poc-eus-elk1,12,Linux,CentOS7,igloostoragestdpoc,biz,Igloo-POC-ELK-AS,20,None,D2v2,Standard_D2_v2
+ELK Node 02,poc-eus-elk2,12,Linux,CentOS7,igloostoragestdpoc,biz,Igloo-POC-ELK-AS,20,None,D2v2,Standard_D2_v2
+ELK Node 03,poc-eus-elk3,12,Linux,CentOS7,igloostoragestdpoc,biz,Igloo-POC-ELK-AS,20,None,D2v2,Standard_D2_v2
 Admin Jumpbox,poc-eus-admin,13,Windows,Win2012R2,igloostoragestdpoc,biz,None,135,None,D2v2,Standard_D2_v2
 Certificiate Authority,poc-eus-ca,10,Windows,Win2012R2,igloostoragestdpoc,mgmt,None,40,None,D2v2,Standard_D2_v2
 Cron Server,poc-eus-cron,12,Windows,Win2012R2,igloostoragestdpoc,biz,None,60,None,D2v2,Standard_D2_v2
