@@ -3,10 +3,10 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "stdname": {
-            "value": "igloostoragestdpoc"
+            "value": "igloostoragestdpocw"
         },
         "premname": {
-            "value": "igloostorageprempoc"
+            "value": "igloostorageprempocw"
         }
     }
 }

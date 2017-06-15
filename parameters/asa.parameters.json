@@ -39,25 +39,25 @@
             "value": "Outside"
         },
         "Subnet1Prefix": {
-            "value": "192.168.113.0/24"
+            "value": "192.168.213.0/24"
         },
         "Subnet2Name": {
             "value": "Inside"
         },
         "Subnet2Prefix": {
-            "value": "192.168.114.0/24"
+            "value": "192.168.214.0/24"
         },
         "Subnet3Name": {
             "value": "mgmt"
         },
         "Subnet3Prefix": {
-            "value": "192.168.100.0/24"
+            "value": "192.168.200.0/24"
         },
         "Subnet4Name": {
             "value": "asa-heartbeat"
         },
         "Subnet4Prefix": {
-            "value": "192.168.254.0/29"
+            "value": "192.168.252.0/29"
         },
         "vnetNewOrExisting": {
             "value": "existing"
@@ -66,16 +66,16 @@
             "value": "Igloo-POC"
         },
         "subnet1StartAddress": {
-            "value": "192.168.113.4"
+            "value": "192.168.213.4"
         },
         "subnet2StartAddress": {
-            "value": "192.168.114.4"
+            "value": "192.168.214.4"
         },
         "subnet3StartAddress": {
-            "value": "192.168.100.4"
+            "value": "192.168.200.4"
         },
         "subnet4StartAddress": {
-            "value": "192.168.254.4"
+            "value": "192.168.253.4"
         }
     }
 }

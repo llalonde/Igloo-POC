@@ -1,54 +1,54 @@
 ﻿{
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "vnetname": {
-      "value": "Vnet-Igloo-POC"
-    },
-    "VnetaddressPrefix": {
-      "value": "192.168.0.0/16"
-    },
-    "mgmtsubnetsname": {
-      "value": "mgmt"
-    },
-    "mgmtsubnetaddressPrefix": {
-      "value": "192.168.105.0/24"
-    },
-    "public-dmz-insubnetsname": {
-      "value": "Inside"
-    },
-    "public-dmz-insubnetaddressPrefix": {
-      "value": "192.168.114.0/24"
-    },
-    "public-dmz-outsubnetsname": {
-      "value": "Outside"
-    },
-    "public-dmz-outsubnetaddressPrefix": {
-      "value": "192.168.113.0/24"
-    },
-    "websubnetsname": {
-      "value": "web"
-    },
-    "websubnetaddressPrefix": {
-      "value": "192.168.115.0/24"
-    },
-    "bizsubnetsname": {
-      "value": "biz"
-    },
-    "bizsubnetaddressPrefix": {
-      "value": "192.168.116.0/24"
-    },
-    "datasubnetsname": {
-      "value": "data"
-    },
-    "datasubnetaddressPrefix": {
-      "value": "192.168.102.0/24"
-    },
-    "Gatewaysubnetsname": {
-      "value": "GatewaySubnet"
-    },
-    "GatewaysubnetaddressPrefix": {
-      "value": "192.168.255.0/24"
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vnetname": {
+            "value": "Vnet-Igloo-POC"
+        },
+        "VnetaddressPrefix": {
+            "value": "192.168.0.0/16"
+        },
+        "mgmtsubnetsname": {
+            "value": "mgmt"
+        },
+        "mgmtsubnetaddressPrefix": {
+            "value": "192.168.205.0/24"
+        },
+        "public-dmz-insubnetsname": {
+            "value": "Inside"
+        },
+        "public-dmz-insubnetaddressPrefix": {
+            "value": "192.168.214.0/24"
+        },
+        "public-dmz-outsubnetsname": {
+            "value": "Outside"
+        },
+        "public-dmz-outsubnetaddressPrefix": {
+            "value": "192.168.213.0/24"
+        },
+        "websubnetsname": {
+            "value": "web"
+        },
+        "websubnetaddressPrefix": {
+            "value": "192.168.215.0/24"
+        },
+        "bizsubnetsname": {
+            "value": "biz"
+        },
+        "bizsubnetaddressPrefix": {
+            "value": "192.168.216.0/24"
+        },
+        "datasubnetsname": {
+            "value": "data"
+        },
+        "datasubnetaddressPrefix": {
+            "value": "192.168.202.0/24"
+        },
+        "Gatewaysubnetsname": {
+            "value": "GatewaySubnet"
+        },
+        "GatewaysubnetaddressPrefix": {
+            "value": "192.168.251.0/24"
+        }
     }
-  }
 }
