@@ -10,31 +10,31 @@ $starttime = get-date
 #region Prep & signin
 
 # sign in
-#Write-Host "Logging in ...";
-#Login-AzureRmAccount | Out-Null
+Write-Host "Logging in ...";
+Login-AzureRmAccount | Out-Null
 
 # select subscription
-#$subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
-#Select-AzureRmSubscription -SubscriptionID $subscriptionId | out-null
+$subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
+Select-AzureRmSubscription -SubscriptionID $subscriptionId | out-null
 
 
 # select Resource Group
-#$ResourceGroupName = Read-Host -Prompt 'Input the resource group for your network'
+$ResourceGroupName = Read-Host -Prompt 'Input the resource group for your network'
 
 # select Location
-#$Location = Read-Host -Prompt 'Input the Location for your network'
+$Location = Read-Host -Prompt 'Input the Location for your network'
 
 # select Location
-#$VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
+$VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
 
 
 # Define a credential object
-#Write-Host "You Will now be asked for a UserName and Password that will be applied to the windows Virtual Machine that will be created";
-#$cred = Get-Credential 
+Write-Host "You Will now be asked for a UserName and Password that will be applied to the windows Virtual Machine that will be created";
+$cred = Get-Credential 
 
 # Define a credential object
-#Write-Host "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created";
-#$Linuxcred = Get-Credential 
+Write-Host "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created";
+$Linuxcred = Get-Credential 
 #endregion
 
 
@@ -105,6 +105,9 @@ ForEach ( $VM in $VMList) {
                 $vmConfig = New-AzureRmVMConfig -VMName $VMName -VMSize $VMSize -AvailabilitySetID $ASID
             }
 
+            $domainpwd = "P@ssw0rd!234"
+            $domainuser = "sysadmin"
+
             $vmConfig = Add-AzureRmVMNetworkInterface -VM $vmConfig -Id $nicID
             $vmConfig = Set-AzureRmVMOperatingSystem -VM $vmConfig -Windows -ComputerName $vmName -Credential $cred
 
@@ -112,6 +115,9 @@ ForEach ( $VM in $VMList) {
             $osDiskUri = '{0}vhds/{1}.vhd' -f $storageAcc.PrimaryEndpoints.Blob.ToString(), $diskName
 
             $vmConfig = Set-AzureRmVMOSDisk -VM $vmConfig -Name $diskName -VhdUri $osDiskUri -CreateOption fromImage -SourceImageUri $Windows2012sourceImageUri -Windows
+
+            $vmConfig = Add-AzureProvisioningConfig -WindowsDomain -JoinDomain iglooaz.local -Domain iglooaz -DomainPassword $domainpwd -Password $domainpwd -DomainUserName $domainuser
+
 
             New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $location -VM $vmConfig
                
