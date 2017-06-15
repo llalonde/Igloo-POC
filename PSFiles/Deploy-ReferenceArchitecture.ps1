@@ -81,6 +81,7 @@ else {
 
 #endregion
 #region Deploy Cisco ASA appliance 
+<#
 Write-Host 
 Write-Output "Deploying Cisco ASAv appliance..."
 $ASAResourceGroupName = $ResourceGroupName + "-ASA"
@@ -103,7 +104,7 @@ else {
     write-host "The parameter file was not found, you will need to enter all parameters manually...."
     New-AzureRmResourceGroupDeployment -Name "ASA-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -Force | out-null
 }
-
+#>
 #endregion
 #region Deployment of Storage Account
 Write-Output "Deploying Storage Accounts..."

@@ -6,7 +6,7 @@
             "value": "Vnet-Igloo-POC"
         },
         "VnetaddressPrefix": {
-            "value": "192.168.0.0/16"
+            "value": "192.168.128.0/17"
         },
         "mgmtsubnetsname": {
             "value": "mgmt"
