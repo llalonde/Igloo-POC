@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "vmName": {
-            "value": "Igloo-POC-FW"
+            "value": "Igloo-POC-FW-WUS"
         },
         "adminUsername": {
             "value": "sysadmin"
@@ -21,10 +21,10 @@
             "value": "Standard_LRS"
         },
         "publicIPAddressName": {
-            "value": "Igloo-POC-ASA-VIP"
+            "value": "Igloo-POC-ASA-WUS"
         },
         "publicIPDnsName": {
-            "value": "iglooasa"
+            "value": "iglooasadr"
         },
         "publicIPNewOrExisting": {
             "value": "new"
