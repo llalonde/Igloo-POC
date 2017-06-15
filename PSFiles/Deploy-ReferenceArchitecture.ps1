@@ -80,6 +80,8 @@ else {
 }
 
 #endregion
+
+<#
 #region Deploy Cisco ASA appliance 
 <#
 Write-Host 
@@ -106,6 +108,8 @@ else {
 }
 #>
 #endregion
+#>
+
 #region Deployment of Storage Account
 Write-Output "Deploying Storage Accounts..."
 

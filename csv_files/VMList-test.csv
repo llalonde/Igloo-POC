@@ -10,7 +10,7 @@ Solr Node 01,poc-wus-solr1,13,Linux,CentOS6,igloostoragestdpocw,biz,Igloo-POC-SO
 Solr Node 02,poc-wus-solr2,13,Linux,CentOS6,igloostoragestdpocw,biz,Igloo-POC-SOLr-AS,16,80,A2mv2,Standard_A2m_v2
 Solr Node 03,poc-wus-solr3,13,Linux,CentOS6,igloostoragestdpocw,biz,Igloo-POC-SOLr-AS,16,80,A2mv2,Standard_A2m_v2
 Deploy Server - Linux,poc-wus-deploy2,15,Linux,CentOS7,igloostoragestdpocw,mgmt,None,20,50,A2v2,Standard_A2_v2
-Kafka Management Server,poc-wus-kfkmgmt,15,Linux,CentOS7,igloostoragestdpocw,mgmt,None,20,None,A2v2,Standard_A2_v2
+Kafka Management Server,poc-wus-kfkmgmt,15,Linux,CentOS7,igloostoragestdpocw,mgmt,None,20,None,D2v2,Standard_D2_v2
 SMTP Server 01,poc-wus-smtp1,13,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-SMTP-AS,40,None,D2v2,Standard_D2_v2
 SMTP Server 02,poc-wus-smtp2,13,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-SMTP-AS,40,None,D2v2,Standard_D2_v2
 SPAM Server 01,poc-wus-spam1,13,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-SPAM-AS,40,None,D2v2,Standard_D2_v2
