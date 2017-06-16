@@ -48,6 +48,9 @@
         },
         "storageAccountName": {
             "type": "string"
+        },
+        "OsDiskName":{
+            "type": "string"
         }
     },
     "variables": {
@@ -81,10 +84,8 @@
                     },
                     "osDisk": {
                         "createOption": "FromImage",
-                        "vhd": {
-                            "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-06-15').primaryEndpoints.blob,'vhds/',parameters('virtualMachineName'),'.vhd')]"
-                        },
-                        "caching": "ReadWrite",
+                        "blobUri": "[parameters('osDiskVhdUri')]",
+                        "storageAccountType": "Standard_LRS"
                     }
                 },
                 "networkProfile": {

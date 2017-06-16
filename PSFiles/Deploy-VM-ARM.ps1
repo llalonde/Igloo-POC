@@ -63,6 +63,10 @@ ForEach ( $VM in $VMList) {
     $VMnoASTemplate = $TemplateURI.AbsoluteUri + "WindowsVMfromImageNoAS.json"
     
     Write-Host "Processing '$VMName'...."
+
+    $diskName = $VMName + 'OsDisk'
+    $osDiskUri = '{0}vhds/{1}.vhd' -f $storageAcc.PrimaryEndpoints.Blob.ToString(), $diskName
+
     Get-AzureRmVM -Name $VMName -ResourceGroupName $ResourceGroupName -ev notPresent -ea 0  | Out-Null
 
     if ($notPresent) {
@@ -84,6 +88,7 @@ ForEach ( $VM in $VMList) {
                 domainUsername = $adminUsername; `
                 domainPassword = $adminPassword; `
                 storageAccountName = 'igloostoragestdpocw'; `
+                OSdiskName = $osDiskUri; `
             }
         }
         else
