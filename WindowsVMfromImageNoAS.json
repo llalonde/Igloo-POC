@@ -11,10 +11,6 @@
         "virtualMachineSize": {
             "type": "string"
         },
-        "availabilitySetName": {
-            "type": "string",
-            "defaultValue": ""
-        },
         "adminUsername": {
             "type": "string"
         },
@@ -34,22 +30,13 @@
             "type": "string"
         },
         "domainToJoin": {
-            "type": "string",
-            "metadata": {
-                "description": "The FQDN of the AD domain"
-            }
+            "type": "string"
         },
         "domainUsername": {
-            "type": "string",
-            "metadata": {
-                "description": "Username of the account on the domain"
-            }
+            "type": "string"
         },
         "domainPassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Password of the account on the domain"
-            }
+            "type": "securestring"
         },
         "ouPath": {
             "type": "string",
