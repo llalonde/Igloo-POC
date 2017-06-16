@@ -60,28 +60,50 @@ ForEach ( $VM in $VMList) {
     $TemplateURI = New-Object System.Uri -ArgumentList @($TemplateRootUriString)
 
     $VMTemplate = $TemplateURI.AbsoluteUri + "WindowsVMfromImage.json"
+    $VMnoASTemplate = $TemplateURI.AbsoluteUri + "WindowsVMfromImageNoAS.json"
     
     Write-Host "Processing '$VMName'...."
     Get-AzureRmVM -Name $VMName -ResourceGroupName $ResourceGroupName -ev notPresent -ea 0  | Out-Null
 
     if ($notPresent) {
-        
-        New-AzureRmResourceGroupDeployment -Name $VMName -ResourceGroupName $ResourceGroupName -TemplateUri $VMTemplate -TemplateParameterObject `
-        @{
-            Image = $VMImageName; `
-            virtualMachineName = $VMName; `
-            virtualMachineSize = $VMSize; `
-            availabilitySetName = $ASname; `
-            adminUsername = $adminUsername; `
-            adminPassword = $cred.password; `
-            virtualNetworkName = $vnet.Name; `
-            networkInterfaceName = $VMName; `
-            subnetName = $VMsubnet; `
-            diagnosticsStorageAccountName = $VMStorage; `
-            domainToJoin = "iglooaz.local"; `
-            domainUsername = "iglooaz\sysadmin"; `
-            domainPassword = $cred.password; `
-            storageAccountName = $VMStorage; `
+        if ($ASname -ne "None")
+        {
+            New-AzureRmResourceGroupDeployment -Name $VMName -ResourceGroupName $ResourceGroupName -TemplateUri $VMnoASTemplate -TemplateParameterObject `
+            @{
+                Image = $VMImageName; `
+                virtualMachineName = $VMName; `
+                virtualMachineSize = $VMSize; `
+                availabilitySetName = $ASname; `
+                adminUsername = $adminUsername; `
+                adminPassword = $cred.password; `
+                virtualNetworkName = $vnet.Name; `
+                networkInterfaceName = $VMName; `
+                subnetName = $VMsubnet; `
+                diagnosticsStorageAccountName = $VMStorage; `
+                domainToJoin = "iglooaz.local"; `
+                domainUsername = "iglooaz\sysadmin"; `
+                domainPassword = $cred.password; `
+                storageAccountName = $VMStorage; `
+            }
+        }
+        else
+        {
+            New-AzureRmResourceGroupDeployment -Name $VMName -ResourceGroupName $ResourceGroupName -TemplateUri $VMTemplate -TemplateParameterObject `
+            @{
+                Image = $VMImageName; `
+                virtualMachineName = $VMName; `
+                virtualMachineSize = $VMSize; `
+                adminUsername = $adminUsername; `
+                adminPassword = $cred.password; `
+                virtualNetworkName = $vnet.Name; `
+                networkInterfaceName = $VMName; `
+                subnetName = $VMsubnet; `
+                diagnosticsStorageAccountName = $VMStorage; `
+                domainToJoin = "iglooaz.local"; `
+                domainUsername = "iglooaz\sysadmin"; `
+                domainPassword = $cred.password; `
+                storageAccountName = $VMStorage; `
+            }
         }
     }
 }
