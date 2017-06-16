@@ -6,6 +6,7 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
+<#
 #region Prep & signin
 
 # sign in
@@ -32,6 +33,7 @@ $cred = Get-Credential -Message "You Will now be asked for a UserName and Passwo
 $Linuxcred = Get-Credential -Message "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created"
 
 #endregion
+#>
 
 
 #region Deployment of VM from VMlist.CSV
@@ -51,27 +53,35 @@ ForEach ( $VM in $VMList) {
 
     $vnet = Get-AzureRMVirtualNetwork -ResourceGroupName $ResourceGroupName
     $storageAcc = Get-AzureRmStorageAccount -AccountName $VMStorage -ResourceGroupName $ResourceGroupName
+
+    # set  Root Uri of GitHub Repo (select AbsoluteUri)
+
+    $TemplateRootUriString = "https://raw.githubusercontent.com/pierreroman/Igloo-POC/master/"
+    $TemplateURI = New-Object System.Uri -ArgumentList @($TemplateRootUriString)
+
+    $VMTemplate = $TemplateURI.AbsoluteUri + "WindowsVMfromImage.json"
     
     Write-Host "Processing '$VMName'...."
     Get-AzureRmVM -Name $VMName -ResourceGroupName $ResourceGroupName -ev notPresent -ea 0  | Out-Null
 
     if ($notPresent) {
         Write-Host $AS
-        New-AzureRmResourceGroupDeployment -Name $AS -ResourceGroupName $ResourceGroupName -TemplateUri $ASTemplate -TemplateParameterObject `
-        @{  Image
-            virtualMachineName = $VMName `
-            virtualMachineSize = $VMSize `
-            availabilitySetName = $ASname `
-            adminUsername = $adminUsername `
-            adminPassword = $adminPassword `
-            virtualNetworkName = $vnet.Name `
-            networkInterfaceName = $VMName `
-            subnetName = $VMsubnet `
-            diagnosticsStorageAccountName = $VMStorage `
-            domainToJoin = "iglooaz.local" `
-            domainUsername = "iglooaz\sysadmin" `
-            domainPassword = "P@ssw0rd!234" `
-            storageAccountName = $VMStorage `
+        New-AzureRmResourceGroupDeployment -Name $VMName -ResourceGroupName $ResourceGroupName -TemplateUri $VMTemplate -TemplateParameterObject `
+        @{
+            Image = $VMImageName; `
+            virtualMachineName = $VMName; `
+            virtualMachineSize = $VMSize; `
+            availabilitySetName = $ASname; `
+            adminUsername = $adminUsername; `
+            adminPassword = $cred.password; `
+            virtualNetworkName = $vnet.Name; `
+            networkInterfaceName = $VMName; `
+            subnetName = $VMsubnet; `
+            diagnosticsStorageAccountName = $VMStorage; `
+            domainToJoin = "iglooaz.local"; `
+            domainUsername = "iglooaz\sysadmin"; `
+            domainPassword = $cred.password; `
+            storageAccountName = $VMStorage; `
         }
     }
 }
