@@ -12,7 +12,8 @@
             "type": "string"
         },
         "availabilitySetName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "adminUsername": {
             "type": "string"
@@ -107,7 +108,11 @@
                     },
                     "osDisk": {
                         "createOption": "fromImage",
-                        "storageAccountType": "Standard_LRS"
+                    "vhd": {
+                        "uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/','vhds/',parameters('virtualMachineName'),'.vhd')]"
+                },
+                "caching": "ReadWrite",
+                "createOption": "FromImage"
                     }
                 },
                 "networkProfile": {
