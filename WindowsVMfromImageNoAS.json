@@ -64,7 +64,7 @@
             "apiVersion": "2016-04-30-preview",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]",
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]"
             ],
             "properties": {
                 "hardwareProfile": {
@@ -84,6 +84,8 @@
                     },
                     "osDisk": {
                         "createOption": "FromImage",
+                        "blobUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-06-15').primaryEndpoints.blob,'vhds/',parameters('OsDiskName'), '.vhd')]",
+                        "storageAccountType": "Standard_LRS"
                     }
                 },
                 "networkProfile": {
