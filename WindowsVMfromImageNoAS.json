@@ -82,7 +82,7 @@
                     "osDisk": {
                         "createOption": "fromImage",
                         "vhd": {
-                            "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-06-15').primaryEndpoints.blob,'vhds/',parameters('dnsLabelPrefix'), 'disk0.vhd')]"
+                            "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-06-15').primaryEndpoints.blob,'vhds/',parameters('virtualMachineName'),'.vhd')]"
                         },
                         "caching": "ReadWrite",
                     }
