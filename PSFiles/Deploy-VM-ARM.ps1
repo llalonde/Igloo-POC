@@ -66,15 +66,14 @@ ForEach ( $VM in $VMList) {
     Get-AzureRmVM -Name $VMName -ResourceGroupName $ResourceGroupName -ev notPresent -ea 0  | Out-Null
 
     if ($notPresent) {
-        if ($ASname -ne "None")
+        if ($ASname -eq "None")
         {
-            write-host "No AS..."
-            New-AzureRmResourceGroupDeployment -Name $VMName -ResourceGroupName $ResourceGroupName -TemplateUri $VMTemplate -TemplateParameterObject `
+            write-host " No AS..."
+            New-AzureRmResourceGroupDeployment -Name $VMName -ResourceGroupName $ResourceGroupName -TemplateUri $VMnoASTemplate -TemplateParameterObject `
             @{
                 Image = $VMImageName; `
                 virtualMachineName = $VMName; `
                 virtualMachineSize = $VMSize; `
-                availabilitySetName = $ASname; `
                 adminUsername = $adminUsername; `
                 adminPassword = $cred.password; `
                 virtualNetworkName = $vnet.Name; `
@@ -90,11 +89,12 @@ ForEach ( $VM in $VMList) {
         else
         {
             write-host "AS..."
-            New-AzureRmResourceGroupDeployment -Name $VMName -ResourceGroupName $ResourceGroupName -TemplateUri $VMnoASTemplate -TemplateParameterObject `
+            New-AzureRmResourceGroupDeployment -Name $VMName -ResourceGroupName $ResourceGroupName -TemplateUri $VMTemplate -TemplateParameterObject `
             @{
                 Image = $VMImageName; `
                 virtualMachineName = $VMName; `
                 virtualMachineSize = $VMSize; `
+                availabilitySetName = $ASname; `
                 adminUsername = $adminUsername; `
                 adminPassword = $cred.password; `
                 virtualNetworkName = $vnet.Name; `

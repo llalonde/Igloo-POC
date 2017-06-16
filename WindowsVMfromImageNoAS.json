@@ -80,11 +80,7 @@
                         "id": "[concat('/subscriptions/213b7faa-90e1-47d5-8ca6-9f98bb30758d/resourceGroups/Igloo-POC-DR-rg/providers/Microsoft.Compute/images/',parameters('Image'))]"
                     },
                     "osDisk": {
-                        "createOption": "fromImage",
-                        "vhd": {
-                            "uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/','vhds/',parameters('virtualMachineName'),'.vhd')]"
-                        },
-                        "caching": "ReadWrite",
+                        "createOption": "fromImage"
                     }
                 },
                 "networkProfile": {
