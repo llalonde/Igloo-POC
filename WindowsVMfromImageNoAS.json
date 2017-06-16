@@ -49,7 +49,7 @@
         "storageAccountName": {
             "type": "string"
         },
-        "OsDiskName":{
+        "OsDiskName": {
             "type": "string"
         }
     },
@@ -84,8 +84,7 @@
                     },
                     "osDisk": {
                         "createOption": "FromImage",
-                        "blobUri": "[parameters('osDiskVhdUri')]",
-                        "storageAccountType": "Standard_LRS"
+                        "blobUri": "[parameters('OsDiskName')]"
                     }
                 },
                 "networkProfile": {
