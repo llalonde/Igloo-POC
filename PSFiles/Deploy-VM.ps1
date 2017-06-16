@@ -7,7 +7,7 @@ $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
 
-#region Prep & signin
+<#region Prep & signin
 
 # sign in
 Write-Host "Logging in ...";
@@ -36,7 +36,7 @@ $cred = Get-Credential
 Write-Host "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created";
 $Linuxcred = Get-Credential 
 #endregion
-
+#>
 
 $Windows2012sourceImageUri = 'https://igloostoragestdpocw.blob.core.windows.net/vhds/Windows2012R220170612221756.vhd'
 $CentOS6sourceImageUri = 'https://igloostoragestdpocw.blob.core.windows.net/vhds/centos6temp220170612211517.vhd'
@@ -54,7 +54,7 @@ ForEach ( $VM in $VMList) {
     $VMSize = $vm.VMSize
     $VMDataDiskSize = $vm.DataDiskSize
     $DataDiskName = $VM.ServerName + "Data"
-    $VMImageNAme = $vm.ImageName
+    $VMImageName = $vm.ImageName
 
     $storageAcc = Get-AzureRmStorageAccount -AccountName $VMStorage -ResourceGroupName $ResourceGroupName
     
@@ -83,7 +83,7 @@ ForEach ( $VM in $VMList) {
             write-host "Virtual Machine not part of an availability set"
         }
    
-        $vnet = Get-AzureRMVirtualNetwork
+        $vnet = Get-AzureRMVirtualNetwork -ResourceGroupName $ResourceGroupName
         $Subnets = $vnet.Subnets
     
         foreach ($Items in $Subnets) {
@@ -105,18 +105,13 @@ ForEach ( $VM in $VMList) {
                 $vmConfig = New-AzureRmVMConfig -VMName $VMName -VMSize $VMSize -AvailabilitySetID $ASID
             }
 
-            $domainpwd = "P@ssw0rd!234"
-            $domainuser = "sysadmin"
-
             $vmConfig = Add-AzureRmVMNetworkInterface -VM $vmConfig -Id $nicID
             $vmConfig = Set-AzureRmVMOperatingSystem -VM $vmConfig -Windows -ComputerName $vmName -Credential $cred
-
+            
             $diskName = $VMName + 'OsDisk'
             $osDiskUri = '{0}vhds/{1}.vhd' -f $storageAcc.PrimaryEndpoints.Blob.ToString(), $diskName
 
             $vmConfig = Set-AzureRmVMOSDisk -VM $vmConfig -Name $diskName -VhdUri $osDiskUri -CreateOption fromImage -SourceImageUri $Windows2012sourceImageUri -Windows
-
-            $vmConfig�=�Add-AzureProvisioningConfig�-WindowsDomain�-JoinDomain�iglooaz.local�-Domain�iglooaz�-DomainPassword�$domainpwd�-Password�$domainpwd�-DomainUserName�$domainuser
 
 
             New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $location -VM $vmConfig
