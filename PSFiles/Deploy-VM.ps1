@@ -38,9 +38,9 @@ $Linuxcred = Get-Credential
 #endregion
 
 
-$Windows2012sourceImageUri = 'https://igloostoragestdpoc.blob.core.windows.net/vhds/Windows2012R220170612221756.vhd'
-$CentOS6sourceImageUri = 'https://igloostoragestdpoc.blob.core.windows.net/vhds/centos6temp220170612211517.vhd'
-$CentOS7sourceImageUri = 'https://igloostoragestdpoc.blob.core.windows.net/vhds/centos7temp20170612170035.vhd'
+$Windows2012sourceImageUri = 'https://igloostoragestdpocw.blob.core.windows.net/vhds/Windows2012R220170612221756.vhd'
+$CentOS6sourceImageUri = 'https://igloostoragestdpocw.blob.core.windows.net/vhds/centos6temp220170612211517.vhd'
+$CentOS7sourceImageUri = 'https://igloostoragestdpocw.blob.core.windows.net/vhds/centos7temp20170612170035.vhd'
 
 
 #region Deployment of VM from VMlist.CSV
@@ -116,7 +116,7 @@ ForEach ( $VM in $VMList) {
 
             $vmConfig = Set-AzureRmVMOSDisk -VM $vmConfig -Name $diskName -VhdUri $osDiskUri -CreateOption fromImage -SourceImageUri $Windows2012sourceImageUri -Windows
 
-            $vmConfig = Add-AzureProvisioningConfig -WindowsDomain -JoinDomain iglooaz.local -Domain iglooaz -DomainPassword $domainpwd -Password $domainpwd -DomainUserName $domainuser
+            $vmConfigï¿½=ï¿½Add-AzureProvisioningConfigï¿½-WindowsDomainï¿½-JoinDomainï¿½iglooaz.localï¿½-Domainï¿½iglooazï¿½-DomainPasswordï¿½$domainpwdï¿½-Passwordï¿½$domainpwdï¿½-DomainUserNameï¿½$domainuser
 
 
             New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $location -VM $vmConfig
