@@ -105,8 +105,7 @@
                     "storageUri": "[reference(resourceId(resourceGroup().Name, 'Microsoft.Storage/storageAccounts', parameters('diagnosticsStorageAccountName')), '2015-06-15').primaryEndpoints['blob']]"
                 }
             }
-        }
-    },
+        },
     {
         "name": "[parameters('networkInterfaceName')]",
         "type": "Microsoft.Network/networkInterfaces",
