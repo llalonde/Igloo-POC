@@ -48,8 +48,8 @@ ForEach ( $VM in $VMList) {
     $VMDataDiskSize = $vm.DataDiskSize
     $DataDiskName = $VM.ServerName + "Data"
     $VMImageName = $vm.ImageName
-    $adminPassword = $cred.password | convertfrom-securestring
-    $adminUsername = $cred.password
+    $adminPassword = $cred.password
+    $adminUsername = $cred.Username
 
     $vnet = Get-AzureRMVirtualNetwork -ResourceGroupName $ResourceGroupName
     $storageAcc = Get-AzureRmStorageAccount -AccountName $VMStorage -ResourceGroupName $ResourceGroupName
@@ -75,15 +75,15 @@ ForEach ( $VM in $VMList) {
                 virtualMachineName = $VMName; `
                 virtualMachineSize = $VMSize; `
                 adminUsername = $adminUsername; `
-                adminPassword = $cred.password; `
+                adminPassword = $adminPassword; `
                 virtualNetworkName = $vnet.Name; `
                 networkInterfaceName = $VMName; `
                 subnetName = $VMsubnet; `
                 diagnosticsStorageAccountName = $VMStorage; `
                 domainToJoin = "iglooaz.local"; `
-                domainUsername = "iglooaz\sysadmin"; `
-                domainPassword = $cred.password; `
-                storageAccountName = $VMStorage; `
+                domainUsername = $adminUsername; `
+                domainPassword = $adminPassword; `
+                storageAccountName = 'igloostoragestdpocw'; `
             }
         }
         else
