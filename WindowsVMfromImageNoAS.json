@@ -84,7 +84,8 @@
                     },
                     "osDisk": {
                         "createOption": "FromImage",
-                        "blobUri": "[parameters('OsDiskName')]"
+                        "blobUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2015-06-15').primaryEndpoints.blob,'vhds/',parameters('OsDiskName'), '.vhd')]",
+                        "storageAccountType": "Standard_LRS"
                     }
                 },
                 "networkProfile": {
@@ -97,7 +98,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[reference(resourceId('igloo-poc-dr-rg', 'Microsoft.Storage/storageAccounts', parameters('diagnosticsStorageAccountName')), '2015-06-15').primaryEndpoints['blob']]"
+                        "storageUri": "[reference(resourceId(resourceGroup().Name, 'Microsoft.Storage/storageAccounts', parameters('diagnosticsStorageAccountName')), '2015-06-15').primaryEndpoints['blob']]"
                     }
                 }
             }

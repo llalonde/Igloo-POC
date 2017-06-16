@@ -6,9 +6,9 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
-<#
-#region Prep & signin
 
+#region Prep & signin
+<#
 # sign in
 Write-Host "Logging in ...";
 Login-AzureRmAccount | Out-Null
@@ -33,6 +33,7 @@ $cred = Get-Credential -Message "You Will now be asked for a UserName and Passwo
 $Linuxcred = Get-Credential -Message "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created"
 
 #endregion
+#
 #>
 
 
@@ -47,12 +48,20 @@ ForEach ( $VM in $VMList) {
     $VMSize = $vm.VMSize
     $VMDataDiskSize = $vm.DataDiskSize
     $DataDiskName = $VM.ServerName + "Data"
-    $VMImageName = $vm.ImageName
     $adminPassword = $cred.password
     $adminUsername = $cred.Username
 
     $vnet = Get-AzureRMVirtualNetwork -ResourceGroupName $ResourceGroupName
     $storageAcc = Get-AzureRmStorageAccount -AccountName $VMStorage -ResourceGroupName $ResourceGroupName
+
+    if ($VMStorage -eq "igloostorageprempocw")
+    {
+        $VMImageName = $vm.ImageName + "prem"
+    }
+    else
+    {
+        $VMImageName = $vm.ImageName
+    }
 
     # set  Root Uri of GitHub Repo (select AbsoluteUri)
 
@@ -88,7 +97,7 @@ ForEach ( $VM in $VMList) {
                 domainUsername = $adminUsername; `
                 domainPassword = $adminPassword; `
                 storageAccountName = 'igloostoragestdpocw'; `
-                OSdiskName = $osDiskUri; `
+                OSdiskName = $diskName; `
             }
         }
         else
