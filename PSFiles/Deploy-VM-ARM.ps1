@@ -68,6 +68,7 @@ ForEach ( $VM in $VMList) {
     if ($notPresent) {
         if ($ASname -ne "None")
         {
+            write-host "No AS..."
             New-AzureRmResourceGroupDeployment -Name $VMName -ResourceGroupName $ResourceGroupName -TemplateUri $VMTemplate -TemplateParameterObject `
             @{
                 Image = $VMImageName; `
@@ -88,6 +89,7 @@ ForEach ( $VM in $VMList) {
         }
         else
         {
+            write-host "AS..."
             New-AzureRmResourceGroupDeployment -Name $VMName -ResourceGroupName $ResourceGroupName -TemplateUri $VMnoASTemplate -TemplateParameterObject `
             @{
                 Image = $VMImageName; `

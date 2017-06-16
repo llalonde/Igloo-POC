@@ -62,7 +62,6 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]",
-                "[concat('Microsoft.Compute/availabilitySets/', parameters('availabilitySetName'))]"
             ],
             "properties": {
                 "hardwareProfile": {
