@@ -32,9 +32,6 @@
         "diagnosticsStorageAccountName": {
             "type": "string"
         },
-        "diagnosticsStorageAccountId": {
-            "type": "string"
-        },
         "domainToJoin": {
             "type": "string",
             "metadata": {
