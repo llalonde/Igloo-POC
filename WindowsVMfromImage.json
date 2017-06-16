@@ -108,11 +108,10 @@
                     },
                     "osDisk": {
                         "createOption": "fromImage",
-                    "vhd": {
-                        "uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/','vhds/',parameters('virtualMachineName'),'.vhd')]"
-                },
-                "caching": "ReadWrite",
-                "createOption": "FromImage"
+                        "vhd": {
+                            "uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/','vhds/',parameters('virtualMachineName'),'.vhd')]"
+                        },
+                        "caching": "ReadWrite",
                     }
                 },
                 "networkProfile": {

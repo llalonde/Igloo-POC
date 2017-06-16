@@ -65,7 +65,7 @@ ForEach ( $VM in $VMList) {
     Get-AzureRmVM -Name $VMName -ResourceGroupName $ResourceGroupName -ev notPresent -ea 0  | Out-Null
 
     if ($notPresent) {
-        Write-Host $AS
+        
         New-AzureRmResourceGroupDeployment -Name $VMName -ResourceGroupName $ResourceGroupName -TemplateUri $VMTemplate -TemplateParameterObject `
         @{
             Image = $VMImageName; `
