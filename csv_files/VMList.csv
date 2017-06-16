@@ -1,2 +1,2 @@
 Server,servername,NameLength,OS,ImageName,StorageAccount,subnet,AvailabilitySet,OSDiskSize,DataDiskSize,Azure Instance Type,VMSize
-Monitoring Server 01 (PRTG),poc-eus-mon1,12,Windows,Windows2012,igloostorageprempocw,biz,,40,2048,F8,Standard_F8
+Monitoring Server 01 (PRTG),poc-eus-mon1,12,Windows,Windows2012,igloostorageprempocw,biz,None,40,2048,F8,Standard_F8

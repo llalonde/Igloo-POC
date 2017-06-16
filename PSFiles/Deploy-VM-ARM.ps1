@@ -68,7 +68,7 @@ ForEach ( $VM in $VMList) {
     if ($notPresent) {
         if ($ASname -ne "None")
         {
-            New-AzureRmResourceGroupDeployment -Name $VMName -ResourceGroupName $ResourceGroupName -TemplateUri $VMnoASTemplate -TemplateParameterObject `
+            New-AzureRmResourceGroupDeployment -Name $VMName -ResourceGroupName $ResourceGroupName -TemplateUri $VMTemplate -TemplateParameterObject `
             @{
                 Image = $VMImageName; `
                 virtualMachineName = $VMName; `
@@ -88,7 +88,7 @@ ForEach ( $VM in $VMList) {
         }
         else
         {
-            New-AzureRmResourceGroupDeployment -Name $VMName -ResourceGroupName $ResourceGroupName -TemplateUri $VMTemplate -TemplateParameterObject `
+            New-AzureRmResourceGroupDeployment -Name $VMName -ResourceGroupName $ResourceGroupName -TemplateUri $VMnoASTemplate -TemplateParameterObject `
             @{
                 Image = $VMImageName; `
                 virtualMachineName = $VMName; `
