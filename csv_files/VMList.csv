@@ -1,2 +1,55 @@
 Server,servername,NameLength,OS,ImageName,StorageAccount,subnet,AvailabilitySet,OSDiskSize,DataDiskSize,Azure Instance Type,VMSize
+Monitoring Server 03 (New Relic),poc-wus-mon3,12,Linux,CentOS7,igloostoragestdpocw,biz,None,20,None,A1v2,Standard_A1_v2
+Kafka Node 01,poc-wus-kafka1,14,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-Kafka-AS,20,80,A2mv2,Standard_A2m_v2
+Kafka Node 02,poc-wus-kafka2,14,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-Kafka-AS,20,80,A2mv2,Standard_A2m_v2
+Kafka Node 03,poc-wus-kafka3,14,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-Kafka-AS,20,80,A2mv2,Standard_A2m_v2
+Redis Node 01,poc-wus-redis1,14,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-Redis-AS,20,50,A2mv2,Standard_A2m_v2
+Redis Node 02,poc-wus-redis2,14,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-Redis-AS,20,50,A2mv2,Standard_A2m_v2
+Redis Node 03,poc-wus-redis3,14,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-Redis-AS,20,50,A2mv2,Standard_A2m_v2
+Solr Node 01,poc-wus-solr1,13,Linux,CentOS6,igloostoragestdpocw,biz,Igloo-POC-SOLr-AS,16,80,A2mv2,Standard_A2m_v2
+Solr Node 02,poc-wus-solr2,13,Linux,CentOS6,igloostoragestdpocw,biz,Igloo-POC-SOLr-AS,16,80,A2mv2,Standard_A2m_v2
+Solr Node 03,poc-wus-solr3,13,Linux,CentOS6,igloostoragestdpocw,biz,Igloo-POC-SOLr-AS,16,80,A2mv2,Standard_A2m_v2
+Deploy Server - Linux,poc-wus-deploy2,15,Linux,CentOS7,igloostoragestdpocw,mgmt,None,20,50,A2v2,Standard_A2_v2
+Kafka Management Server,poc-wus-kfkmgmt,15,Linux,CentOS7,igloostoragestdpocw,mgmt,None,20,None,D2v2,Standard_D2_v2
+SMTP Server 01,poc-wus-smtp1,13,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-SMTP-AS,40,None,D2v2,Standard_D2_v2
+SMTP Server 02,poc-wus-smtp2,13,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-SMTP-AS,40,None,D2v2,Standard_D2_v2
+SPAM Server 01,poc-wus-spam1,13,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-SPAM-AS,40,None,D2v2,Standard_D2_v2
+SPAM Server 02,poc-wus-spam2,13,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-SPAM-AS,40,None,D2v2,Standard_D2_v2
+ELK Node 01,poc-wus-elk1,12,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-ELK-AS,20,None,D2v2,Standard_D2_v2
+ELK Node 02,poc-wus-elk2,12,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-ELK-AS,20,None,D2v2,Standard_D2_v2
+ELK Node 03,poc-wus-elk3,12,Linux,CentOS7,igloostoragestdpocw,biz,Igloo-POC-ELK-AS,20,None,D2v2,Standard_D2_v2
 Admin Jumpbox,poc-wus-admin,13,Windows,Win2012R2,igloostoragestdpocw,biz,None,135,None,D2v2,Standard_D2_v2
+Certificiate Authority,poc-wus-ca,10,Windows,Win2012R2,igloostoragestdpocw,mgmt,None,40,None,D2v2,Standard_D2_v2
+Cron Server,poc-wus-cron,12,Windows,Win2012R2,igloostoragestdpocw,biz,None,60,None,D2v2,Standard_D2_v2
+Datafeeds Server 01,poc-wus-dfd1,12,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-DFD-AS,60,None,D2v2,Standard_D2_v2
+Datafeeds Server 02,poc-wus-dfd2,12,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-DFD-AS,60,None,D2v2,Standard_D2_v2
+Deploy Server - Windows,poc-wus-deploy1,15,Windows,Win2012R2,igloostoragestdpocw,mgmt,None,90,None,D2v2,Standard_D2_v2
+DFS Server 01,poc-wus-dfs1,12,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-DFS-AS,40,None,D2v2,Standard_D2_v2
+DFS Server 02,poc-wus-dfs2,12,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-DFS-AS,40,None,D2v2,Standard_D2_v2
+Diff Server,poc-wus-diff,12,Windows,Win2012R2,igloostoragestdpocw,biz,None,60,None,D2v2,Standard_D2_v2
+Doc Engine Server 01,poc-wus-doceng1,15,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-DocEng-AS,60,None,D2v2,Standard_D2_v2
+Doc Engine Server 02,poc-wus-doceng2,15,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-DocEng-AS,60,None,D2v2,Standard_D2_v2
+Domain Controller 01,poc-wus-dc1,11,Windows,Win2012R2,igloostoragestdpocw,mgmt,Igloo-POC-DC-AS,40,None,D2v2,Standard_D2_v2
+Domain Controller 02,poc-wus-dc2,11,Windows,Win2012R2,igloostoragestdpocw,mgmt,Igloo-POC-DC-AS,40,None,D2v2,Standard_D2_v2
+FTP,poc-wus-ftp,11,Windows,Win2012R2,igloostoragestdpocw,biz,None,40,300,D2v2,Standard_D2_v2
+ICS Server 01,poc-wus-ics1,12,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-ICS-AS,60,None,D2v2,Standard_D2_v2
+ICS Server 02,poc-wus-ics2,12,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-ICS-AS,60,None,D2v2,Standard_D2_v2
+Internal Web Services 01 (ie. CCS),poc-wus-iws1,12,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-IWS-AS,40,None,D2v2,Standard_D2_v2
+Internal Web Services 02 (ie. CCS),poc-wus-iws2,12,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-IWS-AS,40,None,D2v2,Standard_D2_v2
+Mobile Data Processor Server 01,poc-wus-mdp1,12,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-MDP-AS,40,None,D2v2,Standard_D2_v2
+Mobile Data Processor Server 01,poc-wus-mdp2,12,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-MDP-AS,40,None,D2v2,Standard_D2_v2
+Monitoring Server 02 (Solarwinds),poc-wus-mon2,12,Windows,Win2012R2,igloostoragestdpocw,biz,None,40,15,D2v2,Standard_D2_v2
+Monitoring Server 04 (Firewall Analyzer),poc-wus-mon4,12,Windows,Win2012R2,igloostoragestdpocw,biz,None,400,None,D2v2,Standard_D2_v2
+OAuth Web Server 01,poc-wus-oap1,12,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-OAP-AS,40,None,D2v2,Standard_D2_v2
+OAuth Web Server 02,poc-wus-oap2,12,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-OAP-AS,40,None,D2v2,Standard_D2_v2
+RabbitMQ Cluster Node 01,poc-wus-rmq1,12,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-RMQ-AS,40,None,D2v2,Standard_D2_v2
+RabbitMQ Cluster Node 01,poc-wus-rmq2,12,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-RMQ-AS,40,None,D2v2,Standard_D2_v2
+SAP Server,poc-wus-sap,11,Windows,Win2012R2,igloostoragestdpocw,biz,None,60,None,D2v2,Standard_D2_v2
+Web Server 01,poc-wus-web1,12,Windows,Win2012R2,igloostoragestdpocw,web,Igloo-POC-Web-AS,60,None,D2v2,Standard_D2_v2
+Web Server 02,poc-wus-web2,12,Windows,Win2012R2,igloostoragestdpocw,web,Igloo-POC-Web-AS,60,None,D2v2,Standard_D2_v2
+Web Server 03,poc-wus-web3,12,Windows,Win2012R2,igloostoragestdpocw,web,Igloo-POC-Web-AS,60,None,D2v2,Standard_D2_v2
+Web Server 04,poc-wus-web4,12,Windows,Win2012R2,igloostoragestdpocw,web,Igloo-POC-Web-AS,60,None,D2v2,Standard_D2_v2
+Windows Update Services (WSUS),poc-wus-wsus,12,Windows,Win2012R2,igloostoragestdpocw,mgmt,None,60,200,D2v2,Standard_D2_v2
+Video Engine Server 01,poc-wus-videng1,15,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-VidEng-AS,60,None,F4,Standard_F4
+Video Engine Server 02,poc-wus-videng2,15,Windows,Win2012R2,igloostoragestdpocw,biz,Igloo-POC-VidEng-AS,60,None,F4,Standard_F4
+Monitoring Server 01 (PRTG),poc-wus-mon1,12,Windows,Win2012R2,igloostorageprempocw,biz,None,40,2048,F8,Standard_F8

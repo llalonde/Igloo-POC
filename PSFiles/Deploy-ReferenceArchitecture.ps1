@@ -67,17 +67,25 @@ else {
 #endregion
 #region Deployment of virtual network
 Write-Output "Deploying virtual network..."
-
-if (Invoke-WebRequest -Uri $VnetParametersFile) {
-    write-host "The parameter file was found, we will use the following info: "
-    write-host " Template file:     '$VnetTemplate'"
-    write-host " Parameter file:    '$VnetParametersFile'"
-    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterUri $VnetParametersFile -Force | out-null
-}
-else {
-    write-host "The parameter file was not found, you will need to enter all parameters manually...."
-    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -Force | out-null
-}
+New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterObject `
+@{ `
+    vnetname= "Vnet-Igloo-POC; `
+    VnetaddressPrefix= "192.168.128.0/17" ; `
+    mgmtsubnetsname = "mgmt" ; `
+    mgmtsubnetaddressPrefix = "192.168.205.0/24" ; `
+    public-dmz-insubnetsname = "Inside" ; `
+    public-dmz-insubnetaddressPrefix = "192.168.214.0/24" ; `
+    public-dmz-outsubnetsname = "Outside" ; `
+    public-dmz-outsubnetaddressPrefix = ""192.168.213.0/24" ; `
+    websubnetsname = "web" ; `
+    websubnetaddressPrefix = "192.168.215.0/24" ; `
+    bizsubnetsname = "biz";`
+    bizsubnetaddressPrefix = "192.168.216.0/24" ; `
+    datasubnetsname = "data";`
+    datasubnetaddressPrefix = "192.168.202.0/24" ; `
+    Gatewaysubnetsname = "GatewaySubnet ;`
+    GatewaysubnetaddressPrefix = "192.168.251.0/24" ; `
+} -Force | out-null
 
 #endregion
 

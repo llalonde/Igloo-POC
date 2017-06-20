@@ -6,8 +6,8 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
-
-<#region Prep & signin
+<#
+#region Prep & signin
 
 # sign in
 Write-Host "Logging in ...";
@@ -37,6 +37,7 @@ Write-Host "You Will now be asked for a UserName and Password that will be appli
 $Linuxcred = Get-Credential 
 #endregion
 #>
+
 
 $Windows2012sourceImageUri = 'https://igloostoragestdpocw.blob.core.windows.net/vhds/Windows2012R220170612221756.vhd'
 $CentOS6sourceImageUri = 'https://igloostoragestdpocw.blob.core.windows.net/vhds/centos6temp220170612211517.vhd'
