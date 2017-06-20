@@ -14,16 +14,16 @@
         "mgmtsubnetaddressPrefix": {
             "type": "string"
         },
-        "public-dmz-insubnetsname": {
+        "publicdmzinsubnetsname": {
             "type": "string"
         },
-        "public-dmz-insubnetaddressPrefix": {
+        "publicdmzinsubnetaddressPrefix": {
             "type": "string"
         },
-        "public-dmz-outsubnetsname": {
+        "publicdmzoutsubnetsname": {
             "type": "string"
         },
-        "public-dmz-outsubnetaddressPrefix": {
+        "publicdmzoutsubnetaddressPrefix": {
             "type": "string"
         },
         "websubnetsname": {
@@ -72,15 +72,15 @@
                         }
                     },
                     {
-                        "name": "[parameters('public-dmz-insubnetsname')]",
+                        "name": "[parameters('publicdmzinsubnetsname')]",
                         "properties": {
-                            "addressPrefix": "[parameters('public-dmz-insubnetaddressPrefix')]"
+                            "addressPrefix": "[parameters('publicdmzinsubnetaddressPrefix')]"
                         }
                     },
                     {
-                        "name": "[parameters('public-dmz-outsubnetsname')]",
+                        "name": "[parameters('publicdmzoutsubnetsname')]",
                         "properties": {
-                            "addressPrefix": "[parameters('public-dmz-outsubnetaddressPrefix')]"
+                            "addressPrefix": "[parameters('publicdmzoutsubnetaddressPrefix')]"
                         }
                     },
                     {
