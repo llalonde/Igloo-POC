@@ -7,6 +7,7 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
+<#
 #region Prep & signin
 # sign in
 Write-Host "Logging in ...";
@@ -26,25 +27,22 @@ $Location = Read-Host -Prompt 'Input the Location for your network'
 $VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
 
 #endregion
+#>
 
 #region Set Template and Parameter location
+
+$Date=Get-Date -Format yyyyMMdd
+
 # set  Root Uri of GitHub Repo (select AbsoluteUri)
 
 $TemplateRootUriString = "https://raw.githubusercontent.com/pierreroman/Igloo-POC/master/"
 $TemplateURI = New-Object System.Uri -ArgumentList @($TemplateRootUriString)
 
 $VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
-$ASATemplate = $TemplateURI.AbsoluteUri + "ASA.json"
+#$ASATemplate = $TemplateURI.AbsoluteUri + "ASA.json"
 $StorageTemplate = $TemplateURI.AbsoluteUri + "VMStorageAccount.json"
 $ASTemplate = $TemplateURI.AbsoluteUri + "AvailabilitySet.json"
-$AATemplate = $TemplateURI.AbsoluteUri + "AzrAutoAccount.json"
-$NSGTemplate = $TemplateURI.AbsoluteUri + "nsg.azuredeploy.json"
-
-#Parameter files for the deployment (include relative path to repo + filename)
-
-$VnetParametersFile = $TemplateURI.AbsoluteUri + "parameters/vnet-subnet.parameters.json"
-$ASAParametersFile = $TemplateURI.AbsoluteUri + "parameters/asa.parameters.json"
-$StorageParametersFile = $TemplateURI.AbsoluteUri + "parameters/VMStorageAccount.parameters.json"
+#$NSGTemplate = $TemplateURI.AbsoluteUri + "nsg.azuredeploy.json"
 
 #endregion
 #region Create the resource group
@@ -67,26 +65,70 @@ else {
 #endregion
 #region Deployment of virtual network
 Write-Output "Deploying virtual network..."
-New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterObject `
-@{ `
-    vnetname= "Vnet-Igloo-POC; `
-    VnetaddressPrefix= "192.168.128.0/17" ; `
-    mgmtsubnetsname = "mgmt" ; `
-    mgmtsubnetaddressPrefix = "192.168.205.0/24" ; `
-    public-dmz-insubnetsname = "Inside" ; `
-    public-dmz-insubnetaddressPrefix = "192.168.214.0/24" ; `
-    public-dmz-outsubnetsname = "Outside" ; `
-    public-dmz-outsubnetaddressPrefix = ""192.168.213.0/24" ; `
-    websubnetsname = "web" ; `
-    websubnetaddressPrefix = "192.168.215.0/24" ; `
-    bizsubnetsname = "biz";`
-    bizsubnetaddressPrefix = "192.168.216.0/24" ; `
-    datasubnetsname = "data";`
-    datasubnetaddressPrefix = "192.168.202.0/24" ; `
-    Gatewaysubnetsname = "GatewaySubnet ;`
-    GatewaysubnetaddressPrefix = "192.168.251.0/24" ; `
-} -Force | out-null
+$DeploymentName = 'Vnet-Subnet-'+ $Date
+New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterObject `
+    @{ `
+        vnetname='Vnet-Igloo-POC'; `
+        VnetaddressPrefix = '192.168.0.0/17'; `
+        mgmtsubnetsname = 'mgmt'; `
+        mgmtsubnetaddressPrefix = '192.168.105.0/24'; `
+        publicdmzinsubnetsname = 'Inside'; `
+        publicdmzinsubnetaddressPrefix = '192.168.114.0/24'; `
+        publicdmzoutsubnetsname = 'Outside'; `
+        publicdmzoutsubnetaddressPrefix = '192.168.113.0/24'; `
+        websubnetsname = 'web'; `
+        websubnetaddressPrefix = '192.168.115.0/24'; `
+        bizsubnetsname = 'biz';`
+        bizsubnetaddressPrefix = '192.168.116.0/24'; `
+        datasubnetsname = 'data';`
+        datasubnetaddressPrefix = '192.168.102.0/24'; `
+        Gatewaysubnetsname = 'GatewaySubnet'; `
+        GatewaysubnetaddressPrefix = '192.168.127.0/24'; `
+    } -Force | out-null
 
+#endregion
+
+#region Deployment of Storage Account
+Write-Output "Deploying Storage Accounts..."
+$DeploymentName = 'storageAccount'+ $Date
+New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $StorageTemplate -TemplateParameterObject `
+    @{ `
+        stdname = 'igloostdstore'; `
+        premname = 'igloopremstore'; `
+    } -Force | out-null
+
+#endregion
+
+#region Deployment of Availability Sets
+$ASList = Import-CSV $VMListfile | Where-Object {$_.AvailabilitySet -ne "None"}
+$ASListUnique = $ASList.AvailabilitySet | select-object -unique
+
+ForEach ( $AS in $ASListUnique)
+{
+    $ASName=$AS
+    $DeploymentName = $AS + $Date
+    New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $ASTemplate -TemplateParameterObject `
+        @{ AvailabilitySetName = $ASName.ToString() ; `
+            faultDomains = 2 ; `
+            updateDomains = 5 ; `
+        } -Force | out-null
+}
+#endregion
+
+
+#region Deployment of NSG
+
+$NSGList = Import-CSV $VMListfile | Where-Object {$_.subnet -ne "None"}
+$NSGListUnique = $NSGList.subnet | select-object -unique
+
+ForEach ( $NSG in $NSGListUnique){
+    $NSGName=$NSG+"-nsg"
+    $DeploymentName = $AS + $Date
+    New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $NSGTemplate -TemplateParameterObject `
+        @{`
+            networkSecurityGroupName=$NSGName.ToString(); `
+         } -Force | out-null
+}
 #endregion
 
 <#
@@ -118,48 +160,6 @@ else {
 #endregion
 #>
 
-#region Deployment of Storage Account
-Write-Output "Deploying Storage Accounts..."
-
-if (Invoke-WebRequest -Uri $StorageParametersFile) {
-    write-host "The parameter file was found, we will use the following info: "
-    write-host " Template file:     '$StorageTemplate'"
-    write-host " Parameter file:    '$StorageParametersFile'"
-    New-AzureRmResourceGroupDeployment -Name "Storage-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $StorageTemplate -TemplateParameterUri $StorageParametersFile -Force | out-null
-}
-else {
-    write-host "The parameter file was not found, you will need to enter all parameters manually...."
-    New-AzureRmResourceGroupDeployment -Name "Storage-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $StorageTemplate -Force | out-null
-}
-
-#endregion
-
-#region Deployment of Availability Sets
-#$ASList = Import-CSV $VMListfile | Where-Object {$_.AvailabilitySet -ne "None"}
-#$ASListUnique = $ASList.AvailabilitySet | select-object -unique
-
-#ForEach ( $AS in $ASListUnique)
-#{
-#    Write-Host $AS
-#    New-AzureRmResourceGroupDeployment -Name $AS -ResourceGroupName $ResourceGroupName -TemplateUri $ASTemplate -TemplateParameterObject `
-#        @{ AvailabilitySetName = $AS ; `
-#        faultDomains = 2 ; `
-#        updateDomains =5 ;
-#        sku = "Classic"; `
-#        }
-#}
-#endregion
-
-#region Deployment of NSG
-
-$NSGList = Import-CSV $VMListfile | Where-Object {$_.subnet -ne "None"}
-$NSGListUnique = $NSGList.subnet | select-object -unique
-
-ForEach ( $NSG in $NSGListUnique){
-    $NSGName=$NSG+"-nsg"
-    New-AzureRmResourceGroupDeployment -Name $NSG -ResourceGroupName $ResourceGroupName -TemplateUri $NSGTemplate -TemplateParameterObject @{networkSecurityGroupName=$NSGName} -Force | out-null
-}
-#endregion
 #region Deployment of Automation Account and RunBook
 
 #New-AzureRmResourceGroupDeployment -Name "Automation" -ResourceGroupName $ResourceGroupName -TemplateUri $AATemplate | out-null
