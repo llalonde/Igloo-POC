@@ -2,6 +2,9 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "location": {
+            "type": "string"
+        },
         "virtualMachineName": {
             "type": "string"
         },
@@ -11,28 +14,31 @@
         "adminUsername": {
             "type": "string"
         },
-        "adminPassword": {
-            "type": "securestring"
-        },
         "virtualNetworkName": {
             "type": "string"
         },
         "networkInterfaceName": {
             "type": "string"
         },
-        "availabilitySetName": {
-            "type": "string"
+        "adminPassword": {
+            "type": "securestring"
         },
-        "storageAccountName": {
-            "defaultValue": "igloostoragestdpoc",
+        "domainName": {
+            "type": "securestring"
+        },
+        "diagnosticsStorageAccountName": {
             "type": "string"
         },
         "subnetName": {
             "type": "string"
+        },
+        "_artifactsLocation": {
+            "type": "string",
+            "defaultValue": "https://raw.githubusercontent.com/pierreroman/Igloo-POC/master/"
         }
     },
     "variables": {
-        "vnetId": "[resourceId('Igloo-POC','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+        "vnetId": "[resourceId('Igloo','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]"
     },
     "resources": [
@@ -40,7 +46,7 @@
             "name": "[parameters('virtualMachineName')]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2016-04-30-preview",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]"
             ],
@@ -60,15 +66,14 @@
                     "imageReference": {
                         "publisher": "MicrosoftWindowsServer",
                         "offer": "WindowsServer",
-                        "sku": "2012-R2-Datacenter",
+                        "sku": "2008-R2-SP1",
                         "version": "latest"
                     },
                     "osDisk": {
-                        "createOption": "FromImage",
-                        "vhd": {
-                            "uri": "[concat(concat(reference(resourceId('igloo-poc', 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'), parameters('virtualMachineName'), '20170613022351.vhd')]"
-                        },
-                        "name": "[parameters('virtualMachineName')]"
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS"
+                        }
                     },
                     "dataDisks": []
                 },
@@ -79,8 +84,11 @@
                         }
                     ]
                 },
-                "availabilitySet": {
-                    "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[reference(resourceId('igloo', 'Microsoft.Storage/storageAccounts', parameters('diagnosticsStorageAccountName')), '2015-06-15').primaryEndpoints['blob']]"
+                    }
                 }
             }
         },
@@ -88,7 +96,7 @@
             "name": "[parameters('networkInterfaceName')]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2016-09-01",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "dependsOn": [],
             "properties": {
                 "ipConfigurations": [
@@ -102,6 +110,37 @@
                         }
                     }
                 ]
+            }
+        },
+        {
+            "type": "extensions",
+            "name": "CreateADForest",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachineName'))]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.19",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "ModulesUrl": "[concat(parameters('_artifactsLocation'), '/DSC/CreateADPDC.zip')]",
+                    "ConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
+                    "Properties": {
+                        "DomainName": "[parameters('domainName')]",
+                        "AdminCreds": {
+                            "UserName": "[parameters('adminUsername')]",
+                            "Password": "PrivateSettingsRef:AdminPassword"
+                        }
+                    }
+                },
+                "protectedSettings": {
+                    "Items": {
+                        "AdminPassword": "[parameters('adminPassword')]"
+                    }
+                }
             }
         }
     ],
