@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
-<#
+
 #region Prep & signin
 # sign in
 Write-Host "Logging in ...";
@@ -26,8 +26,15 @@ $Location = Read-Host -Prompt 'Input the Location for your network'
 # select Location
 $VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
 
+# Define a credential object
+$cred = Get-Credential -Message "UserName and Password for Windows VM"
+
+# Define a credential object
+$Linuxcred = Get-Credential -Message "UserName and Password for Linux VM"
+
+
 #endregion
-#>
+
 
 #region Set Template and Parameter location
 
@@ -45,6 +52,7 @@ $ASTemplate = $TemplateURI.AbsoluteUri + "AvailabilitySet.json"
 #$NSGTemplate = $TemplateURI.AbsoluteUri + "nsg.azuredeploy.json"
 
 #endregion
+
 #region Create the resource group
 
 # Start the deployment
@@ -63,6 +71,7 @@ else {
 }
 
 #endregion
+
 #region Deployment of virtual network
 Write-Output "Deploying virtual network..."
 $DeploymentName = 'Vnet-Subnet-'+ $Date
@@ -115,10 +124,9 @@ ForEach ( $AS in $ASListUnique)
 }
 #endregion
 
-
 #region Deployment of NSG
 
-$NSGList = Import-CSV $VMListfile | Where-Object {$_.subnet -ne "None"}
+$NSGList = Import-CSV $VMListfile
 $NSGListUnique = $NSGList.subnet | select-object -unique
 
 ForEach ( $NSG in $NSGListUnique){
@@ -130,43 +138,6 @@ ForEach ( $NSG in $NSGListUnique){
          } -Force | out-null
 }
 #endregion
-
-<#
-#region Deploy Cisco ASA appliance 
-<#
-Write-Host 
-Write-Output "Deploying Cisco ASAv appliance..."
-$ASAResourceGroupName = $ResourceGroupName + "-ASA"
-Get-AzureRmResourceGroup -Name $ASAResourceGroupName -ev notPresent -ea 0 | out-null
-if ($notPresent) {
-    Write-Output "Could not find resource group '$ASAResourceGroupName' - will create it"
-    Write-Output "Creating resource group '$ASAResourceGroupName' in location '$Location'...."
-    New-AzureRmResourceGroup -Name $ASAResourceGroupName -Location $Location -Force | out-null
-}
-else {
-    Write-Output "Using existing resource group '$ASAResourceGroupName'"
-}
-if (Invoke-WebRequest -Uri $ASAParametersFile) {
-    write-host "The parameter file was found, we will use the following info: "
-    write-host " Template file:     '$ASATemplate'"
-    write-host " Parameter file:    '$ASAParametersFile'"
-    New-AzureRmResourceGroupDeployment -Name "ASA-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -TemplateParameterUri $ASAParametersFile -Force | out-null
-}
-else {
-    write-host "The parameter file was not found, you will need to enter all parameters manually...."
-    New-AzureRmResourceGroupDeployment -Name "ASA-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -Force | out-null
-}
-#>
-#endregion
-#>
-
-#region Deployment of Automation Account and RunBook
-
-#New-AzureRmResourceGroupDeployment -Name "Automation" -ResourceGroupName $ResourceGroupName -TemplateUri $AATemplate | out-null
-
-# Create a Run As account by using a service principal
-
-# end of script
 
 $endtime = get-date
 $procestime = $endtime - $starttime
