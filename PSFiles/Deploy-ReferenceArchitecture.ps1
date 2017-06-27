@@ -46,7 +46,7 @@ $TemplateRootUriString = "https://raw.githubusercontent.com/pierreroman/Igloo-PO
 $TemplateURI = New-Object System.Uri -ArgumentList @($TemplateRootUriString)
 
 $VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
-#$ASATemplate = $TemplateURI.AbsoluteUri + "ASA.json"
+$DCTemplate = $TemplateURI.AbsoluteUri + "DC.json"
 $StorageTemplate = $TemplateURI.AbsoluteUri + "VMStorageAccount.json"
 $ASTemplate = $TemplateURI.AbsoluteUri + "AvailabilitySet.json"
 #$NSGTemplate = $TemplateURI.AbsoluteUri + "nsg.azuredeploy.json"
@@ -138,6 +138,28 @@ ForEach ( $NSG in $NSGListUnique){
          } -Force | out-null
 }
 #endregion
+
+#region Deployment of domain controler
+$DeploymentName = "Domain" + $Date
+
+$adminPassword = $cred.password
+$adminUsername = $cred.Username
+
+New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $DCTemplate -TemplateParameterObject `
+    @{`
+        virtualMachineName='poc-eus-dc1'; `
+        virtualMachineSize='Standard_D2_v2'; `
+        adminUsername=$adminUsername.ToString(); `
+        virtualNetworkName='Vnet-Igloo-POC'; `
+        networkInterfaceName='poc-eus-dc1'; `
+        adminPassword=$adminPassword
+        domainName='iglooaz.local'; `
+        diagnosticsStorageAccountName='igloostdstore'; `
+        subnetName='mgmt'; `
+    } -Force | out-null
+
+#endregion
+
 
 $endtime = get-date
 $procestime = $endtime - $starttime
