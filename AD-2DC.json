@@ -25,7 +25,7 @@
       "metadata": {
         "description": "The name of the storage account for the DC"
       },
-      "defaultValue": "igloostoragestdpoc"
+      "defaultValue": "igloostdstore"
     },
     "domainName": {
       "type": "string",
@@ -75,6 +75,17 @@
   },
   "resources": [
     {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[parameters('storageAccountName')]",
+      "apiVersion": "2016-01-01",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "Storage",
+      "properties": {}
+    },
+    {
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('adNicName')]",
       "apiVersion": "2016-03-30",
@@ -100,7 +111,8 @@
       "apiVersion": "2015-06-15",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkInterfaces', variables('adNicName'))]"
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('adNicName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
       ],
       "properties": {
         "hardwareProfile": {
