@@ -99,7 +99,7 @@
       "apiVersion": "2015-06-15",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkInterfaces', variables('adNicName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('adNicName'))]"
       ],
       "properties": {
         "hardwareProfile": {
