@@ -24,7 +24,8 @@
       "type": "string",
       "metadata": {
         "description": "The name of the storage account for the DC"
-      }
+      },
+      "defaultValue": "igloostoragestdpoc"
     },
     "domainName": {
       "type": "string",

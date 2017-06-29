@@ -48,16 +48,16 @@ $DeploymentName = 'Domain-DC-'+ $Date
 $userName=$cred.UserName
 $password=$cred.GetNetworkCredential().Password
 
-New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $$DCTemplate -TemplateParameterObject `
+New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $DCTemplate -TemplateParameterObject `
     @{ `
         adVMName = 'poc-eus-dc1'; `
-        storageAccountName = 'igloostoragestdpoc'
+        storageAccountName = 'igloostoragestdpoc'; `
         adminUsername = $userName; `
         adminPassword = $password; `
         domainName = 'Iglooaz.local'
         adAvailabilitySetName = 'Igloo-POC-DC-AS'; `
         virtualNetworkName = 'Vnet-Igloo-POC'; `
-    } -Force | out-null
+    } -Force
 
 #endregion
 
