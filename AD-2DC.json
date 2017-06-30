@@ -287,14 +287,14 @@
       "location": "[resourceGroup().location]",
       "apiVersion": "2016-10-01",
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines', parameters('DCVMName'))]"
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('adNicName'))]"
       ],
       "properties": {
         "addressSpace": {
           "addressPrefixes": []
         },
         "dhcpOptions": {
-          "dnsServers": "[reference(concat('Microsoft.Network/networkInterfaces', variables('adNicName')).privateIPAddress)]"
+          "dnsServers": "[reference(concat(variables('adNicName'),0)).ipConfigurations[0].properties.privateIPAddress]"
         },
         "subnets": []
       }
