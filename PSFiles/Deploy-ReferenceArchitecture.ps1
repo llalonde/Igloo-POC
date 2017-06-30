@@ -11,7 +11,7 @@ $starttime = get-date
 #region Prep & signin
 # sign in
 Write-Host "Logging in ...";
-Login-AzureRmAccount | Out-Null
+#Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
@@ -49,7 +49,8 @@ $VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
 $DCTemplate = $TemplateURI.AbsoluteUri + "DC.json"
 $StorageTemplate = $TemplateURI.AbsoluteUri + "VMStorageAccount.json"
 $ASTemplate = $TemplateURI.AbsoluteUri + "AvailabilitySet.json"
-#$NSGTemplate = $TemplateURI.AbsoluteUri + "nsg.azuredeploy.json"
+$NSGTemplate = $TemplateURI.AbsoluteUri + "nsg.azuredeploy.json"
+$DCTemplate = $TemplateURI.AbsoluteUri + "AD-2DC.json"
 
 #endregion
 
@@ -109,6 +110,9 @@ New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $Res
 #endregion
 
 #region Deployment of Availability Sets
+
+Write-Output "Starting deployment of Availability Sets"
+
 $ASList = Import-CSV $VMListfile | Where-Object {$_.AvailabilitySet -ne "None"}
 $ASListUnique = $ASList.AvailabilitySet | select-object -unique
 
@@ -126,6 +130,8 @@ ForEach ( $AS in $ASListUnique)
 
 #region Deployment of NSG
 
+Write-Output "Starting deployment of NSG"
+
 $NSGList = Import-CSV $VMListfile
 $NSGListUnique = $NSGList.subnet | select-object -unique
 
@@ -139,26 +145,53 @@ ForEach ( $NSG in $NSGListUnique){
 }
 #endregion
 
-#region Deployment of domain controler
-$DeploymentName = "Domain" + $Date
+#region Deployment of DC
+Write-Output "Deploying New Domain with Controller..."
+$DeploymentName = 'Domain-DC-'+ $Date
 
-$adminPassword = $cred.password
-$adminUsername = $cred.Username
+$userName=$cred.UserName
+$password=$cred.GetNetworkCredential().Password
 
 New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $DCTemplate -TemplateParameterObject `
-    @{`
-        virtualMachineName='poc-eus-dc1'; `
-        virtualMachineSize='Standard_D2_v2'; `
-        adminUsername=$adminUsername.ToString(); `
-        virtualNetworkName='Vnet-Igloo-POC'; `
-        networkInterfaceName='poc-eus-dc1'; `
-        adminPassword=$adminPassword
-        domainName='iglooaz.local'; `
-        diagnosticsStorageAccountName='igloostdstore'; `
-        subnetName='mgmt'; `
-    } -Force | out-null
+    @{ `
+        storageAccountName = 'igloostdstore'; `
+        DCVMName = 'poc-eus-dc1'; `
+        adminUsername = $userName; `
+        adminPassword = $password; `
+        domainName = 'Iglooaz.local'
+        adAvailabilitySetName = 'Igloo-POC-DC-AS'; `
+        virtualNetworkName = 'Vnet-Igloo-POC'; `
+    } -Force
 
 #endregion
+
+#region Update DNS with IP from DC set above
+
+Write-Output "Updating Vnet DNS to point to the newly create DC..."
+
+$vmname = "poc-eus-dc1"
+$vms = get-azurermvm
+$nics = get-azurermnetworkinterface | where VirtualMachine -NE $null #skip Nics with no VM
+
+foreach($nic in $nics)
+{
+    $vm = $vms | where-object -Property Id -EQ $nic.VirtualMachine.id
+    $prv =  $nic.IpConfigurations | select-object -ExpandProperty PrivateIpAddress
+    if ($($vm.Name) -eq $vmname)
+    {
+        $IP = $prv
+        break
+    }
+}
+
+$vnet = Get-AzureRmVirtualNetwork -ResourceGroupName $ResourceGroupName -name 'Vnet-Igloo-POC'
+$vnet.DhcpOptions.DnsServers = $IP 
+Set-AzureRmVirtualNetwork -VirtualNetwork $vnet | out-null
+
+#endregion
+
+
+
 
 
 $endtime = get-date

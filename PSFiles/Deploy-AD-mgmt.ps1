@@ -42,7 +42,7 @@ $DCTemplate = $TemplateURI.AbsoluteUri + "AD-2DC.json"
 #endregion
 
 #region Deployment of DC
-Write-Output "Deploying New Domain with Controllers..."
+Write-Output "Deploying New Domain with Controller..."
 $DeploymentName = 'Domain-DC-'+ $Date
 
 $userName=$cred.UserName
@@ -50,8 +50,8 @@ $password=$cred.GetNetworkCredential().Password
 
 New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $DCTemplate -TemplateParameterObject `
     @{ `
-        adVMName = 'poc-eus-dc1'; `
-        storageAccountName = 'igloostoragestdpoc'; `
+        storageAccountName = 'igloostdstore'; `
+        DCVMName = 'poc-eus-dc1'; `
         adminUsername = $userName; `
         adminPassword = $password; `
         domainName = 'Iglooaz.local'
@@ -62,6 +62,24 @@ New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $Res
 #endregion
 
 
+$vmname = "poc-eus-dc1"
+$vms = get-azurermvm
+$nics = get-azurermnetworkinterface | where VirtualMachine -NE $null #skip Nics with no VM
+
+foreach($nic in $nics)
+{
+    $vm = $vms | where-object -Property Id -EQ $nic.VirtualMachine.id
+    $prv =  $nic.IpConfigurations | select-object -ExpandProperty PrivateIpAddress
+    if ($($vm.Name) -eq $vmname)
+    {
+        $IP = $prv
+        break
+    }
+}
+
+$vnet = Get-AzureRmVirtualNetwork -ResourceGroupName $ResourceGroupName -name 'Vnet-Igloo-POC'
+$vnet.DhcpOptions.DnsServers = $IP 
+Set-AzureRmVirtualNetwork -VirtualNetwork $vnet | out-null
 
 
 $endtime = get-date
