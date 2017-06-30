@@ -20,6 +20,12 @@
         "description": "The name of the DC to be created"
       }
     },
+    "DC2VMName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the DC to be created"
+      }
+    },
     "storageAccountName": {
       "type": "string",
       "metadata": {
@@ -46,6 +52,13 @@
       },
       "defaultValue": "Vnet-Igloo-POC"
     },
+    "virtualNetworkAddressRange": {
+      "type": "string",
+      "metadata": {
+        "description": "The Availability set for the DCs"
+      },
+      "defaultValue": "192.168.105.0/24"
+    },
     "subnetName": {
       "type": "string",
       "metadata": {
@@ -70,6 +83,7 @@
   },
   "variables": {
     "adNicName": "adNic",
+    "ad2NicName": "ad2Nic",
     "vnetId": "[resourceId('Igloo','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]"
   },
@@ -88,6 +102,26 @@
     {
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('adNicName')]",
+      "apiVersion": "2016-03-30",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              },
+              "privateIPAllocationMethod": "Dynamic"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('ad2NicName')]",
       "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]",
       "dependsOn": [],
@@ -195,6 +229,84 @@
           }
         }
       ]
+    },
+    {
+      "name": "[parameters('DC2VMName')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2016-03-30",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('ad2NicName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_D2_v2"
+        },
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('adAvailabilitySetName'))]"
+        },
+        "osProfile": {
+          "computerName": "[parameters('DC2VMName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2012-R2-Datacenter",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk",
+            "vhd": {
+              "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))).primaryEndpoints.blob, 'vhds/', parameters('DC2VMName'), '-os-disk.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          },
+          "dataDisks": [
+            {
+              "vhd": {
+                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))).primaryEndpoints.blob, 'vhds/', parameters('DC2VMName'), '-data-disk.vhd')]"
+              },
+              "name": "[concat(parameters('DC2VMName'),'-data-disk1')]",
+              "caching": "None",
+              "diskSizeGB": "1000",
+              "lun": 0,
+              "createOption": "empty"
+            }
+          ]
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('ad2NicName'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "[parameters('virtualNetworkName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-10-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('adNicName'))]"
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('virtualNetworkAddressRange')]"
+          ]
+        },
+        "dhcpOptions": {
+          "dnsServers": "[reference(concat(variables('adNicName'))).ipConfigurations[0].properties.privateIPAddress]"
+        },
+        "subnets": []
+      }
     }
   ]
 }
