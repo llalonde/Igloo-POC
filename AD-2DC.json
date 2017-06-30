@@ -291,10 +291,12 @@
       ],
       "properties": {
         "addressSpace": {
-          "addressPrefixes": []
+          "addressPrefixes": [
+            "[reference(concat(variables('vnetId'))).properties.addressSpace.privateIPAddress]"
+          ]
         },
         "dhcpOptions": {
-          "dnsServers": "[reference(concat(variables('adNicName'),0)).ipConfigurations[0].properties.privateIPAddress]"
+          "dnsServers": "[reference(concat(variables('adNicName'))).ipConfigurations[0].properties.privateIPAddress]"
         },
         "subnets": []
       }
