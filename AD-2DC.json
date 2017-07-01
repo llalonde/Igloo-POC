@@ -196,5 +196,12 @@
         }
       ]
     }
-  ]
+  ],
+    "outputs": {
+        "DCIP": {
+            "type": "string",
+            "value": "reference([variables('adNicName')]).ipConfigurations[0].properties.privateIPAddress"
+        }
+    }
+
 }

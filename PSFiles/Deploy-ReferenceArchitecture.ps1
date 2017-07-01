@@ -104,6 +104,9 @@ $SA_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -Resource
         premname = 'premiumsa'; `
     } -Force
 
+$std_storage_account=$SA_Results.Outputs.stdsa.Value
+$prem_storage_account=$SA_Results.Outputs.premsa.Value
+
 #endregion
 
 #region Deployment of Availability Sets
