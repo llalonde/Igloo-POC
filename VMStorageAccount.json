@@ -11,7 +11,7 @@
     },
     "variables": {
         "storageAccountNameSTD": "[concat(parameters('stdname'), uniqueString(resourceGroup().id))]",
-        "storageAccountNamePREM": "[concat(parameters('stdname'), uniqueString(resourceGroup().id))]"
+        "storageAccountNamePREM": "[concat(parameters('premname'), uniqueString(resourceGroup().id))]"
     },
     "resources": [
         {
