@@ -200,7 +200,7 @@
   "outputs": {
     "DCIP": {
       "type": "object",
-      "value": "reference([variables('adNicName')]).ipConfigurations[0].properties.privateIPAddress"
+      "value": "reference([variables('adNicName')])"
     }
   }
 }
