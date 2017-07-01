@@ -10,8 +10,8 @@
         }
     },
     "variables": {
-        "storageAccountNameSTD": "[concat(uniquestring(resourceGroup().id), parameters('stdname'))]",
-        "storageAccountNamePREM": "[concat(uniquestring(resourceGroup().id), parameters('premname'))]"
+        "storageAccountNameSTD": "[concat(parameters('stdname'), uniqueString(resourceGroup().id))]",
+        "storageAccountNamePREM": "[concat(parameters('stdname'), uniqueString(resourceGroup().id))]"
     },
     "resources": [
         {
@@ -20,7 +20,7 @@
                 "name": "Standard_LRS"
             },
             "kind": "Storage",
-            "name": "(variables('storageAccountNameSTD')",
+            "name": "[variables('storageAccountNameSTD')]",
             "apiVersion": "2017-06-01",
             "location": "[resourceGroup().location]",
             "properties": {
@@ -40,7 +40,7 @@
         },
         {
             "apiVersion": "2017-06-01",
-            "name": "(variables('storageAccountNamePREM')",
+            "name": "[variables('storageAccountNamePREM')]",
             "location": "[resourceGroup().location]",
             "type": "Microsoft.Storage/storageAccounts",
             "sku": {
