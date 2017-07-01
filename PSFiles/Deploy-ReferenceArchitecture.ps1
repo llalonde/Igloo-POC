@@ -11,7 +11,7 @@ $starttime = get-date
 #region Prep & signin
 # sign in
 Write-Host "Logging in ...";
-#Login-AzureRmAccount | Out-Null
+Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
@@ -103,8 +103,8 @@ Write-Output "Deploying Storage Accounts..."
 $DeploymentName = 'storageAccount'+ $Date
 New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $StorageTemplate -TemplateParameterObject `
     @{ `
-        stdname = 'igloostdstore'; `
-        premname = 'igloopremstore'; `
+        stdname = 'standardsa'; `
+        premname = 'premiumsa'; `
     } -Force | out-null
 
 #endregion
