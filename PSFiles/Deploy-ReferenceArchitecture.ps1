@@ -7,9 +7,8 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
-<#
+
 #region Prep & signin
-# sign in
 # sign in
 Write-Host "Logging in ...";
 Login-AzureRmAccount | Out-Null
@@ -33,7 +32,6 @@ $Linuxcred = Get-Credential -Message "UserName and Password for Linux VM"
 
 
 #endregion
-#>
 
 #region Set Template and Parameter location
 
@@ -104,7 +102,7 @@ New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $Res
     @{ `
         stdname = 'standardsa'; `
         premname = 'premiumsa'; `
-    } -Force | out-null
+    } -Force
 
 #endregion
 

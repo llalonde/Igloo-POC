@@ -63,11 +63,11 @@
     "outputs": {
         "stdsa": {
             "type": "object",
-            "value": "[reference(variables('storageAccountNameSTD'))]"
+            "value": "[reference(variables('storageAccountNameSTD')).Name]"
         },
         "premsa": {
             "type": "object",
-            "value": "[reference(variables('storageAccountNamePREM'))]"
+            "value": "[reference(variables('storageAccountNamePREM')).Name]"
         }
     }
 }
