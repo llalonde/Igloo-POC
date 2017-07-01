@@ -98,7 +98,7 @@ New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $Res
 #region Deployment of Storage Account
 Write-Output "Deploying Storage Accounts..."
 $DeploymentName = 'storageAccount'+ $Date
-New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $StorageTemplate -TemplateParameterObject `
+$SA_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $StorageTemplate -TemplateParameterObject `
     @{ `
         stdname = 'standardsa'; `
         premname = 'premiumsa'; `
