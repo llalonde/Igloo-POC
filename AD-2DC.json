@@ -198,9 +198,9 @@
     }
   ],
   "outputs": {
-    "DCIP": {
-      "type": "object",
-      "value": "reference([variables('adNicName')])"
+    "NICobject": {
+      "value": "[variables('adNicName')]",
+      "type": "object"
     }
   }
 }
