@@ -16,7 +16,7 @@
                 "name": "Standard_LRS"
             },
             "kind": "Storage",
-            "name": "[parameters('stdname')]",
+            "name": "[concat(copyIndex(),parameters('stdname'), uniqueString(resourceGroup().id))]",
             "apiVersion": "2017-06-01",
             "location": "[resourceGroup().location]",
             "properties": {
@@ -36,7 +36,7 @@
         },
         {
             "apiVersion": "2017-06-01",
-            "name": "[parameters('premname')]",
+            "name": "[concat(copyIndex(),parameters('premname'), uniqueString(resourceGroup().id))]",
             "location": "[resourceGroup().location]",
             "type": "Microsoft.Storage/storageAccounts",
             "sku": {
