@@ -59,5 +59,15 @@
                 "supportsHttpsTrafficOnly": "false"
             }
         }
-    ]
+    ],
+    "outputs": {
+        "stdsa": {
+            "type": "object",
+            "value": "[reference(variables('storageAccountNameSTD'))]"
+        },
+        "premsa": {
+            "type": "object",
+            "value": "[reference(variables('storageAccountNamePREM'))]"
+        }
+    }
 }
