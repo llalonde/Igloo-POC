@@ -10,7 +10,23 @@ $starttime = get-date
 <#
 #region Prep & signin
 # sign in
-gloo
+# sign in
+Write-Host "Logging in ...";
+Login-AzureRmAccount | Out-Null
+
+# select subscription
+$subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
+$Subscription = Select-AzureRmSubscription -SubscriptionId $SubscriptionId | out-null
+
+# select Resource Group
+$ResourceGroupName = Read-Host -Prompt 'Input the resource group for your network'
+
+# select Location
+$Location = Read-Host -Prompt 'Input the Location for your network'
+
+# Define a credential object
+$cred = Get-Credential -Message "UserName and Password for Windows VM"
+
 
 # Define a credential object
 $Linuxcred = Get-Credential -Message "UserName and Password for Linux VM"
