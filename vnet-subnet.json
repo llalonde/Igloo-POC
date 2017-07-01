@@ -110,5 +110,15 @@
                 ]
             }
         }
-    ]
+    ],
+    "outputs": {
+        "VNetName": {
+            "type": "string",
+            "value": "[parameters('vnetname')]"
+        },
+        "VNetaddressPrefixes": {
+            "type": "string",
+            "value": "[parameters('VnetaddressPrefix')]"
+        }
+    }
 }

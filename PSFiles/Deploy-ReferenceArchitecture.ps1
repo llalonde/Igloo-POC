@@ -11,7 +11,7 @@ $starttime = get-date
 #region Prep & signin
 # sign in
 Write-Host "Logging in ...";
-Login-AzureRmAccount | Out-Null
+#Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
@@ -22,6 +22,9 @@ $ResourceGroupName = Read-Host -Prompt 'Input the resource group for your networ
 
 # select Location
 $Location = Read-Host -Prompt 'Input the Location for your network'
+
+# select Location
+$VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
 
 # Define a credential object
 $cred = Get-Credential -Message "UserName and Password for Windows VM"
@@ -73,7 +76,8 @@ else {
 #region Deployment of virtual network
 Write-Output "Deploying virtual network..."
 $DeploymentName = 'Vnet-Subnet-'+ $Date
-New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterObject `
+
+$Vnet_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterObject `
     @{ `
         vnetname='Vnet-Igloo-POC'; `
         VnetaddressPrefix = '192.168.0.0/17'; `
@@ -92,6 +96,9 @@ New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $Res
         Gatewaysubnetsname = 'GatewaySubnet'; `
         GatewaysubnetaddressPrefix = '192.168.127.0/24'; `
     } -Force | out-null
+
+$VNetName = $Vnet_Results.Outputs.VNetName.Value
+$VNetaddressPrefixes =  $Vnet_Results.Outputs.VNetaddressPrefixes.Value
 
 #endregion
 
@@ -146,15 +153,15 @@ ForEach ( $NSG in $NSGListUnique){
 #endregion
 
 #region Deployment of DC
-Write-Output "Deploying New Domain with Controller..."
+Write-Output "Starting deployment of New Domain with Controller..."
 $DeploymentName = 'Domain-DC-'+ $Date
 
 $userName=$cred.UserName
 $password=$cred.GetNetworkCredential().Password
 
-New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $DCTemplate -TemplateParameterObject `
+$DCIP_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $DCTemplate -TemplateParameterObject `
     @{ `
-        storageAccountName = 'igloostdstore'; `
+        storageAccountName = $std_storage_account; `
         DCVMName = 'poc-eus-dc1'; `
         adminUsername = $userName; `
         adminPassword = $password; `
@@ -163,8 +170,11 @@ New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $Res
         virtualNetworkName = 'Vnet-Igloo-POC'; `
     } -Force
 
+$DCIP = $DCIP_Results.Outputs.premsa.Value
+
 #endregion
 
+<#
 #region Update DNS with IP from DC set above
 
 Write-Output "Updating Vnet DNS to point to the newly create DC..."
@@ -189,7 +199,7 @@ $vnet.DhcpOptions.DnsServers = $IP
 Set-AzureRmVirtualNetwork -VirtualNetwork $vnet | out-null
 
 #endregion
-
+#>
 
 
 
