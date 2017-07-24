@@ -159,7 +159,7 @@ $DeploymentName = 'Domain-DC-'+ $Date
 $userName=$cred.UserName
 $password=$cred.GetNetworkCredential().Password
 
-$DCIP_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $DCTemplate -TemplateParameterObject `
+$DC_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $DCTemplate -TemplateParameterObject `
     @{ `
         storageAccountName = $std_storage_account; `
         DCVMName = 'poc-eus-dc1'; `
@@ -170,7 +170,7 @@ $DCIP_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -Resour
         virtualNetworkName = 'Vnet-Igloo-POC'; `
     } -Force
 
-$DCIP = $DCIP_Results.Outputs.premsa.Value
+#$NICobject = $DC_Results.Outputs.premsa.Value
 
 #endregion
 
