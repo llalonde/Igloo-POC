@@ -11,7 +11,7 @@ $starttime = get-date
 #region Prep & signin
 # sign in
 Write-Host "Logging in ...";
-#Login-AzureRmAccount | Out-Null
+Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
@@ -170,11 +170,9 @@ $DC_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -Resource
         virtualNetworkName = 'Vnet-Igloo-POC'; `
     } -Force
 
-#$NICobject = $DC_Results.Outputs.premsa.Value
-
 #endregion
 
-<#
+
 #region Update DNS with IP from DC set above
 
 Write-Output "Updating Vnet DNS to point to the newly create DC..."
@@ -199,11 +197,6 @@ $vnet.DhcpOptions.DnsServers = $IP
 Set-AzureRmVirtualNetwork -VirtualNetwork $vnet | out-null
 
 #endregion
-#>
-
-
-
-
 
 
 $endtime = get-date

@@ -196,11 +196,5 @@
         }
       ]
     }
-  ],
-  "outputs": {
-    "NICobject": {
-      "value": "[variables('adNicName')]",
-      "type": "object"
-    }
-  }
+  ]
 }
