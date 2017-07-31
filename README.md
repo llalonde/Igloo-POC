@@ -7,9 +7,14 @@ The process requires to execute multiple script using PowerShell.  You need to e
 
 Files Included in this Repo:
 
-The Powershell scripts are located in the PSFiles folder.
+1. PSFiles folder: The Powershell scripts
+2. DSC folder: Desired Configuration Scripts for the DC and Domain Creation
+3. csv_files: the list of vm required for the solution in a CSV format
+4. custom_script: misc scripts used in the original POC.
+5. Root:  JSON templates and Readme.md (this file)
 
-* Deploy-ReferenceArchitecture.ps1:  This script is the main script for the deployment of the infrastructure.
+
+Deploy-ReferenceArchitecture.ps1:  This script is the main script for the deployment of the infrastructure located in the PSFiles folder.
 
 **This PowerShell script will deploy the following:**
 
@@ -32,6 +37,10 @@ To execute the script, fork the repo to your own github subscription and clone i
 2. Input the resource group for your network = the Resource Group Name you want to deploy the solution to.
 3. Input the Location for your network = the Azure Region you need to deploy to.  i.e.: 'West US' or 'East US 2'
 4. Input the Location of the list of VMs to be created = the path and file name where the list of VM is defined.  i.e: C:\Users\pierrer\Documents\Github\Igloo-POC\csv_files\VMList.csv
+5. The script will prompt for username and credentials to be used for the creation of the VMs in this Resource Group.
+ 
+
+
 
 
 
