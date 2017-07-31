@@ -70,7 +70,7 @@
   },
   "variables": {
     "adNicName": "adNic",
-    "vnetId": "[resourceId('Igloo','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+    "vnetId": "[resourceId(resourceGroup().name,'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]"
   },
   "resources": [
