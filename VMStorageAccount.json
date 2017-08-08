@@ -15,7 +15,7 @@
     "variables": {
         "storageAccountNameSTD": "[concat(parameters('stdname'), uniqueString(resourceGroup().id))]",
         "storageAccountNamePREM": "[concat(parameters('premname'), uniqueString(resourceGroup().id))]",
-        "storageAccountNameLOG": "[concat(parameters('logname'), uniqueString(resourceGroup().id))]",
+        "storageAccountNameLOG": "[concat(parameters('logname'), uniqueString(resourceGroup().id))]"
     },
     "resources": [
         {
@@ -86,7 +86,7 @@
                 },
                 "supportsHttpsTrafficOnly": "false"
             }
-        },
+        }
     ],
     "outputs": {
         "stdsa": {

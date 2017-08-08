@@ -109,10 +109,17 @@ $SA_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -Resource
     @{ `
         stdname = 'standardsa'; `
         premname = 'premiumsa'; `
+        logname = 'stdlogstorage'; `
     } -Force
 
 $std_storage_account=$SA_Results.Outputs.stdsa.Value
 $prem_storage_account=$SA_Results.Outputs.premsa.Value
+$log_storage_account=$SA_Results.Outputs.logsa.Value
+
+
+Set-AzureRmCurrentStorageAccount -Name $std_storage_account -ResourceGroupName $ResourceGroupName | out-null
+
+New-AzureStorageContainer -Name logs | out-null
 
 #endregion
 
