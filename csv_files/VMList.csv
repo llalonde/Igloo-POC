@@ -29,8 +29,6 @@ DFS Server 02,dfs2,Windows,Win2012R2,storagestd,biz,Igloo-POC-DFS-AS,None,Standa
 Diff Server,diff,Windows,Win2012R2,storagestd,biz,None,None,Standard_D2_v2
 Doc Engine Server 01,doceng1,Windows,Win2012R2,storagestd,biz,Igloo-POC-DocEng-AS,None,Standard_D2_v2
 Doc Engine Server 02,doceng2,Windows,Win2012R2,storagestd,biz,Igloo-POC-DocEng-AS,None,Standard_D2_v2
-Domain Controller 01,dc1,Windows,Win2012R2,storagestd,mgmt,Igloo-POC-DC-AS,None,Standard_D2_v2
-Domain Controller 02,dc2,Windows,Win2012R2,storagestd,mgmt,Igloo-POC-DC-AS,None,Standard_D2_v2
 FTP,ftp,Windows,Win2012R2,storagestd,biz,None,300,Standard_D2_v2
 ICS Server 01,ics1,Windows,Win2012R2,storagestd,biz,Igloo-POC-ICS-AS,None,Standard_D2_v2
 ICS Server 02,ics2,Windows,Win2012R2,storagestd,biz,Igloo-POC-ICS-AS,None,Standard_D2_v2
