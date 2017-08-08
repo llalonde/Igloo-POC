@@ -142,7 +142,7 @@
             "createOption": "FromImage",
             "managedDisk": {
               "storageAccountType": "Standard_LRS"
-            },
+            }
           },
           "dataDisks": [
             {
