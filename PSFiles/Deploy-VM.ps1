@@ -6,7 +6,7 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
-<#
+
 #region Prep & signin
 
 # sign in
@@ -36,7 +36,7 @@ $cred = Get-Credential
 Write-Host "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created";
 $Linuxcred = Get-Credential 
 #endregion
-#>
+
 
 
 $Windows2012sourceImageUri = 'https://igloostoragestdpocw.blob.core.windows.net/vhds/Windows2012R220170612221756.vhd'

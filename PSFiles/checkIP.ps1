@@ -6,7 +6,7 @@ Login-AzureRmAccount | Out-Null
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
 $Subscription = Select-AzureRmSubscription -SubscriptionId $SubscriptionId | out-null
 
-$rgname = "Igloo-POC-rg"
+$rgname = "Igloo-POC-PR"
 
 $Vnet= "Vnet-Igloo-POC"
 
