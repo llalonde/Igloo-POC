@@ -7,11 +7,11 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
-
+<#
 #region Prep & signin
 # sign in
 Write-Host "Logging in ...";
-Login-AzureRmAccount | Out-Null
+#Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
@@ -33,6 +33,7 @@ $cred = Get-Credential -Message "UserName and Password for Windows VM"
 # Define a credential object
 $Linuxcred = Get-Credential -Message "UserName and Password for Linux VM"
 
+#>
 
 #endregion
 
@@ -109,7 +110,7 @@ $SA_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -Resource
     @{ `
         stdname = 'standardsa'; `
         premname = 'premiumsa'; `
-        logname = 'stdlogstorage'; `
+        logname = 'logsa'; `
     } -Force
 
 $std_storage_account=$SA_Results.Outputs.stdsa.Value
