@@ -6,37 +6,37 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
-<#
+
 #region Prep & signin
 
 # sign in
 Write-Host "Logging in ...";
-Login-AzureRmAccount | Out-Null
+#Login-AzureRmAccount | Out-Null
 
 # select subscription
-$subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
-Select-AzureRmSubscription -SubscriptionID $subscriptionId | out-null
+#$subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
+#Select-AzureRmSubscription -SubscriptionID $subscriptionId | out-null
 
 
 # select Resource Group
-$ResourceGroupName = Read-Host -Prompt 'Input the resource group for your network'
+#$ResourceGroupName = Read-Host -Prompt 'Input the resource group for your network'
 
 # select Location
-$Location = Read-Host -Prompt 'Input the Location for your network'
+#$Location = Read-Host -Prompt 'Input the Location for your network'
 
 # select Location
 $VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
 
 
 # Define a credential object
-Write-Host "You Will now be asked for a UserName and Password that will be applied to the windows Virtual Machine that will be created";
-$Wincred = Get-Credential 
+#Write-Host "You Will now be asked for a UserName and Password that will be applied to the windows Virtual Machine that will be created";
+#$Wincred = Get-Credential 
 
 # Define a credential object
-Write-Host "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created";
-$Linuxcred = Get-Credential 
+#Write-Host "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created";
+#$Linuxcred = Get-Credential 
 #endregion
-#>
+
 
 #region Set Template and Parameter location
 

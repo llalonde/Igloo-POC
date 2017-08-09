@@ -41,19 +41,13 @@
             "metadata": {
                 "description": "The FQDN of the AD domain"
             }
-        },
-        "domainJoinOptions": {
-            "type": "int",
-            "defaultValue": 3,
-            "metadata": {
-                "description": "Set of bit flags that define the join options. Default value of 3 is a combination of NETSETUP_JOIN_DOMAIN (0x00000001) & NETSETUP_ACCT_CREATE (0x00000002) i.e. will join the domain and create the account on the domain. For more information see https://msdn.microsoft.com/en-us/library/aa392154(v=vs.85).aspx"
-            }
         }
     },
     "variables": {
         "vnetId": "[resourceId('Igloo-POC-PR','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
-        "apiVersion": "2015-06-15"
+        "apiVersion": "2015-06-15",
+        "domainJoinOptions": 3
     },
     "resources": [
         {
@@ -116,9 +110,9 @@
                         "autoUpgradeMinorVersion": true,
                         "settings": {
                             "Name": "[parameters('domainToJoin')]",
-                            "User": "[concat(parameters('domainToJoin'), '\\', parameters('adminUsername'))]",
+                            "User": "[parameters('adminUsername')]",,
                             "Restart": "true",
-                            "Options": "[parameters('domainJoinOptions')]"
+                            "Options": "[variables('domainJoinOptions')]"
                         },
                         "protectedSettings": {
                             "Password": "[parameters('adminPassword')]"
@@ -190,9 +184,9 @@
                         "autoUpgradeMinorVersion": true,
                         "settings": {
                             "Name": "[parameters('domainToJoin')]",
-                            "User": "[concat(parameters('domainToJoin'), '\\', parameters('adminUsername'))]",
+                            "User": "[parameters('adminUsername')]",
                             "Restart": "true",
-                            "Options": "[parameters('domainJoinOptions')]"
+                            "Options": "[variables('domainJoinOptions')]"
                         },
                         "protectedSettings": {
                             "Password": "[parameters('adminPassword')]"
