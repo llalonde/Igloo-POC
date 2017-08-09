@@ -1,0 +1,9 @@
+Server,servername,OS,ImageName,StorageAccount,subnet,AvailabilitySet,DataDiskSize,VMSize
+Monitoring Server 03 (New Relic),mon3,Linux,CentOS7,storagestd,biz,None,None,Standard_A1_v2
+Kafka Node 01,kafka1,Linux,CentOS7,storagestd,biz,Igloo-POC-Kafka-AS,80,Standard_A2m_v2
+Kafka Node 02,kafka2,Linux,CentOS7,storagestd,biz,Igloo-POC-Kafka-AS,80,Standard_A2m_v2
+Admin Jumpbox,admin,Windows,Win2012R2,storagestd,biz,None,None,Standard_D2_v2
+Certificiate Authority,ca,Windows,Win2012R2,storagestd,mgmt,None,None,Standard_D2_v2
+Cron Server,cron,Windows,Win2012R2,storagestd,biz,None,None,Standard_D2_v2
+Datafeeds Server 01,dfd1,Windows,Win2012R2,storagestd,biz,Igloo-POC-DFD-AS,None,Standard_D2_v2
+Datafeeds Server 02,dfd2,Windows,Win2012R2,storagestd,biz,Igloo-POC-DFD-AS,None,Standard_D2_v2

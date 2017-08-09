@@ -11,7 +11,7 @@ $starttime = get-date
 #region Prep & signin
 # sign in
 Write-Host "Logging in ...";
-Login-AzureRmAccount | Out-Null
+#Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
@@ -48,6 +48,7 @@ $VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
 $DCTemplate = $TemplateURI.AbsoluteUri + "DC.json"
 $StorageTemplate = $TemplateURI.AbsoluteUri + "VMStorageAccount.json"
 $ASTemplate = $TemplateURI.AbsoluteUri + "AvailabilitySet.json"
+$ASCTemplate = $TemplateURI.AbsoluteUri + "AvailabilitySetClassic.json"
 $NSGTemplate = $TemplateURI.AbsoluteUri + "nsg.azuredeploy.json"
 $DCTemplate = $TemplateURI.AbsoluteUri + "AD-2DC.json"
 
@@ -164,6 +165,12 @@ $DeploymentName = 'Domain-DC-'+ $Date
 
 $userName=$cred.UserName
 $password=$cred.GetNetworkCredential().Password
+
+New-AzureRmResourceGroupDeployment -Name 'domain-AS' -ResourceGroupName $ResourceGroupName -TemplateFile $ASCTemplate -TemplateParameterObject `
+    @{ AvailabilitySetName = 'Igloo-POC-DC-AS' ; `
+        faultDomains = 2 ; `
+        updateDomains = 5 ; `
+    } -Force | out-null
 
 $DC_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $DCTemplate -TemplateParameterObject `
     @{ `
