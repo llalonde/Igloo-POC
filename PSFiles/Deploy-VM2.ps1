@@ -38,10 +38,13 @@ $Linuxcred = Get-Credential
 #endregion
 
 
-
-$Windows2012sourceImageUri = 'https://igloostoragestdpocw.blob.core.windows.net/vhds/Windows2012R220170612221756.vhd'
-$CentOS6sourceImageUri = 'https://igloostoragestdpocw.blob.core.windows.net/vhds/centos6temp220170612211517.vhd'
-$CentOS7sourceImageUri = 'https://igloostoragestdpocw.blob.core.windows.net/vhds/centos7temp20170612170035.vhd'
+switch ($VMImageName)
+{
+    'CentOS6' {$ImageUri = 'https://standardsaiwrs4jpmap5k4.blob.core.windows.net/vhds/centos6temp220170612211517.vhd'}
+    'CentOS7' {$ImageUri = 'https://standardsaiwrs4jpmap5k4.blob.core.windows.net/vhds/centos7temp20170612170035.vhd'}
+    'Windows' {$ImageUri = 'https://standardsaiwrs4jpmap5k4.blob.core.windows.net/vhds/Windows2012R220170612221756.vhd'}
+    Default {Write-Host "No Image Defined...."}
+}
 
 
 #region Deployment of VM from VMlist.CSV
@@ -63,6 +66,27 @@ ForEach ( $VM in $VMList) {
     Get-AzureRmVM -Name $VMName -ResourceGroupName $ResourceGroupName -ev notPresent -ea 0  | Out-Null
 
     if ($notPresent) {
+        if ($ASname -ne "None") {
+            Get-AzureRmAvailabilitySet -ResourceGroupName $ResourceGroupName -name $ASname -ev notPresent -ea 0  | Out-Null
+            if ($notPresent) {
+                Write-Output "Could not find Availability Set '$ASname'in '$ResourceGroupName' - It will be created."
+                Write-Output "Creating Availability Set '$ASname'...."
+                Write-host 
+                New-AzureRmAvailabilitySet -Location $Location -Name $ASname -ResourceGroupName $ResourceGroupName | out-null
+                $AS = Get-AzureRmAvailabilitySet -ResourceGroupName $ResourceGroupName -name $ASname
+                $ASID = $as.Id
+            }
+            else {
+                Write-Output "Using existing Availability Set '$ASname'...."
+                Write-host 
+                $AS = Get-AzureRmAvailabilitySet -ResourceGroupName $ResourceGroupName -name $ASname
+                $ASID = $as.Id
+            }
+        }
+        else {
+            write-host "Virtual Machine not part of an availability set"
+        }
+   
         $vnet = Get-AzureRMVirtualNetwork -ResourceGroupName $ResourceGroupName
         $Subnets = $vnet.Subnets
     
@@ -91,7 +115,7 @@ ForEach ( $VM in $VMList) {
             $diskName = $VMName + 'OsDisk'
             $osDiskUri = '{0}vhds/{1}.vhd' -f $storageAcc.PrimaryEndpoints.Blob.ToString(), $diskName
 
-            $vmConfig = Set-AzureRmVMOSDisk -VM $vmConfig -Name $diskName -VhdUri $osDiskUri -CreateOption fromImage -SourceImageUri $Windows2012sourceImageUri -Windows
+            $vmConfig = Set-AzureRmVMOSDisk -VM $vmConfig -Name $diskName -VhdUri $osDiskUri -CreateOption fromImage -SourceImageUri $ImageUri -Windows
 
 
             New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $location -VM $vmConfig
@@ -119,13 +143,8 @@ ForEach ( $VM in $VMList) {
 
             $diskName = $VMName + 'OsDisk'
             $osDiskUri = '{0}vhds/{1}.vhd' -f $storageAcc.PrimaryEndpoints.Blob.ToString(), $diskName
+            $vmConfig = Set-AzureRmVMOSDisk -VM $vmConfig -Name $diskName -VhdUri $osDiskUri -CreateOption fromImage -SourceImageUri $ImageUri -Linux
 
-            if ($VMImageNAme -eq "CentOS6") {
-                $vmConfig = Set-AzureRmVMOSDisk -VM $vmConfig -Name $diskName -VhdUri $osDiskUri -CreateOption fromImage -SourceImageUri $CentOS6sourceImageUri -Linux
-            }
-            else {
-                $vmConfig = Set-AzureRmVMOSDisk -VM $vmConfig -Name $diskName -VhdUri $osDiskUri -CreateOption fromImage -SourceImageUri $CentOS7sourceImageUri -Linux
-            }
             Write-Host "create VM"
 
             New-AzureRmVM -ResourceGroupName $ResourceGroupName -Location $location -VM $vmConfig

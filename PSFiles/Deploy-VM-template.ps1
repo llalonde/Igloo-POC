@@ -14,27 +14,27 @@ Write-Host "Logging in ...";
 #Login-AzureRmAccount | Out-Null
 
 # select subscription
-$subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
-Select-AzureRmSubscription -SubscriptionID $subscriptionId | out-null
+#$subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
+#Select-AzureRmSubscription -SubscriptionID $subscriptionId | out-null
 
 
 # select Resource Group
-$ResourceGroupName = Read-Host -Prompt 'Input the resource group for your network'
+#$ResourceGroupName = Read-Host -Prompt 'Input the resource group for your network'
 
 # select Location
-$Location = Read-Host -Prompt 'Input the Location for your network'
+#$Location = Read-Host -Prompt 'Input the Location for your network'
 
 # select Location
-$VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
+#$VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
 
 
 # Define a credential object
-Write-Host "You Will now be asked for a UserName and Password that will be applied to the windows Virtual Machine that will be created";
-$Wincred = Get-Credential 
+#Write-Host "You Will now be asked for a UserName and Password that will be applied to the windows Virtual Machine that will be created";
+#$Wincred = Get-Credential 
 
 # Define a credential object
-Write-Host "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created";
-$Linuxcred = Get-Credential 
+#Write-Host "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created";
+#$Linuxcred = Get-Credential 
 #endregion
 
 #region Set Template and Parameter location
@@ -67,6 +67,8 @@ ForEach ( $VM in $VMList) {
     $DataDiskName = $VM.ServerName + "Data"
     $VMImageName = $vm.ImageName
 
+    $Nic=$VMName+'-nic'
+
     switch ($VMImageName)
     {
         'CentOS6' {$ImageUri = 'https://standardsaiwrs4jpmap5k4.blob.core.windows.net/vhds/centos6temp220170612211517.vhd'}
@@ -83,6 +85,7 @@ ForEach ( $VM in $VMList) {
     }
 
     $vnet=Get-AzureRmVirtualNetwork -ResourceGroupName $ResourceGroupName
+    $vnetname = $vnet.Name
 
     Write-Output "Deploying '$VMName'..."
     $DeploymentName = 'VM-'+$VMName + '-'+ $Date
@@ -93,13 +96,13 @@ ForEach ( $VM in $VMList) {
     }
     else
     {
-        $Vnet_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $VMFromUserImage -TemplateParameterObject `
+        $Vnet_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $LinuxTemplate -TemplateParameterObject `
             @{ `
                 virtualMachineName=$VMName;`
                 virtualMachineSize=$VMSize;`
                 adminUsername=$cred.UserName;`
-                virtualNetworkName=$cred.Password;`
-                networkInterfaceName=$VMName+'-nic';`
+                virtualNetworkName=$vnetname;`
+                networkInterfaceName=$Nic;`
                 adminPassword=$cred.Password;`
                 availabilitySetName=$ASname;`
                 diagnosticsStorageAccountName='logsaiwrs4jpmap5k4';`
