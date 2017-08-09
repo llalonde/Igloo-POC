@@ -110,7 +110,7 @@
                         "autoUpgradeMinorVersion": true,
                         "settings": {
                             "Name": "[parameters('domainToJoin')]",
-                            "User": "[parameters('adminUsername')]",,
+                            "User": "[parameters('adminUsername')]",
                             "Restart": "true",
                             "Options": "[variables('domainJoinOptions')]"
                         },

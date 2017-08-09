@@ -25,7 +25,7 @@ Write-Host "Logging in ...";
 #$Location = Read-Host -Prompt 'Input the Location for your network'
 
 # select Location
-$VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
+#$VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
 
 
 # Define a credential object
