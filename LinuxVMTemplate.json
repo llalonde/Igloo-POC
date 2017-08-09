@@ -22,7 +22,7 @@
         },
         "availabilitySetName": {
             "type": "string",
-            "defaultValue": "None",
+            "defaultValue": "None"
         },
         "diagnosticsStorageAccountName": {
             "type": "string"
