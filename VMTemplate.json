@@ -178,7 +178,7 @@
                     "condition": "[equals(parameters('vmos'),'Windows')]",
                     "apiVersion": "[variables('apiVersion')]",
                     "type": "Microsoft.Compute/virtualMachines/extensions",
-                    "name": "[concat(parameters('domainToJoin'),'/joindomain')]",
+                    "name": "[concat(parameters('domainToJoin'),'/joindomainA')]",
                     "location": "[resourceGroup().location]",
                     "dependsOn": [
                         "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('virtualMachineName'),'A'))]"
