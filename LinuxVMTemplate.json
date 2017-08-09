@@ -26,6 +26,9 @@
         "diagnosticsStorageAccountName": {
             "type": "string"
         },
+        "ImageURI": {
+            "type": "string"
+        },
         "subnetName": {
             "type": "string"
         }
@@ -55,10 +58,10 @@
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "id": "/subscriptions/54a522b6-6cd7-4325-b4e6-566f9d921835/resourceGroups/Igloo-POC-PR/providers/Microsoft.Compute/images/centos7"
+                        "id": "[resourceId('Microsoft.Compute/images',  parameters('ImageURI'))]"
                     },
                     "osDisk": {
-                        "createOption": "fromImage",
+                        "createOption": "FromImage",
                         "managedDisk": {
                             "storageAccountType": "Standard_LRS"
                         }
