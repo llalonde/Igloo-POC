@@ -5,6 +5,9 @@
         "virtualMachineName": {
             "type": "string"
         },
+        "vmos": {
+            "type": "string"
+        },
         "virtualMachineSize": {
             "type": "string"
         },
@@ -165,6 +168,7 @@
             }
         },
         {
+            "condition": "[equals(parameters('vmos'),'Windows')]",
             "apiVersion": "[variables('apiVersion')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('domainToJoin'),'/joindomain')]",

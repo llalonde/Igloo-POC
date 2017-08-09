@@ -6,7 +6,7 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
-
+<#
 #region Prep & signin
 
 # sign in
@@ -36,6 +36,7 @@ $Wincred = Get-Credential
 Write-Host "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created";
 $Linuxcred = Get-Credential 
 #endregion
+#>
 
 #region Set Template and Parameter location
 
@@ -90,7 +91,7 @@ ForEach ( $VM in $VMList) {
     Write-Output "Deploying '$VMName'..."
     $DeploymentName = 'VM-'+$VMName + '-'+ $Date
 
-    $Vnet_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $LinuxTemplate -TemplateParameterObject `
+    $Vnet_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $Template -TemplateParameterObject `
         @{ `
             virtualMachineName=$VMName;`
             virtualMachineSize=$VMSize;`
