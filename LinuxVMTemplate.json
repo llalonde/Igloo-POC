@@ -87,7 +87,7 @@
             }
         },
         {
-            "condition": "[empty(parameters('availabilitySetName'))]",
+            "condition": "[contains(parameters('availabilitySetName'),'Igloo-POC')]",
             "name": "[concat(parameters('virtualMachineName'),'AS')]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2016-04-30-preview",
