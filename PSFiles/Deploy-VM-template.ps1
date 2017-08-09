@@ -11,7 +11,7 @@ $starttime = get-date
 
 # sign in
 Write-Host "Logging in ...";
-Login-AzureRmAccount | Out-Null
+#Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
@@ -46,7 +46,8 @@ $Date=Get-Date -Format yyyyMMdd
 $TemplateRootUriString = "https://raw.githubusercontent.com/pierreroman/Igloo-POC/master/"
 $TemplateURI = New-Object System.Uri -ArgumentList @($TemplateRootUriString)
 
-$VMFromUserImage = $TemplateURI.AbsoluteUri + "VMFromUserImage.json"
+$LinuxTemplate = $TemplateURI.AbsoluteUri + "LinuxVMTemplate.json"
+$WindowsTemplate = $TemplateURI.AbsoluteUri + "WindowsVMTemplate.json"
 
 #endregion
 
@@ -83,36 +84,32 @@ ForEach ( $VM in $VMList) {
 
     $vnet=Get-AzureRmVirtualNetwork -ResourceGroupName $ResourceGroupName
 
-    Write-Host "Processing '$VMName'...."
-    Get-AzureRmVM -Name $VMName -ResourceGroupName $ResourceGroupName -ev notPresent -ea 0  | Out-Null
+    Write-Output "Deploying '$VMName'..."
+    $DeploymentName = 'VM-'+$VMName + '-'+ $Date
 
-    if ($notPresent) {
-        if ($ASname -ne "None") {
-        
-            Write-Output "Deploying '$VMName'..."
-            $DeploymentName = 'VM-'+$VMName + '-'+ $Date
-            
-            $Vnet_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $VMFromUserImage -TemplateParameterObject `
-                @{ `
-                    customVmName= $VMName; `
-                    bootDiagnosticsStorageAccountName='standardsaiwrs4jpmap5k4'; `
-                    ResourceGroupName=$ResourceGroupName; `
-                    osDiskVhdUri='$ImageUri'; `
-                    dnsLabelPrefix=''; `
-                    adminUsername=$cred.UserName; `
-                    adminPassword=$cred.Password; `
-                    osType=$VMOS; `
-                    vmSize=$VMSize; `
-                    VnetName=$vnet.Name;`
-                    SubnetName=$VMsubnet; `
-                    domainToJoin='Iglooaz.local';`
-                    domainToJoindomainJoinOptions= '3'; `
-                } -Force | out-null
-        }
-        else {
-            write-host "Virtual Machine not part of an availability set"
-        }
+    if ($VMOS -eq "Windows")
+    {
+        Write-Output "Windows"
     }
+    else
+    {
+        $Vnet_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $VMFromUserImage -TemplateParameterObject `
+            @{ `
+                virtualMachineName=$VMName;`
+                virtualMachineSize=$VMSize;`
+                adminUsername=$cred.UserName;`
+                virtualNetworkName=$cred.Password;`
+                networkInterfaceName=$VMName+'-nic';`
+                adminPassword=$cred.Password;`
+                availabilitySetName=$ASname;`
+                diagnosticsStorageAccountName='logsaiwrs4jpmap5k4';`
+                subnetName=$VMsubnet;`
+            } -Force | out-null
+    }
+            
+
 }
 
 #endregion
+
+ResourceGroupNameFromTemplate

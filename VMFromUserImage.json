@@ -26,12 +26,6 @@
                 "description": "Uri of the your user image"
             }
         },
-        "dnsLabelPrefix": {
-            "type": "string",
-            "metadata": {
-                "description": "DNS Label for the Public IP. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error."
-            }
-        },
         "adminUsername": {
             "type": "string",
             "metadata": {
@@ -173,10 +167,10 @@
         {
             "apiVersion": "[variables('apiVersion')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('dnsLabelPrefix'),'/joindomain')]",
+            "name": "[concat(parameters('domainToJoin'),'/joindomain')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('dnsLabelPrefix'))]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('customVmName'))]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
