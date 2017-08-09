@@ -1,8 +1,7 @@
 Server,servername,OS,ImageName,StorageAccount,subnet,AvailabilitySet,DataDiskSize,VMSize
-Monitoring Server 03 (New Relic),igloo-eus-mon3,Linux,CentOS7,storagestd,biz,,None,Standard_A1_v2
-Kafka Node 02,igloo-eus-kafka2,Linux,CentOS7,storagestd,biz,Igloo-POC-Kafka-AS,80,Standard_A2m_v2
-Admin Jumpbox,igloo-eus-admin,Windows,Win2012R2,storagestd,biz,,None,Standard_D2_v2
-Certificiate Authority,igloo-eus-ca,Windows,Win2012R2,storagestd,mgmt,,None,Standard_D2_v2
-Cron Server,igloo-eus-cron,Windows,Win2012R2,storagestd,biz,,None,Standard_D2_v2
-Datafeeds Server 01,igloo-eus-dfd1,Windows,Win2012R2,storagestd,biz,Igloo-POC-DFD-AS,None,Standard_D2_v2
-Datafeeds Server 02,igloo-eus-dfd2,Windows,Win2012R2,storagestd,biz,Igloo-POC-DFD-AS,None,Standard_D2_v2
+Kafka Node 02,igloo-eus-kafka2,Linux,CentOS7,standardsaiwrs4jpmap5k4,biz,Igloo-POC-Kafka-AS,80,Standard_A2m_v2
+Admin Jumpbox,igloo-eus-admin,Windows,Win2012R2,standardsaiwrs4jpmap5k4,biz,none,None,Standard_D2_v2
+Certificiate Authority,igloo-eus-ca,Windows,Win2012R2,standardsaiwrs4jpmap5k4,mgmt,none,None,Standard_D2_v2
+Cron Server,igloo-eus-cron,Windows,Win2012R2,standardsaiwrs4jpmap5k4,biz,none,None,Standard_D2_v2
+Datafeeds Server 01,igloo-eus-dfd1,Windows,Win2012R2,standardsaiwrs4jpmap5k4,biz,Igloo-POC-DFD-AS,None,Standard_D2_v2
+Datafeeds Server 02,igloo-eus-dfd2,Windows,Win2012R2,standardsaiwrs4jpmap5k4,biz,Igloo-POC-DFD-AS,None,Standard_D2_v2
