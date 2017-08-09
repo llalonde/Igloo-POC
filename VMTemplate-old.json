@@ -92,7 +92,34 @@
                         "storageUri": "[reference(resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', parameters('diagnosticsStorageAccountName')), '2015-06-15').primaryEndpoints['blob']]"
                     }
                 }
-            }
+            },
+            "resources": [
+                {
+                    "condition": "[equals(parameters('vmos'),'Windows')]",
+                    "apiVersion": "[variables('apiVersion')]",
+                    "type": "Microsoft.Compute/virtualMachines/extensions",
+                    "name": "[concat(parameters('domainToJoin'),'/joindomain')]",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
+                    ],
+                    "properties": {
+                        "publisher": "Microsoft.Compute",
+                        "type": "JsonADDomainExtension",
+                        "typeHandlerVersion": "1.3",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "Name": "[parameters('domainToJoin')]",
+                            "User": "[concat(parameters('domainToJoin'),'\\',parameters('adminUsername'))]",
+                            "Restart": "true",
+                            "Options": "[variables('domainJoinOptions')]"
+                        },
+                        "protectedSettings": {
+                            "Password": "[parameters('adminPassword')]"
+                        }
+                    }
+                }
+            ]
         },
         {
             "condition": "[not(equals(parameters('availabilitySetName'),'none'))]",
@@ -139,7 +166,34 @@
                 "availabilitySet": {
                     "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"
                 }
-            }
+            },
+            "resources": [
+                {
+                    "condition": "[equals(parameters('vmos'),'Windows')]",
+                    "apiVersion": "[variables('apiVersion')]",
+                    "type": "Microsoft.Compute/virtualMachines/extensions",
+                    "name": "[concat(parameters('domainToJoin'),'/joindomainA')]",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('virtualMachineName'),'A'))]"
+                    ],
+                    "properties": {
+                        "publisher": "Microsoft.Compute",
+                        "type": "JsonADDomainExtension",
+                        "typeHandlerVersion": "1.3",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "Name": "[parameters('domainToJoin')]",
+                            "User": "[concat(parameters('domainToJoin'),'\\',parameters('adminUsername'))]",
+                            "Restart": "true",
+                            "Options": "[variables('domainJoinOptions')]"
+                        },
+                        "protectedSettings": {
+                            "Password": "[parameters('adminPassword')]"
+                        }
+                    }
+                }
+            ]
         },
         {
             "name": "[parameters('networkInterfaceName')]",
