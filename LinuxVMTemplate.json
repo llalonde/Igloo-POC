@@ -37,7 +37,7 @@
     "resources": [
         {
             "condition": "[equals(parameters('availabilitySetName'),'none')]",
-            "name": "[parameters('virtualMachineName')]",
+            "name": "[concat(parameters('virtualMachineName'),'NOAS')]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2016-04-30-preview",
             "location": "[resourceGroup().location]",
@@ -83,8 +83,8 @@
             }
         },
         {
-            "name": "[parameters('virtualMachineName')]",
             "condition": "[empty(parameters('availabilitySetName'))]",
+            "name": "[concat(parameters('virtualMachineName'),'AS')]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2016-04-30-preview",
             "location": "[resourceGroup().location]",
