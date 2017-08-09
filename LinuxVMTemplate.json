@@ -21,7 +21,8 @@
             "type": "securestring"
         },
         "availabilitySetName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "None",
         },
         "diagnosticsStorageAccountName": {
             "type": "string"

@@ -109,6 +109,7 @@ ForEach ( $VM in $VMList) {
                 availabilitySetName=$ASname;`
                 diagnosticsStorageAccountName='logsaiwrs4jpmap5k4';`
                 subnetName=$VMsubnet;`
+                ImageURI=$VMImageName;`
             } -Force | out-null
     }
             
