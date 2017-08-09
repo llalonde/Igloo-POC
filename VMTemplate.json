@@ -110,7 +110,7 @@
                         "autoUpgradeMinorVersion": true,
                         "settings": {
                             "Name": "[parameters('domainToJoin')]",
-                            "User": "[parameters('adminUsername')]",
+                            "User": "[concat(parameters('domainToJoin'),'\\',parameters('adminUsername'))]",
                             "Restart": "true",
                             "Options": "[variables('domainJoinOptions')]"
                         },
@@ -184,7 +184,7 @@
                         "autoUpgradeMinorVersion": true,
                         "settings": {
                             "Name": "[parameters('domainToJoin')]",
-                            "User": "[parameters('adminUsername')]",
+                            "User": "[concat(parameters('domainToJoin'),'\\',parameters('adminUsername'))]",
                             "Restart": "true",
                             "Options": "[variables('domainJoinOptions')]"
                         },
