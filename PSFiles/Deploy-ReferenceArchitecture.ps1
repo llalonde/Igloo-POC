@@ -54,6 +54,7 @@ $DCTemplate = $TemplateURI.AbsoluteUri + "AD-2DC.json"
 
 #endregion
 
+<
 #region Create the resource group
 
 # Start the deployment

@@ -6,12 +6,12 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
-<#
+
 #region Prep & signin
 
 # sign in
 Write-Host "Logging in ...";
-Login-AzureRmAccount | Out-Null
+#Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
@@ -36,7 +36,7 @@ $Wincred = Get-Credential
 Write-Host "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created";
 $Linuxcred = Get-Credential 
 #endregion
-#>
+
 
 #region Set Template and Parameter location
 
