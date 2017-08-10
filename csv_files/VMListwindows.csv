@@ -1,4 +1,4 @@
-﻿Server,servername,OS,ImageName,StorageAccount,subnet,AvailabilitySet,DataDiskSize,VMSize
+Server,servername,OS,ImageName,StorageAccount,subnet,AvailabilitySet,DataDiskSize,VMSize
 Admin Jumpbox,poc-eus-admin,Windows,Windows,storagestd,biz,None,None,Standard_D2_v2
 Certificiate Authority,poc-eus-ca,Windows,Windows,storagestd,mgmt,None,None,Standard_D2_v2
 Cron Server,poc-eus-cron,Windows,Windows,storagestd,biz,None,None,Standard_D2_v2
