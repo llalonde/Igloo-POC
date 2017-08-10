@@ -47,7 +47,7 @@ $Date=Get-Date -Format yyyyMMdd
 $TemplateRootUriString = "https://raw.githubusercontent.com/pierreroman/Igloo-POC/master/"
 $TemplateURI = New-Object System.Uri -ArgumentList @($TemplateRootUriString)
 
-$Template = $TemplateURI.AbsoluteUri + "VMTemplate.json"
+$Template = $TemplateURI.AbsoluteUri + "VMTemplate-old.json"
 
 #endregion
 
