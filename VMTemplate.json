@@ -36,7 +36,7 @@
     },
     "resources": [
         {
-            "name": "parameters('virtualMachineName')]",
+            "name": "[parameters('virtualMachineName')]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2016-04-30-preview",
             "location": "[resourceGroup().location]",

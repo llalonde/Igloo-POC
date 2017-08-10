@@ -82,7 +82,7 @@ ForEach ( $VM in $VMList) {
     Write-Output "Deploying $VMOS VM named '$VMName'..."
     $DeploymentName = 'VM-' + $VMName + '-' + $Date
 
-    if ($ASname -ne "None") {
+    if ($ASname -eq "None") {
         New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $Template -TemplateParameterObject `
         @{ `
                 virtualMachineName            = $VMName; `
@@ -94,8 +94,6 @@ ForEach ( $VM in $VMList) {
                 diagnosticsStorageAccountName = 'logsaiwrs4jpmap5k4'; `
                 subnetName                    = $VMsubnet; `
                 ImageURI                      = $VMImageName; `
-                vmos                          = $VMOS; `
-        
         } -Force | out-null
     }
     else {
@@ -111,8 +109,6 @@ ForEach ( $VM in $VMList) {
                 diagnosticsStorageAccountName = 'logsaiwrs4jpmap5k4'; `
                 subnetName                    = $VMsubnet; `
                 ImageURI                      = $VMImageName; `
-                vmos                          = $VMOS; `
-        
         } -Force | out-null
     }
     if ($VMDataDiskSize -ne "None") {
