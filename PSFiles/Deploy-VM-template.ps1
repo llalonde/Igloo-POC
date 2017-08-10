@@ -6,7 +6,7 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
-
+<#
 #region Prep & signin
 
 # sign in
@@ -36,7 +36,7 @@ $Wincred = Get-Credential
 Write-Host "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created";
 $Linuxcred = Get-Credential 
 #endregion
-
+#>
 
 #region Set Template and Parameter location
 
@@ -47,7 +47,7 @@ $Date=Get-Date -Format yyyyMMdd
 $TemplateRootUriString = "https://raw.githubusercontent.com/pierreroman/Igloo-POC/master/"
 $TemplateURI = New-Object System.Uri -ArgumentList @($TemplateRootUriString)
 
-$Template = $TemplateURI.AbsoluteUri + "VMTemplate-old.json"
+$Template = $TemplateURI.AbsoluteUri + "VMTemplate-windows.json"
 
 #endregion
 
@@ -67,17 +67,8 @@ ForEach ( $VM in $VMList) {
     $VMDataDiskSize = $vm.DataDiskSize
     $DataDiskName = $VM.ServerName + "Data"
     $VMImageName = $vm.ImageName
-
     $Nic=$VMName+'-nic'
-
-    switch ($VMImageName)
-    {
-        'CentOS6' {$ImageUri = 'https://standardsaiwrs4jpmap5k4.blob.core.windows.net/vhds/centos6temp220170612211517.vhd'}
-        'CentOS7' {$ImageUri = 'https://standardsaiwrs4jpmap5k4.blob.core.windows.net/vhds/centos7temp20170612170035.vhd'}
-        'Windows' {$ImageUri = 'https://standardsaiwrs4jpmap5k4.blob.core.windows.net/vhds/Windows2012R220170612221756.vhd'}
-        Default {Write-Host "No Image Defined...."}
-    }
-    
+   
     switch ($VMOS)
     {
         "Linux" {$cred = $Linuxcred}
@@ -91,7 +82,7 @@ ForEach ( $VM in $VMList) {
     Write-Output "Deploying '$VMName'..."
     $DeploymentName = 'VM-'+$VMName + '-'+ $Date
 
-    $Vnet_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $Template -TemplateParameterObject `
+    $Vnet_Results = New-AzureRmResourceGroupDeployment -Mode Complete -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $Template -TemplateParameterObject `
         @{ `
             virtualMachineName=$VMName;`
             virtualMachineSize=$VMSize;`
@@ -103,6 +94,8 @@ ForEach ( $VM in $VMList) {
             diagnosticsStorageAccountName='logsaiwrs4jpmap5k4';`
             subnetName=$VMsubnet;`
             ImageURI=$VMImageName;`
+            vmos= $VMOS;`
+            domainToJoin='iglooaz.local';`
         } -Force
 <#
     if ($VMOS -eq "Windows")
