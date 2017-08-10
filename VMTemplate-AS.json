@@ -30,9 +30,6 @@
         "ImageURI": {
             "type": "string"
         },
-        "vmos": {
-            "type": "string"
-        },
         "subnetName": {
             "type": "string"
         }
@@ -82,6 +79,9 @@
                         "enabled": true,
                         "storageUri": "[reference(resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', parameters('diagnosticsStorageAccountName')), '2015-06-15').primaryEndpoints['blob']]"
                     }
+                },
+                "availabilitySet": {
+                    "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"
                 }
             }
         },

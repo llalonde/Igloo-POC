@@ -11,7 +11,7 @@ $starttime = get-date
 #region Prep & signin
 # sign in
 Write-Host "Logging in ...";
-Login-AzureRmAccount | Out-Null
+#Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
@@ -54,7 +54,7 @@ $DCTemplate = $TemplateURI.AbsoluteUri + "AD-2DC.json"
 
 #endregion
 
-<
+
 #region Create the resource group
 
 # Start the deployment
@@ -217,12 +217,3 @@ $endtime = get-date
 $procestime = $endtime - $starttime
 $time = "{00:00:00}" -f $procestime.Minutes
 write-host " Deployment completed in '$time' "
-
-
-
-
-
-
-
-
-
