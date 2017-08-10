@@ -6,7 +6,7 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
-
+<#
 #region Prep & signin
 
 # sign in
@@ -36,7 +36,7 @@ $Wincred = Get-Credential
 Write-Host "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created";
 $Linuxcred = Get-Credential 
 #endregion
-
+#>
 
 #region Set Template and Parameter location
 
@@ -103,14 +103,13 @@ ForEach ( $VM in $VMList) {
             diagnosticsStorageAccountName='logsaiwrs4jpmap5k4';`
             subnetName=$VMsubnet;`
             ImageURI=$VMImageName;`
-            domainToJoin='iglooaz.local';`
-            vmos=$VMOS;`
-        } -Force | out-null
+        } -Force
+<#
     if ($VMOS -eq "Windows")
     {
         $string1 = '{ 
-           "Name": "igordom.local", 
-           "User": "igordom.local\\igorpag", 
+           "Name": "iglooaz.local", 
+           "User": "iglooaz.local\\sysadmin", 
            "Restart": "true", 
            "Options": "3" 
                 }'
@@ -118,6 +117,7 @@ ForEach ( $VM in $VMList) {
 
         Set-AzureRmVMExtension -ResourceGroupName $ResourceGroupName -ExtensionType "JsonADDomainExtension" -Name "joindomain" -Publisher "Microsoft.Compute" -TypeHandlerVersion "1.0" -VMName $VMName -Location $Location -SettingString $string1 -ProtectedSettingString $string2
     }
+#>
 }
 
 #endregion
