@@ -6,7 +6,7 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
-<#
+
 #region Prep & signin
 
 # sign in
@@ -34,7 +34,7 @@ $Wincred = Get-Credential
 Write-Host "You Will now be asked for a UserName and Password that will be applied to the linux Virtual Machine that will be created";
 $Linuxcred = Get-Credential 
 #endregion
-#>
+
 
 #region Set Template and Parameter location
 
@@ -126,21 +126,28 @@ ForEach ( $VM in $VMList) {
             $VMdiskAdd = Add-AzureRmVMDataDisk -VM $VMdiskAdd -Name $dataDiskName -CreateOption Attach -ManagedDiskId $dataDisk1.Id -Lun 1
             Update-AzureRmVM -VM $VMdiskAdd -ResourceGroupName $ResourceGroupName | out-null
         }
-        <#
         if ($VMOS -eq "Windows") {
             Write-Output "     Joining '$vmName' to '$domainToJoin'..."
-            Set-AzureRMVMExtension `
-                -VMName $VMName `
-                -ResourceGroupName $ResourceGroupName `
+            $domainAdminUser= $domainToJoin + "\" + $cred.UserName.ToString()
+            $domPassword= $cred.GetNetworkCredential().Password
+            $DomainJoinPassword = $cred.Password
+
+            $Results = Set-AzureRMVMExtension -VMName $VMName -ResourceGroupName $ResourceGroupName `
                 -Name "JoinAD" `
                 -ExtensionType "JsonADDomainExtension" `
                 -Publisher "Microsoft.Compute" `
                 -TypeHandlerVersion "1.3" `
-                -Location $Location `
-                -Settings @{ "Name" = $domainToJoin; "User" = $cred.UserName; "Restart" = "true"; "Options" = 3} `
-                -ProtectedSettings @{"Password" = $DomainJoinPassword}
+                -Location $Location.ToString() `
+                -Settings @{ "Name" = $domainToJoin.ToString(); "User" = $domainAdminUser.ToString(); "Restart" = "true"; "Options" = 3} `
+                -ProtectedSettings @{"Password" = $domPassword}
+        
+            if ($Results.StatusCode -eq "OK"){
+                 Write-Output "     Successfully joined domain '$domainToJoin.ToString()'..."
+            }
+            Else{
+                 Write-Output "     Failled to join domain '$domainToJoin.ToString()'..."
+            }
         }
-        #>
     }
     else {
         Write-Output "Virtual Machine '$VMName' already exist and will be skipped..."
