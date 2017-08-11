@@ -128,8 +128,8 @@ ForEach ( $VM in $VMList) {
         }
         if ($VMOS -eq "Windows") {
             Write-Output "     Joining '$vmName' to '$domainToJoin'..."
-            $domainAdminUser= $domainToJoin + "\" + $cred.UserName.ToString()
-            $domPassword= $cred.GetNetworkCredential().Password
+            $domainAdminUser = $domainToJoin + "\" + $cred.UserName.ToString()
+            $domPassword = $cred.GetNetworkCredential().Password
             $DomainJoinPassword = $cred.Password
 
             $Results = Set-AzureRMVMExtension -VMName $VMName -ResourceGroupName $ResourceGroupName `
@@ -141,11 +141,11 @@ ForEach ( $VM in $VMList) {
                 -Settings @{ "Name" = $domainToJoin.ToString(); "User" = $domainAdminUser.ToString(); "Restart" = "true"; "Options" = 3} `
                 -ProtectedSettings @{"Password" = $domPassword}
         
-            if ($Results.StatusCode -eq "OK"){
-                 Write-Output "     Successfully joined domain '$domainToJoin.ToString()'..."
+            if ($Results.StatusCode -eq "OK") {
+                Write-Output "     Successfully joined domain '$domainToJoin.ToString()'..."
             }
-            Else{
-                 Write-Output "     Failled to join domain '$domainToJoin.ToString()'..."
+            Else {
+                Write-Output "     Failled to join domain '$domainToJoin.ToString()'..."
             }
         }
     }
