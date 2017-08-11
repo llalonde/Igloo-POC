@@ -11,12 +11,11 @@ $starttime = get-date
 
 # sign in
 Write-Host "Logging in ...";
-#Login-AzureRmAccount | Out-Null
+Login-AzureRmAccount | Out-Null
 
 # select subscription
 $subscriptionId = Read-Host -Prompt 'Input your Subscription ID'
 Select-AzureRmSubscription -SubscriptionID $subscriptionId | out-null
-
 
 # select Resource Group
 $ResourceGroupName = Read-Host -Prompt 'Input the resource group for your network'
@@ -26,7 +25,6 @@ $Location = Read-Host -Prompt 'Input the Location for your network'
 
 # select Location
 $VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
-
 
 # Define a credential object
 Write-Host "You Will now be asked for a UserName and Password that will be applied to the windows Virtual Machine that will be created";
@@ -78,53 +76,75 @@ ForEach ( $VM in $VMList) {
 
     $vnet = Get-AzureRmVirtualNetwork -ResourceGroupName $ResourceGroupName
     $vnetname = $vnet.Name
+    
+    Get-AzureRmVM -Name $vmName -ResourceGroupName $ResourceGroupName -ev notPresent -ea 0 | out-null
 
-    Write-Output "Deploying $VMOS VM named '$VMName'..."
-    $DeploymentName = 'VM-' + $VMName + '-' + $Date
+    if ($notPresent) {
+        Write-Output "Deploying $VMOS VM named '$VMName'..."
+        $DeploymentName = 'VM-' + $VMName + '-' + $Date
 
-    if ($ASname -eq "None") {
-        New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $Template -TemplateParameterObject `
-        @{ `
-                virtualMachineName            = $VMName; `
-                virtualMachineSize            = $VMSize; `
-                adminUsername                 = $cred.UserName; `
-                virtualNetworkName            = $vnetname; `
-                networkInterfaceName          = $Nic; `
-                adminPassword                 = $cred.Password; `
-                diagnosticsStorageAccountName = 'logsaiwrs4jpmap5k4'; `
-                subnetName                    = $VMsubnet; `
-                ImageURI                      = $VMImageName; `
-        } -Force | out-null
+        if ($ASname -eq "None") {
+            New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $Template -TemplateParameterObject `
+            @{ `
+                    virtualMachineName            = $VMName; `
+                    virtualMachineSize            = $VMSize; `
+                    adminUsername                 = $cred.UserName; `
+                    virtualNetworkName            = $vnetname; `
+                    networkInterfaceName          = $Nic; `
+                    adminPassword                 = $cred.Password; `
+                    diagnosticsStorageAccountName = 'logsaiwrs4jpmap5k4'; `
+                    subnetName                    = $VMsubnet; `
+                    ImageURI                      = $VMImageName; `
+            
+            } -Force | out-null
+        }
+        else {
+            New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $TemplateAS -TemplateParameterObject `
+            @{ `
+                    virtualMachineName            = $VMName; `
+                    virtualMachineSize            = $VMSize; `
+                    adminUsername                 = $cred.UserName; `
+                    virtualNetworkName            = $vnetname; `
+                    networkInterfaceName          = $Nic; `
+                    adminPassword                 = $cred.Password; `
+                    availabilitySetName           = $ASname.ToLower(); `
+                    diagnosticsStorageAccountName = 'logsaiwrs4jpmap5k4'; `
+                    subnetName                    = $VMsubnet; `
+                    ImageURI                      = $VMImageName; `
+            
+            } -Force | out-null
+        }
+
+        if ($VMDataDiskSize -ne "None") {
+            Write-Output "     Adding Data Disk to '$vmName'..."
+            $storageType = 'StandardLRS'
+            $dataDiskName = $vmName + '_datadisk1'
+
+            $diskConfig = New-AzureRmDiskConfig -AccountType $storageType -Location $location -CreateOption Empty -DiskSizeGB $VMDataDiskSize
+            $dataDisk1 = New-AzureRmDisk -DiskName $dataDiskName -Disk $diskConfig -ResourceGroupName $ResourceGroupName
+            $VMdiskAdd = Get-AzureRmVM -Name $vmName -ResourceGroupName $ResourceGroupName 
+            $VMdiskAdd = Add-AzureRmVMDataDisk -VM $VMdiskAdd -Name $dataDiskName -CreateOption Attach -ManagedDiskId $dataDisk1.Id -Lun 1
+            Update-AzureRmVM -VM $VMdiskAdd -ResourceGroupName $ResourceGroupName | out-null
+        }
+        <#
+        if ($VMOS -eq "Windows") {
+            Write-Output "     Joining '$vmName' to '$domainToJoin'..."
+            Set-AzureRMVMExtension `
+                -VMName $VMName `
+                -ResourceGroupName $ResourceGroupName `
+                -Name "JoinAD" `
+                -ExtensionType "JsonADDomainExtension" `
+                -Publisher "Microsoft.Compute" `
+                -TypeHandlerVersion "1.3" `
+                -Location $Location `
+                -Settings @{ "Name" = $domainToJoin; "User" = $cred.UserName; "Restart" = "true"; "Options" = 3} `
+                -ProtectedSettings @{"Password" = $DomainJoinPassword}
+        }
+        #>
     }
     else {
-        New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $TemplateAS -TemplateParameterObject `
-        @{ `
-                virtualMachineName            = $VMName; `
-                virtualMachineSize            = $VMSize; `
-                adminUsername                 = $cred.UserName; `
-                virtualNetworkName            = $vnetname; `
-                networkInterfaceName          = $Nic; `
-                adminPassword                 = $cred.Password; `
-                availabilitySetName           = $ASname.ToLower(); `
-                diagnosticsStorageAccountName = 'logsaiwrs4jpmap5k4'; `
-                subnetName                    = $VMsubnet; `
-                ImageURI                      = $VMImageName; `
-        } -Force | out-null
-    }
-    if ($VMDataDiskSize -ne "None") {
-        $storageType = 'StandardLRS'
-        $dataDiskName = $vmName + '_datadisk1'
-
-        $diskConfig = New-AzureRmDiskConfig -AccountType $storageType -Location $location -CreateOption Empty -DiskSizeGB $VMDataDiskSize
-        $dataDisk1 = New-AzureRmDisk -DiskName $dataDiskName -Disk $diskConfig -ResourceGroupName $rgName
-        
-        $vm = Get-AzureRmVM -Name $vmName -ResourceGroupName $ResourceGroupName 
-        $vm = Add-AzureRmVMDataDisk -VM $vm -Name $dataDiskName -CreateOption Attach -ManagedDiskId $dataDisk1.Id -Lun 1
-
-        Update-AzureRmVM -VM $vm -ResourceGroupName $ResourceGroupName
+        Write-Output "Virtual Machine '$VMName' already exist and will be skipped..."
     }
 }
-
-
 
 #endregion
