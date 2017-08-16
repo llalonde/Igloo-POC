@@ -44,13 +44,11 @@ $Date=Get-Date -Format yyyyMMdd
 $TemplateRootUriString = "https://raw.githubusercontent.com/pierreroman/Igloo-POC/master/"
 $TemplateURI = New-Object System.Uri -ArgumentList @($TemplateRootUriString)
 
-$VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
-$DCTemplate = $TemplateURI.AbsoluteUri + "DC.json"
-$StorageTemplate = $TemplateURI.AbsoluteUri + "VMStorageAccount.json"
-$ASTemplate = $TemplateURI.AbsoluteUri + "AvailabilitySet.json"
-$ASCTemplate = $TemplateURI.AbsoluteUri + "AvailabilitySetClassic.json"
-$NSGTemplate = $TemplateURI.AbsoluteUri + "nsg.azuredeploy.json"
 $DCTemplate = $TemplateURI.AbsoluteUri + "AD-2DC.json"
+$ASTemplate = $TemplateURI.AbsoluteUri + "AvailabilitySet.json"
+$NSGTemplate = $TemplateURI.AbsoluteUri + "nsg.azuredeploy.json"
+$StorageTemplate = $TemplateURI.AbsoluteUri + "VMStorageAccount.json"
+$VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
 
 #endregion
 
