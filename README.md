@@ -14,7 +14,9 @@ Files Included in this Repo:
 5. Root:  JSON templates and Readme.md (this file)
 
 
-Deploy-ReferenceArchitecture.ps1:  This script is the main script for the deployment of the infrastructure located in the PSFiles folder.
+# Deploy-ReferenceArchitecture.ps1
+
+This script is the main script for the deployment of the infrastructure located in the PSFiles folder.
 
 **This PowerShell script will deploy the following:**
 
@@ -41,4 +43,21 @@ To execute the script, fork the repo to your own github subscription and clone i
  
 
 ![](https://github.com/pierreroman/igloo-poc/blob/master/_images/executescript.png)
+
+# Deploy-VM-template.ps1
+
+This script is the script for the deployment of all the Virtual machines that make up the Igloo Solution.  It will utilize the information listed in the CSV file located in the csv_files folder in order to deploy the vms properly.
+
+the info in the CSV is formatted with the following fields.
+
+> Server,servername,OS,ImageName,StorageAccount,subnet,AvailabilitySet,DataDiskSize,VMSize
+
+the script when executed, will ask for the following:
+
+* Subscription ID
+* Target Resource Group
+* Location
+* Location of the CSV file.
+* Credentials for the Windows and Linux machines
+
 
