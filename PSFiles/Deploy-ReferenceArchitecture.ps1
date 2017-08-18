@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
-
+<#
 #region Prep & signin
 # sign in
 Write-Host "Logging in ...";
@@ -51,7 +51,7 @@ $StorageTemplate = $TemplateURI.AbsoluteUri + "VMStorageAccount.json"
 $VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
 
 #endregion
-
+#>
 
 #region Create the resource group
 
@@ -104,7 +104,7 @@ $VNetaddressPrefixes =  $Vnet_Results.Outputs.VNetaddressPrefixes.Value
 #region Deployment of Storage Account
 Write-Output "Deploying Storage Accounts..."
 $DeploymentName = 'storageAccount'+ $Date
-$SA_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $StorageTemplate -TemplateParameterObject `
+$SA_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $StorageTemplate -TemplateParameterObject `
     @{ `
         stdname = 'standardsa'; `
         premname = 'premiumsa'; `
@@ -133,7 +133,7 @@ ForEach ( $AS in $ASListUnique)
 {
     $ASName=$AS
     $DeploymentName = $AS + $Date
-    New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $ASTemplate -TemplateParameterObject `
+    New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $ASTemplate -TemplateParameterObject `
         @{ AvailabilitySetName = $ASName.ToString() ; `
             faultDomains = 2 ; `
             updateDomains = 5 ; `
@@ -165,7 +165,7 @@ $DeploymentName = 'Domain-DC-'+ $Date
 $userName=$cred.UserName
 $password=$cred.GetNetworkCredential().Password
 
-New-AzureRmResourceGroupDeployment -Name 'domain-AS' -ResourceGroupName $ResourceGroupName -TemplateFile $ASCTemplate -TemplateParameterObject `
+New-AzureRmResourceGroupDeployment -Name 'domain-AS' -ResourceGroupName $ResourceGroupName -TemplateUri $ASCTemplate -TemplateParameterObject `
     @{ AvailabilitySetName = 'Igloo-POC-DC-AS' ; `
         faultDomains = 2 ; `
         updateDomains = 5 ; `
