@@ -7,7 +7,15 @@
         },
         "premname": {
             "type": "String"
+        },
+        "logname": {
+            "type": "String"
         }
+    },
+    "variables": {
+        "storageAccountNameSTD": "[concat(parameters('stdname'), uniqueString(resourceGroup().id))]",
+        "storageAccountNamePREM": "[concat(parameters('premname'), uniqueString(resourceGroup().id))]",
+        "storageAccountNameLOG": "[concat(parameters('logname'), uniqueString(resourceGroup().id))]"
     },
     "resources": [
         {
@@ -16,7 +24,7 @@
                 "name": "Standard_LRS"
             },
             "kind": "Storage",
-            "name": "[parameters('stdname')]",
+            "name": "[variables('storageAccountNameSTD')]",
             "apiVersion": "2017-06-01",
             "location": "[resourceGroup().location]",
             "properties": {
@@ -36,7 +44,7 @@
         },
         {
             "apiVersion": "2017-06-01",
-            "name": "[parameters('premname')]",
+            "name": "[variables('storageAccountNamePREM')]",
             "location": "[resourceGroup().location]",
             "type": "Microsoft.Storage/storageAccounts",
             "sku": {
@@ -54,6 +62,44 @@
                 },
                 "supportsHttpsTrafficOnly": "false"
             }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "name": "[variables('storageAccountNameLOG')]",
+            "apiVersion": "2017-06-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "encryption": {
+                    "services": {
+                        "blob": {
+                            "enabled": "false"
+                        },
+                        "file": {
+                            "enabled": "false"
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "supportsHttpsTrafficOnly": "false"
+            }
         }
-    ]
+    ],
+    "outputs": {
+        "stdsa": {
+            "type": "string",
+            "value": "[variables('storageAccountNameSTD')]"
+        },
+        "premsa": {
+            "type": "string",
+            "value": "[variables('storageAccountNamePREM')]"
+        },
+        "logsa": {
+            "type": "string",
+            "value": "[variables('storageAccountNamePREM')]"
+        }
+    }
 }

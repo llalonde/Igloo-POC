@@ -14,7 +14,7 @@
             "type": "Int"
         },
         "sku": {
-            "defaultValue": "Aligned",
+            "defaultValue": "Classic",
             "type": "String"
         }
     },

@@ -7,6 +7,7 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $starttime = get-date
 
+<#
 #region Prep & signin
 # sign in
 Write-Host "Logging in ...";
@@ -25,28 +26,33 @@ $Location = Read-Host -Prompt 'Input the Location for your network'
 # select Location
 $VMListfile = Read-Host -Prompt 'Input the Location of the list of VMs to be created'
 
+# Define a credential object
+$cred = Get-Credential -Message "UserName and Password for Windows VM"
+
+
+# Define a credential object
+$Linuxcred = Get-Credential -Message "UserName and Password for Linux VM"
+
 #endregion
 
 #region Set Template and Parameter location
+
+$Date=Get-Date -Format yyyyMMdd
+
 # set  Root Uri of GitHub Repo (select AbsoluteUri)
 
 $TemplateRootUriString = "https://raw.githubusercontent.com/llalonde/Igloo-POC/master/"
 $TemplateURI = New-Object System.Uri -ArgumentList @($TemplateRootUriString)
 
-$VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
-$ASATemplate = $TemplateURI.AbsoluteUri + "ASA.json"
-$StorageTemplate = $TemplateURI.AbsoluteUri + "VMStorageAccount.json"
+$DCTemplate = $TemplateURI.AbsoluteUri + "AD-2DC.json"
 $ASTemplate = $TemplateURI.AbsoluteUri + "AvailabilitySet.json"
-$AATemplate = $TemplateURI.AbsoluteUri + "AzrAutoAccount.json"
 $NSGTemplate = $TemplateURI.AbsoluteUri + "nsg.azuredeploy.json"
-
-#Parameter files for the deployment (include relative path to repo + filename)
-
-$VnetParametersFile = $TemplateURI.AbsoluteUri + "parameters/vnet-subnet.parameters.json"
-$ASAParametersFile = $TemplateURI.AbsoluteUri + "parameters/asa.parameters.json"
-$StorageParametersFile = $TemplateURI.AbsoluteUri + "parameters/VMStorageAccount.parameters.json"
+$StorageTemplate = $TemplateURI.AbsoluteUri + "VMStorageAccount.json"
+$VnetTemplate = $TemplateURI.AbsoluteUri + "vnet-subnet.json"
 
 #endregion
+#>
+
 #region Create the resource group
 
 # Start the deployment
@@ -65,106 +71,147 @@ else {
 }
 
 #endregion
+
 #region Deployment of virtual network
 Write-Output "Deploying virtual network..."
+$DeploymentName = 'Vnet-Subnet-'+ $Date
 
-if (Invoke-WebRequest -Uri $VnetParametersFile) {
-    write-host "The parameter file was found, we will use the following info: "
-    write-host " Template file:     '$VnetTemplate'"
-    write-host " Parameter file:    '$VnetParametersFile'"
-    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterUri $VnetParametersFile -Force | out-null
-}
-else {
-    write-host "The parameter file was not found, you will need to enter all parameters manually...."
-    New-AzureRmResourceGroupDeployment -Mode Complete -Name "vnet-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -Force | out-null
-}
+$Vnet_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $VnetTemplate -TemplateParameterObject `
+    @{ `
+        vnetname='Vnet-Igloo-POC'; `
+        VnetaddressPrefix = '192.168.0.0/17'; `
+        mgmtsubnetsname = 'mgmt'; `
+        mgmtsubnetaddressPrefix = '192.168.105.0/24'; `
+        publicdmzinsubnetsname = 'Inside'; `
+        publicdmzinsubnetaddressPrefix = '192.168.114.0/24'; `
+        publicdmzoutsubnetsname = 'Outside'; `
+        publicdmzoutsubnetaddressPrefix = '192.168.113.0/24'; `
+        websubnetsname = 'web'; `
+        websubnetaddressPrefix = '192.168.115.0/24'; `
+        bizsubnetsname = 'biz';`
+        bizsubnetaddressPrefix = '192.168.116.0/24'; `
+        datasubnetsname = 'data';`
+        datasubnetaddressPrefix = '192.168.102.0/24'; `
+        Gatewaysubnetsname = 'GatewaySubnet'; `
+        GatewaysubnetaddressPrefix = '192.168.127.0/24'; `
+    } -Force | out-null
 
-#endregion
-#region Deploy Cisco ASA appliance 
-Write-Host 
-Write-Output "Deploying Cisco ASAv appliance..."
-$ASAResourceGroupName = $ResourceGroupName + "-ASA"
-Get-AzureRmResourceGroup -Name $ASAResourceGroupName -ev notPresent -ea 0 | out-null
-if ($notPresent) {
-    Write-Output "Could not find resource group '$ASAResourceGroupName' - will create it"
-    Write-Output "Creating resource group '$ASAResourceGroupName' in location '$Location'...."
-    New-AzureRmResourceGroup -Name $ASAResourceGroupName -Location $Location -Force | out-null
-}
-else {
-    Write-Output "Using existing resource group '$ASAResourceGroupName'"
-}
-if (Invoke-WebRequest -Uri $ASAParametersFile) {
-    write-host "The parameter file was found, we will use the following info: "
-    write-host " Template file:     '$ASATemplate'"
-    write-host " Parameter file:    '$ASAParametersFile'"
-    New-AzureRmResourceGroupDeployment -Name "ASA-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -TemplateParameterUri $ASAParametersFile -Force | out-null
-}
-else {
-    write-host "The parameter file was not found, you will need to enter all parameters manually...."
-    New-AzureRmResourceGroupDeployment -Name "ASA-deployment" -ResourceGroupName $ASAResourceGroupName -TemplateUri $ASATemplate -Force | out-null
-}
+$VNetName = $Vnet_Results.Outputs.VNetName.Value
+$VNetaddressPrefixes =  $Vnet_Results.Outputs.VNetaddressPrefixes.Value
 
 #endregion
+
 #region Deployment of Storage Account
 Write-Output "Deploying Storage Accounts..."
+$DeploymentName = 'storageAccount'+ $Date
+$SA_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $StorageTemplate -TemplateParameterObject `
+    @{ `
+        stdname = 'standardsa'; `
+        premname = 'premiumsa'; `
+        logname = 'logsa'; `
+    } -Force
 
-if (Invoke-WebRequest -Uri $StorageParametersFile) {
-    write-host "The parameter file was found, we will use the following info: "
-    write-host " Template file:     '$StorageTemplate'"
-    write-host " Parameter file:    '$StorageParametersFile'"
-    New-AzureRmResourceGroupDeployment -Name "Storage-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $StorageTemplate -TemplateParameterUri $StorageParametersFile -Force | out-null
-}
-else {
-    write-host "The parameter file was not found, you will need to enter all parameters manually...."
-    New-AzureRmResourceGroupDeployment -Name "Storage-deployment" -ResourceGroupName $ResourceGroupName -TemplateUri $StorageTemplate -Force | out-null
-}
+$std_storage_account=$SA_Results.Outputs.stdsa.Value
+$prem_storage_account=$SA_Results.Outputs.premsa.Value
+$log_storage_account=$SA_Results.Outputs.logsa.Value
+
+
+Set-AzureRmCurrentStorageAccount -Name $std_storage_account -ResourceGroupName $ResourceGroupName | out-null
+
+New-AzureStorageContainer -Name logs | out-null
 
 #endregion
 
 #region Deployment of Availability Sets
+
+Write-Output "Starting deployment of Availability Sets"
+
 $ASList = Import-CSV $VMListfile | Where-Object {$_.AvailabilitySet -ne "None"}
 $ASListUnique = $ASList.AvailabilitySet | select-object -unique
 
 ForEach ( $AS in $ASListUnique)
 {
-    Write-Host $AS
-    New-AzureRmResourceGroupDeployment -Name $AS -ResourceGroupName $ResourceGroupName -TemplateUri $ASTemplate -TemplateParameterObject `
-        @{ AvailabilitySetName = $AS ; `
-        faultDomains = 2 ; `
-        updateDomains =5 ;
-        sku = "Classic"; `
-        }
+    $ASName=$AS
+    $DeploymentName = $AS + $Date
+    New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $ASTemplate -TemplateParameterObject `
+        @{ AvailabilitySetName = $ASName.ToString() ; `
+            faultDomains = 2 ; `
+            updateDomains = 5 ; `
+        } -Force | out-null
 }
 #endregion
 
 #region Deployment of NSG
 
-$NSGList = Import-CSV $VMListfile | Where-Object {$_.subnet -ne "None"}
+Write-Output "Starting deployment of NSG"
+
+$NSGList = Import-CSV $VMListfile
 $NSGListUnique = $NSGList.subnet | select-object -unique
 
 ForEach ( $NSG in $NSGListUnique){
     $NSGName=$NSG+"-nsg"
-    New-AzureRmResourceGroupDeployment -Name $NSG -ResourceGroupName $ResourceGroupName -TemplateUri $NSGTemplate -TemplateParameterObject @{networkSecurityGroupName=$NSGName} -Force | out-null
+    $DeploymentName = $AS + $Date
+    New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $NSGTemplate -TemplateParameterObject `
+        @{`
+            networkSecurityGroupName=$NSGName.ToString(); `
+         } -Force | out-null
 }
 #endregion
-#region Deployment of Automation Account and RunBook
 
-#New-AzureRmResourceGroupDeployment -Name "Automation" -ResourceGroupName $ResourceGroupName -TemplateUri $AATemplate | out-null
+#region Deployment of DC
+Write-Output "Starting deployment of New Domain with Controller..."
+$DeploymentName = 'Domain-DC-'+ $Date
 
-# Create a Run As account by using a service principal
+$userName=$cred.UserName
+$password=$cred.GetNetworkCredential().Password
 
-# end of script
+New-AzureRmResourceGroupDeployment -Name 'domain-AS' -ResourceGroupName $ResourceGroupName -TemplateUri $ASCTemplate -TemplateParameterObject `
+    @{ AvailabilitySetName = 'Igloo-POC-DC-AS' ; `
+        faultDomains = 2 ; `
+        updateDomains = 5 ; `
+    } -Force | out-null
+
+$DC_Results = New-AzureRmResourceGroupDeployment -Name $DeploymentName -ResourceGroupName $ResourceGroupName -TemplateUri $DCTemplate -TemplateParameterObject `
+    @{ `
+        storageAccountName = $std_storage_account; `
+        DCVMName = 'poc-eus-dc1'; `
+        adminUsername = $userName; `
+        adminPassword = $password; `
+        domainName = 'Iglooaz.local'
+        adAvailabilitySetName = 'Igloo-POC-DC-AS'; `
+        virtualNetworkName = 'Vnet-Igloo-POC'; `
+    } -Force
+
+#endregion
+
+
+#region Update DNS with IP from DC set above
+
+Write-Output "Updating Vnet DNS to point to the newly create DC..."
+
+$vmname = "poc-eus-dc1"
+$vms = get-azurermvm
+$nics = get-azurermnetworkinterface | where VirtualMachine -NE $null #skip Nics with no VM
+
+foreach($nic in $nics)
+{
+    $vm = $vms | where-object -Property Id -EQ $nic.VirtualMachine.id
+    $prv =  $nic.IpConfigurations | select-object -ExpandProperty PrivateIpAddress
+    if ($($vm.Name) -eq $vmname)
+    {
+        $IP = $prv
+        break
+    }
+}
+
+$vnet = Get-AzureRmVirtualNetwork -ResourceGroupName $ResourceGroupName -name 'Vnet-Igloo-POC'
+$vnet.DhcpOptions.DnsServers = $IP 
+Set-AzureRmVirtualNetwork -VirtualNetwork $vnet | out-null
+
+#endregion
+
 
 $endtime = get-date
 $procestime = $endtime - $starttime
 $time = "{00:00:00}" -f $procestime.Minutes
 write-host " Deployment completed in '$time' "
-
-
-
-
-
-
-
-
-
